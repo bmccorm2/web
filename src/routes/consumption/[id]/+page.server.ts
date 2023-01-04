@@ -1,6 +1,7 @@
 import type { PageServerLoad } from './$types';
 import { GRAPHQL_URL } from '$env/static/private';
 import { GET_CONSUMPTION } from '$lib/server/queries';
+import { error } from '@sveltejs/kit';
 
 export const load = (async ({ params, fetch }) => {
 	try {
@@ -25,7 +26,7 @@ export const load = (async ({ params, fetch }) => {
 		} = await res.json();
 
 		return { cars, summary, consumption };
-	} catch (error) {
-		console.log(error);
+	} catch (e) {
+		throw error(505, e.message);
 	}
 }) satisfies PageServerLoad;

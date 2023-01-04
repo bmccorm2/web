@@ -1,0 +1,8 @@
+<script lang="ts">
+	import { page } from '$app/stores';
+	import '../app.css';
+</script>
+
+<h1 class="text-4xl text-slate-200 mt-4">
+	{$page.status}: {$page.error?.message}
+</h1>
