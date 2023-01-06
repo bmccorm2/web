@@ -38,7 +38,7 @@
 	<a href="/" class="hidden md:inline-block">
 		<img src="/svelte.png" alt="svelte" />
 	</a>
-	<div class="md:flex md:justify-end">
+	<div class="md:flex md:justify-end w-full">
 		<div class="md:hidden cursor-pointer">
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
