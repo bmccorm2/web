@@ -37,7 +37,7 @@
 				</span>
 				<input
 					type="number"
-					class="px-3 py-1 5 border-2 border-slate-500 w-full rounded-r-md h"
+					class="px-3 py-1 5 border-2 border-slate-500 w-full rounded-r-md text-slate-800"
 					placeholder="Price"
 					required
 					maxlength={5}
@@ -64,7 +64,7 @@
 				</span>
 				<input
 					type="number"
-					class="px-3 py-1 5 border-2 border-slate-500 w-full rounded-r-md h"
+					class="px-3 py-1 5 border-2 border-slate-500 w-full rounded-r-md text-slate-800"
 					placeholder="Gallons"
 					required
 					maxlength={6}
@@ -91,7 +91,7 @@
 				</span>
 				<input
 					type="number"
-					class="px-3 py-1 5 border-2 border-slate-500 w-full rounded-r-md h"
+					class="px-3 py-1 5 border-2 border-slate-500 w-full rounded-r-md text-slate-800"
 					placeholder="Miles"
 					required
 					maxlength={6}
@@ -118,7 +118,7 @@
 				</span>
 				<input
 					type="text"
-					class="px-3 py-1 5 border-2 border-slate-500 w-full rounded-r-md h"
+					class="px-3 py-1 5 border-2 border-slate-500 w-full rounded-r-md text-slate-800"
 					placeholder="Notes"
 					name="notes"
 				/>
@@ -128,13 +128,12 @@
 				<input
 					type="text"
 					readonly
-					class="px-3 py-1 5 border-2 border-slate-500 w-full rounded-md h"
+					class="px-3 py-1 5 border-2 border-slate-500 w-full rounded-md placeholder-slate-600"
 					placeholder={`MPG: ${mpg}`}
 				/>
 				<input
 					type="text"
-					readonly
-					class="px-3 py-1 5 border-2 border-slate-500 w-full rounded-md h"
+					class="px-3 py-1 5 border-2 border-slate-500 w-full rounded-md placeholder-slate-600"
 					placeholder={`PPG: ${ppg}`}
 				/>
 			</div>
