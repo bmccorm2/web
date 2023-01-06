@@ -128,12 +128,12 @@
 				<input
 					type="text"
 					readonly
-					class="px-3 py-1 5 border-2 border-slate-500 w-full rounded-md placeholder-slate-600"
+					class="px-3 py-1 5 border-2 text-sm border-slate-500 w-full rounded-md placeholder-slate-600"
 					placeholder={`MPG: ${mpg}`}
 				/>
 				<input
 					type="text"
-					class="px-3 py-1 5 border-2 border-slate-500 w-full rounded-md placeholder-slate-600"
+					class="px-3 py-1 5 border-2 text-sm border-slate-500 w-full rounded-md placeholder-slate-600"
 					placeholder={`PPG: ${ppg}`}
 				/>
 			</div>
