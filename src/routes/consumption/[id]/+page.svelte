@@ -9,13 +9,15 @@
 	$: ({ cars, consumption, summary } = data);
 </script>
 
-<CarSource {cars} />
-<div class="md:flex gap-4 mb-2">
-	<div class="md:basis-4/12">
-		<ConsumptionSummary {summary} />
+<div class="container mx-auto">
+	<CarSource {cars} />
+	<div class="md:flex gap-4 mb-2">
+		<div class="md:basis-4/12">
+			<ConsumptionSummary {summary} />
+		</div>
+		<div class="md:basis-8/12">
+			<MileageData tableRows={consumption.slice(0, 7)} />
+		</div>
 	</div>
-	<div class="md:basis-8/12">
-		<MileageData tableRows={consumption.slice(0, 7)} />
-	</div>
+	<ConsumptionChart chartData={consumption} />
 </div>
-<ConsumptionChart chartData={consumption} />

@@ -122,26 +122,28 @@
 	}}
 />
 
-<div class="center">
-	<div>
-		<h3 style="float: left;">
-			Snake Length: {snakePosition.length}
-		</h3>
+<div class="container mx-auto">
+	<div class="center">
+		<div>
+			<h3 style="float: left;">
+				Snake Length: {snakePosition.length}
+			</h3>
 
-		<h3 style="float: right;">High Score: {highScore}</h3>
-	</div>
-
-	{#each grid as row}
-		<div class="row">
-			{#each row as cell}
-				<div class={`square ${cell}`} />
-			{/each}
+			<h3 style="float: right;">High Score: {highScore}</h3>
 		</div>
-	{/each}
 
-	{#if lost}
-		<h3 class="lost">You lost! Hit enter to play again.</h3>
-	{/if}
+		{#each grid as row}
+			<div class="row">
+				{#each row as cell}
+					<div class={`square ${cell}`} />
+				{/each}
+			</div>
+		{/each}
+
+		{#if lost}
+			<h3 class="lost">You lost! Hit enter to play again.</h3>
+		{/if}
+	</div>
 </div>
 
 <style>

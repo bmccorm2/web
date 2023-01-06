@@ -141,51 +141,53 @@
 	};
 </script>
 
-<button
-	class="btn bg-gray-500 text-sm mt-4 border mr-2"
-	on:click={randomGenerator}>Random Generator!</button
->
-<button class="btn bg-gray-500 text-sm mt-4 border mr-2" on:click={toad}
-	>Toad</button
->
-<button class="btn bg-gray-500 text-sm mt-4 border mr-2" on:click={blinker}
-	>Blinker</button
->
-<button
-	class="btn bg-gray-500 text-sm mt-4 border mr-2"
-	on:click={pentaDecathlon}>Penta-Decathlon</button
->
-
-{#if isRunning}
+<div class="container mx-auto">
 	<button
 		class="btn bg-gray-500 text-sm mt-4 border mr-2"
-		on:click={() => {
-			isRunning = !isRunning;
-			reset(false);
-		}}>Pause</button
+		on:click={randomGenerator}>Random Generator!</button
 	>
-{:else}
+	<button class="btn bg-gray-500 text-sm mt-4 border mr-2" on:click={toad}
+		>Toad</button
+	>
+	<button class="btn bg-gray-500 text-sm mt-4 border mr-2" on:click={blinker}
+		>Blinker</button
+	>
 	<button
 		class="btn bg-gray-500 text-sm mt-4 border mr-2"
-		on:click={() => {
-			isRunning = !isRunning;
-			runLife();
-		}}>Resume</button
+		on:click={pentaDecathlon}>Penta-Decathlon</button
 	>
-{/if}
 
-<h2 class="gen">Generation: {generation}</h2>
+	{#if isRunning}
+		<button
+			class="btn bg-gray-500 text-sm mt-4 border mr-2"
+			on:click={() => {
+				isRunning = !isRunning;
+				reset(false);
+			}}>Pause</button
+		>
+	{:else}
+		<button
+			class="btn bg-gray-500 text-sm mt-4 border mr-2"
+			on:click={() => {
+				isRunning = !isRunning;
+				runLife();
+			}}>Resume</button
+		>
+	{/if}
 
-<hr />
+	<h2 class="gen">Generation: {generation}</h2>
 
-<div class="center">
-	{#each grid as row}
-		<div class="row">
-			{#each row as cell}
-				<div class="square" class:bg-red-700={cell === 1} />
-			{/each}
-		</div>
-	{/each}
+	<hr />
+
+	<div class="center">
+		{#each grid as row}
+			<div class="row">
+				{#each row as cell}
+					<div class="square" class:bg-red-700={cell === 1} />
+				{/each}
+			</div>
+		{/each}
+	</div>
 </div>
 
 <style>
