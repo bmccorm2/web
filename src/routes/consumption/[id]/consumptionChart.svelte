@@ -102,6 +102,6 @@
 	};
 </script>
 
-<div class="bg-slate-700 rounded">
+<div class="bg-slate-800 rounded">
 	<Line {data} {options} />
 </div>
