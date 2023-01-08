@@ -3,6 +3,8 @@ import { CREATE_CONSUMPTION } from '$lib/server/queries';
 import { GRAPHQL_URL } from '$env/static/private';
 import { error } from '@sveltejs/kit';
 
+export const prerender = false;
+
 export const actions: Actions = {
 	create: async ({ request, fetch }) => {
 		const formData = await request.formData();
