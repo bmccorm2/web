@@ -7,6 +7,11 @@
 	const { cars, carDetails } = data;
 </script>
 
+<svelte:head>
+	<title>Cars</title>
+	<meta name="description" content="price to mileage charting" />
+</svelte:head>
+
 <div class="container mx-auto">
 	<CarSource {cars} />
 	<CarChart chartData={carDetails} />

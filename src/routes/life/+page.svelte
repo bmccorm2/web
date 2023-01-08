@@ -141,6 +141,11 @@
 	};
 </script>
 
+<svelte:head>
+	<title>Life</title>
+	<meta name="description" content="Game of life" />
+</svelte:head>
+
 <div class="container mx-auto">
 	<button
 		class="btn bg-gray-500 text-sm mt-4 border mr-2"

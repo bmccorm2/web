@@ -9,6 +9,11 @@
 	$: ({ cars, consumption, summary } = data);
 </script>
 
+<svelte:head>
+	<title>Consumption</title>
+	<meta name="description" content="automobile consumption" />
+</svelte:head>
+
 <div class="container mx-auto">
 	<CarSource {cars} />
 	<div class="md:flex gap-4 mb-2">

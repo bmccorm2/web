@@ -11,6 +11,11 @@
 	$: ppg = price && gallons ? (price / gallons).toFixed(2) : '';
 </script>
 
+<svelte:head>
+	<title>Input</title>
+	<meta name="description" content="Input new consumption records" />
+</svelte:head>
+
 <div class="container mx-auto">
 	<div class="card mt-4">
 		<div

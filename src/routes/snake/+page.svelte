@@ -122,6 +122,11 @@
 	}}
 />
 
+<svelte:head>
+	<title>Snake</title>
+	<meta name="description" content="retro snake game" />
+</svelte:head>
+
 <div class="container mx-auto">
 	<div class="center">
 		<div>
