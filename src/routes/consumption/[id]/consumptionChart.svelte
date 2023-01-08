@@ -10,7 +10,14 @@
 		CategoryScale
 	} from 'chart.js';
 
-	ChartJS.register(Tooltip, Legend, LineElement, LinearScale, PointElement, CategoryScale);
+	ChartJS.register(
+		Tooltip,
+		Legend,
+		LineElement,
+		LinearScale,
+		PointElement,
+		CategoryScale
+	);
 
 	interface chartData {
 		date: string;
@@ -19,6 +26,8 @@
 	}
 
 	export let chartData: [chartData];
+
+	const fontColor = '#e2e8f0';
 
 	const options: any = {
 		responsive: true,
@@ -29,31 +38,49 @@
 		plugins: {
 			legend: {
 				labels: {
-					color: 'white'
+					color: fontColor
 				}
 			}
 		},
 		scales: {
+			x: {
+				ticks: {
+					color: fontColor
+				}
+			},
 			right: {
 				type: 'linear',
 				position: 'right',
+				ticks: {
+					color: fontColor
+				},
 				grid: {
-					drawOnChartArea: false
+					display: false
 				}
 			},
 			left: {
 				type: 'linear',
-				position: 'left'
+				position: 'left',
+				ticks: {
+					color: fontColor
+				},
+				grid: {
+					display: false
+				}
 			}
 		}
 	};
 
 	$: data = {
-		labels: chartData.map((o) => new Date(o.date).toISOString().split('T')[0]).reverse(),
+		labels: chartData
+			.map((o) => new Date(o.date).toISOString().split('T')[0])
+			.reverse(),
 		datasets: [
 			{
 				label: 'Miles Per Gallon',
-				data: chartData.map((o) => parseFloat(o.miles_per_gallon.toFixed(2))).reverse(),
+				data: chartData
+					.map((o) => parseFloat(o.miles_per_gallon.toFixed(2)))
+					.reverse(),
 				yAxisID: 'right',
 				backgroundColor: 'blue',
 				borderColor: 'lightblue',
@@ -62,7 +89,9 @@
 			},
 			{
 				label: 'Price Per Gallon',
-				data: chartData.map((o) => parseFloat(o.price_per_gallon.toFixed(2))).reverse(),
+				data: chartData
+					.map((o) => parseFloat(o.price_per_gallon.toFixed(2)))
+					.reverse(),
 				yAxisID: 'left',
 				backgroundColor: 'green',
 				borderColor: 'lightgreen',
@@ -73,4 +102,6 @@
 	};
 </script>
 
-<Line {data} {options} />
+<div class="bg-slate-700 rounded">
+	<Line {data} {options} />
+</div>
