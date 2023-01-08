@@ -24,5 +24,7 @@
 			<MileageData tableRows={consumption.slice(0, 7)} />
 		</div>
 	</div>
-	<ConsumptionChart chartData={consumption} />
+	<div class="hidden md:block">
+		<ConsumptionChart chartData={consumption} />
+	</div>
 </div>
