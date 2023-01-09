@@ -46,6 +46,9 @@
 			x: {
 				ticks: {
 					color: fontColor
+				},
+				grid: {
+					color: '#334155'
 				}
 			},
 			right: {

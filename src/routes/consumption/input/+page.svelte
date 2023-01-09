@@ -144,7 +144,7 @@
 			</div>
 			<button
 				type="submit"
-				class="btn  w-1/2 mb-4 mt-3 {form?.success
+				class="btn  w-1/2 mb-4 mt-3 hover:bg-purple-800 hover:ring {form?.success
 					? 'bg-emerald-700'
 					: 'bg-purple-700'}"
 				disabled={form?.success}>submit</button
