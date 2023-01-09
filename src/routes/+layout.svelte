@@ -60,7 +60,7 @@
 			{#each routes as { location, description }}
 				{@const currentLocation = $page.url.pathname.split('/')[1]}
 				<li
-					class="mx-4 border-slate-200 text-slate-200"
+					class="mx-4 border-slate-200"
 					class:border-b-4={currentLocation != '' &&
 						location.indexOf(currentLocation) != -1}
 				>

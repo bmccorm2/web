@@ -7,7 +7,7 @@
 		@apply w-full text-center font-bold rounded-lg bg-slate-700  border-4 border-slate-800;
 	}
 	.card-header {
-		@apply rounded-lg uppercase p-4 text-2xl text-slate-200;
+		@apply rounded-lg uppercase p-4 text-2xl;
 	}
 	.card-header-purple {
 		@apply bg-gradient-to-b from-purple-800 to-purple-700;
