@@ -1,9 +1,8 @@
-import type { PageServerLoad } from './$types';
 import { GRAPHQL_URL } from '$env/static/private';
 import { GET_CONSUMPTION } from '$lib/server/queries';
 import { error } from '@sveltejs/kit';
 
-export const load = (async ({ params, fetch }) => {
+export const load = async ({ params, fetch }) => {
 	try {
 		const carId = parseInt(params.id);
 		const headers = {
@@ -26,7 +25,7 @@ export const load = (async ({ params, fetch }) => {
 		} = await res.json();
 
 		return { cars, summary, consumption };
-	} catch (e) {
+	} catch (e: any) {
 		throw error(505, e.message);
 	}
-}) satisfies PageServerLoad;
+};

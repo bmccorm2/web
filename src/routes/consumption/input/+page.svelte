@@ -1,14 +1,18 @@
 <script lang="ts">
-	import type { ActionData } from './$types';
+	import { enhance } from '$app/forms';
+	import { superForm } from 'sveltekit-superforms/client';
 
-	export let form: ActionData;
+	export let data;
+	const { form, valid, errors } = superForm(data.form);
 
-	let price: number;
-	let gallons: number;
-	let miles: number;
-
-	$: mpg = miles && gallons ? (miles / gallons).toFixed(2) : '';
-	$: ppg = price && gallons ? (price / gallons).toFixed(2) : '';
+	$: mpg =
+		$form.miles && $form.gallons
+			? ($form.miles / $form.gallons).toFixed(2)
+			: '';
+	$: ppg =
+		$form.price && $form.gallons
+			? ($form.price / $form.gallons).toFixed(2)
+			: '';
 </script>
 
 <svelte:head>
@@ -18,14 +22,10 @@
 
 <div class="container mx-auto">
 	<div class="card mt-4">
-		<div
-			class="card-header    {form?.success
-				? 'bg-emerald-700'
-				: 'card-header-purple'}"
-		>
+		<div class="card-header {$valid ? 'bg-emerald-700' : 'card-header-purple'}">
 			Input
 		</div>
-		<form action="?/create" method="post">
+		<form action="?/create" method="post" use:enhance>
 			<!-- PRICE -->
 			<div class="flex mt-4 mx-6 items-center">
 				<span class="border border-white px-4 bg-gray-500 rounded-l-md">
@@ -48,10 +48,13 @@
 					maxlength={5}
 					inputmode="decimal"
 					pattern="(\d*)\.?(\d*)"
+					bind:value={$form.price}
 					name="price"
-					bind:value={price}
 					step=".01"
 				/>
+				{#if $errors.price}
+					<small class="text-red-500">{$errors.price}</small>
+				{/if}
 			</div>
 			<!-- GALLONS -->
 			<div class="flex mt-1 mx-6 items-center">
@@ -75,10 +78,13 @@
 					maxlength={6}
 					inputmode="decimal"
 					pattern="(\d*)\.?(\d*)"
+					bind:value={$form.gallons}
 					name="gallons"
-					bind:value={gallons}
 					step=".001"
 				/>
+				{#if $errors.gallons}
+					<small class="text-red-500">{$errors.gallons}</small>
+				{/if}
 			</div>
 			<!-- MILES -->
 			<div class="flex mt-1 mx-6 items-center">
@@ -102,10 +108,13 @@
 					maxlength={6}
 					inputmode="decimal"
 					pattern="(\d*)\.?(\d*)"
+					bind:value={$form.miles}
 					name="miles"
-					bind:value={miles}
 					step=".01"
 				/>
+				{#if $errors.miles}
+					<small class="text-red-500">{$errors.miles}</small>
+				{/if}
 			</div>
 			<!-- NOTES -->
 			<div class="flex mt-1 mb-4 mx-6 items-center">
@@ -125,8 +134,12 @@
 					type="text"
 					class="px-3 py-1 5 border-2 border-slate-500 w-full rounded-r-md text-slate-800"
 					placeholder="Notes"
+					bind:value={$form.notes}
 					name="notes"
 				/>
+				{#if $errors.notes}
+					<small class="text-red-500">{$errors.notes}</small>
+				{/if}
 			</div>
 			<hr />
 			<div class="flex mx-16 mt-4">
@@ -144,10 +157,10 @@
 			</div>
 			<button
 				type="submit"
-				class="btn  w-1/2 mb-4 mt-3 hover:bg-purple-800 hover:ring {form?.success
+				class="btn w-1/2 mb-4 mt-3 hover:bg-purple-800 hover:ring {$valid
 					? 'bg-emerald-700'
 					: 'bg-purple-700'}"
-				disabled={form?.success}>submit</button
+				disabled={$valid}>submit</button
 			>
 		</form>
 	</div>

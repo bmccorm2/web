@@ -1,18 +1,31 @@
 import type { Actions } from './$types';
 import { CREATE_CONSUMPTION } from '$lib/server/queries';
 import { GRAPHQL_URL } from '$env/static/private';
-import { error } from '@sveltejs/kit';
+import { error, fail } from '@sveltejs/kit';
+import { superValidate } from 'sveltekit-superforms/server';
+import { z } from 'zod';
 
 export const prerender = false;
 
+const inputSchema = z.object({
+	price: z.number().gt(0).lt(100).default(NaN),
+	gallons: z.number().gt(0).lt(50).default(NaN),
+	miles: z.number().gt(0).lt(1000).default(NaN),
+	notes: z.string().nullable()
+});
+
+export const load = async () => {
+	const form = await superValidate(inputSchema);
+	return { form };
+};
+
 export const actions: Actions = {
 	create: async ({ request, fetch }) => {
-		const formData = await request.formData();
-		const price = parseFloat(formData.get('price') as string);
-		const gallons = parseFloat(formData.get('gallons') as string);
-		const miles = parseFloat(formData.get('miles') as string);
-		const notes = formData.get('notes');
-		const carId = 1;
+		const form = await superValidate(request, inputSchema);
+
+		if (!form.valid) return fail(400, { form });
+
+		const { price, gallons, miles, notes } = form.data;
 
 		try {
 			const headers = {
@@ -21,7 +34,7 @@ export const actions: Actions = {
 			};
 			const query = {
 				query: CREATE_CONSUMPTION,
-				variables: { price, gallons, miles, notes, carId }
+				variables: { price, gallons, miles, notes, carId: 1 }
 			};
 			const options = {
 				method: 'POST',
@@ -32,8 +45,7 @@ export const actions: Actions = {
 			const { data } = await res.json();
 			if (data.createConsumption != true)
 				throw error(505, 'Creating object failed.');
-
-			return { success: true };
+			return { form };
 		} catch (error) {
 			console.log(error);
 		}

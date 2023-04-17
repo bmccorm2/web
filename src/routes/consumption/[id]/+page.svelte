@@ -3,9 +3,8 @@
 	import MileageData from './mileageData.svelte';
 	import ConsumptionSummary from './consumptionSummary.svelte';
 	import ConsumptionChart from './consumptionChart.svelte';
-	import type { PageServerData } from './$types';
 
-	export let data: PageServerData;
+	export let data;
 	$: ({ cars, consumption, summary } = data);
 </script>
 

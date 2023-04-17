@@ -1,9 +1,8 @@
 import { GET_YIELDS } from '$lib/server/queries';
-import type { PageServerLoad } from './$types';
 import { GRAPHQL_URL } from '$env/static/private';
 import { error } from '@sveltejs/kit';
 
-export const load = (async ({ fetch }) => {
+export const load = async ({ fetch }) => {
 	const headers = {
 		'Content-Type': 'application/json',
 		Accept: 'application/json'
@@ -25,4 +24,4 @@ export const load = (async ({ fetch }) => {
 	if (yields && yields.length != 3) throw error(505, 'Insufficient data.');
 
 	return { yields };
-}) satisfies PageServerLoad;
+};
