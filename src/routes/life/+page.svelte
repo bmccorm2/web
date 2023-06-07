@@ -148,23 +148,23 @@
 
 <div class="container mx-auto">
 	<button
-		class="btn bg-gray-500 text-sm mt-4 border mr-2"
+		class="btn bg-cyan-600 text-sm mt-4 border mr-2"
 		on:click={randomGenerator}>Random Generator!</button
 	>
-	<button class="btn bg-gray-500 text-sm mt-4 border mr-2" on:click={toad}
+	<button class="btn bg-cyan-600 text-sm mt-4 border mr-2" on:click={toad}
 		>Toad</button
 	>
-	<button class="btn bg-gray-500 text-sm mt-4 border mr-2" on:click={blinker}
+	<button class="btn bg-cyan-600 text-sm mt-4 border mr-2" on:click={blinker}
 		>Blinker</button
 	>
 	<button
-		class="btn bg-gray-500 text-sm mt-4 border mr-2"
+		class="btn bg-cyan-600 text-sm mt-4 border mr-2"
 		on:click={pentaDecathlon}>Penta-Decathlon</button
 	>
 
 	{#if isRunning}
 		<button
-			class="btn bg-gray-500 text-sm mt-4 border mr-2"
+			class="btn bg-cyan-600 text-sm mt-4 border mr-2"
 			on:click={() => {
 				isRunning = !isRunning;
 				reset(false);

@@ -34,7 +34,7 @@
 	};
 </script>
 
-<div class="bg-slate-800 p-4 md:flex items-center">
+<div class="bg-zinc-800 p-4 md:flex items-center">
 	<a href="/" class="hidden md:inline-block">
 		<img src="/svelte.png" alt="svelte" />
 	</a>

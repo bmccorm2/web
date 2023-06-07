@@ -20,7 +20,7 @@
 </script>
 
 <div class="card">
-	<div class="card-header card-header-purple">Summary</div>
+	<div class="card-header card-header-rose">Summary</div>
 	<div class="text-center">
 		<SummaryItem
 			key="Total Miles"

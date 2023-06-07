@@ -22,7 +22,7 @@
 
 <div class="container mx-auto">
 	<div class="card mt-4">
-		<div class="card-header {$valid ? 'bg-emerald-700' : 'card-header-purple'}">
+		<div class="card-header {$valid ? 'bg-emerald-700' : 'card-header-rose'}">
 			Input
 		</div>
 		<form action="?/create" method="post" use:enhance>
@@ -157,9 +157,9 @@
 			</div>
 			<button
 				type="submit"
-				class="btn w-1/2 mb-4 mt-3 hover:bg-purple-800 hover:ring {$valid
+				class="btn w-1/2 mb-4 mt-3 hover:bg-sky-800 hover:ring {$valid
 					? 'bg-emerald-700'
-					: 'bg-purple-700'}"
+					: 'bg-sky-700'}"
 				disabled={$valid}>submit</button
 			>
 		</form>

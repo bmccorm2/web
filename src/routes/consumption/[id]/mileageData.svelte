@@ -9,7 +9,7 @@
 </script>
 
 <div class="card">
-	<div class="card-header card-header-purple">Mileage Data</div>
+	<div class="card-header card-header-rose">Mileage Data</div>
 	<div class="px-4 py-4 overflow-x-auto">
 		<table class="w-full table-auto">
 			<thead class="border-b-2 border-white font-bold text-slate-100">

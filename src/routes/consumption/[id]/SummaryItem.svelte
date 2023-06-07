@@ -3,7 +3,7 @@
 	export let value: string;
 </script>
 
-<div class="bg-emerald-700 text-white mx-4 my-3 p-3 rounded-lg ">
-	<small class="mr-2 font-light">{key}</small>
+<div class="bg-sky-600 text-white mx-4 my-3 p-3 rounded-lg">
+	<small class="mr-2 font-light text-slate-300">{key}</small>
 	<b>{value}</b>
 </div>

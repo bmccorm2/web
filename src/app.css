@@ -9,8 +9,8 @@
 	.card-header {
 		@apply rounded-lg uppercase p-4 text-2xl;
 	}
-	.card-header-purple {
-		@apply bg-gradient-to-b from-purple-800 to-purple-700;
+	.card-header-rose {
+		@apply bg-gradient-to-b from-rose-800 to-rose-700;
 	}
 	.btn {
 		@apply rounded-md px-6 py-2 uppercase;
