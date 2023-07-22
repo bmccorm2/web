@@ -1,7 +1,7 @@
 <script lang="ts">
 	import CarSource from "$lib/CarSource.svelte";
-	import ConsumptionSummary from "./ConsumptionSummary.svelte";
 	import ConsumptionChart from "./ConsumptionChart.svelte";
+	import ConsumptionSummary from "./ConsumptionSummary.svelte";
 	import MileageData from "./MileageData.svelte";
 
 	export let data;
