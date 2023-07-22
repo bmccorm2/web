@@ -1,4 +1,6 @@
 <script lang="ts">
+	import Card from "$lib/Card.svelte";
+
 	interface row {
 		date: string;
 		miles_per_gallon: number;
@@ -8,8 +10,7 @@
 	export let tableRows: [row];
 </script>
 
-<div class="card">
-	<div class="card-header card-header-rose">Mileage Data</div>
+<Card cardTitle='mileage data'>
 	<div class="px-4 py-4 overflow-x-auto">
 		<table class="w-full table-auto">
 			<thead class="border-b-2 border-white font-bold text-slate-100">
@@ -34,4 +35,4 @@
 			</tbody>
 		</table>
 	</div>
-</div>
+</Card>

@@ -1,110 +1,132 @@
 <script lang="ts">
-	import { Line } from 'svelte-chartjs';
 	import {
-		Chart as ChartJS,
+		Chart,
 		Tooltip,
 		Legend,
 		LineElement,
 		LinearScale,
 		PointElement,
-		CategoryScale
-	} from 'chart.js';
+		CategoryScale,
+		LineController,
+		Filler,
+	} from "chart.js";
+	import { afterUpdate } from "svelte";
 
-	ChartJS.register(
+	Chart.register(
 		Tooltip,
 		Legend,
 		LineElement,
 		LinearScale,
 		PointElement,
-		CategoryScale
+		CategoryScale,
+		LineController,
+		Filler
 	);
 
-	interface chartData {
+	interface ChartData {
 		date: string;
 		miles_per_gallon: number;
 		price_per_gallon: number;
 	}
+	interface ChartType {
+		label: string;
+		datapoint: string;
+		radius: number;
+		fill: boolean;
+	}
+	interface ChartTypes {
+		[key: string]: ChartType;
+	}
 
-	export let chartData: [chartData];
+	export let chartData: [ChartData];
+	export let selectedChart: string;
 
-	const fontColor = '#e2e8f0';
+	let myCanvas: HTMLCanvasElement;
+	let myChart: Chart;
+
+	const fontColor = "#e2e8f0"; //slate-200
+
+	const chartTypes: ChartTypes = {
+		ppg: {
+			label: "Price Per Gallon",
+			datapoint: "price_per_gallon",
+			radius: 0,
+			fill: true,
+		},
+		mpg: {
+			label: "Miles Per Gallon",
+			datapoint: "miles_per_gallon",
+			radius: 5,
+			fill: false,
+		},
+	};
 
 	const options: any = {
 		responsive: true,
+		maintainAspectRatio: false,
 		interaction: {
-			mode: 'index',
-			intersect: false
+			mode: "index",
+			intersect: false,
 		},
 		plugins: {
 			legend: {
 				labels: {
-					color: fontColor
-				}
-			}
+					color: fontColor,
+				},
+			},
 		},
 		scales: {
 			x: {
 				ticks: {
-					color: fontColor
+					color: fontColor,
 				},
 				grid: {
-					color: '#334155'
-				}
+					display: false,
+				},
 			},
-			right: {
-				type: 'linear',
-				position: 'right',
+			y: {
+				type: "linear",
 				ticks: {
-					color: fontColor
+					color: fontColor,
 				},
 				grid: {
-					display: false
-				}
+					color: "#334155",
+				},
 			},
-			left: {
-				type: 'linear',
-				position: 'left',
-				ticks: {
-					color: fontColor
-				},
-				grid: {
-					display: false
-				}
-			}
-		}
+		},
 	};
 
 	$: data = {
 		labels: chartData
-			.map((o) => new Date(o.date).toISOString().split('T')[0])
+			.map((o) => new Date(o.date).toISOString().split("T")[0])
 			.reverse(),
 		datasets: [
 			{
-				label: 'Miles Per Gallon',
+				label: chartTypes[selectedChart].label,
 				data: chartData
-					.map((o) => parseFloat(o.miles_per_gallon.toFixed(2)))
+					.map((o) =>
+						parseFloat(o[chartTypes[selectedChart].datapoint].toFixed(2))
+					)
 					.reverse(),
-				yAxisID: 'right',
-				backgroundColor: 'blue',
-				borderColor: 'lightblue',
-				fill: false,
-				radius: 7
+				backgroundColor: "#6d28d9", //violet-700
+				borderColor: fontColor,
+				fill: chartTypes[selectedChart].fill,
+				radius: chartTypes[selectedChart].radius,
 			},
-			{
-				label: 'Price Per Gallon',
-				data: chartData
-					.map((o) => parseFloat(o.price_per_gallon.toFixed(2)))
-					.reverse(),
-				yAxisID: 'left',
-				backgroundColor: 'green',
-				borderColor: 'lightgreen',
-				fill: false,
-				radius: 7
-			}
-		]
+		],
 	};
+
+	afterUpdate(() => {
+		if (myChart) myChart.destroy();
+
+		myChart = new Chart(myCanvas, {
+			type: "line",
+			data,
+			options,
+		});
+	});
 </script>
 
-<div class="bg-slate-800 rounded">
-	<Line {data} {options} />
+<div class="bg-slate-800 rounded relative w-full h-80">
+	<canvas bind:this={myCanvas} />
 </div>

@@ -16,7 +16,7 @@
 		[1, 0],
 		[-1, 1],
 		[0, 1],
-		[1, 1]
+		[1, 1],
 	];
 
 	const runLife = () => {
@@ -138,6 +138,10 @@
 				grid[i][j] = 0;
 			}
 		}
+	};
+
+	const test = () => {
+		console.log("main page!");
 	};
 </script>
 

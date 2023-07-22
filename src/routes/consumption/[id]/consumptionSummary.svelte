@@ -1,5 +1,6 @@
 <script lang="ts">
-	import SummaryItem from './SummaryItem.svelte';
+	import Card from '$lib/Card.svelte';
+import SummaryItem from './SummaryItem.svelte';
 
 	interface summary {
 		total_miles: number;
@@ -19,8 +20,7 @@
 	};
 </script>
 
-<div class="card">
-	<div class="card-header card-header-rose">Summary</div>
+<Card cardTitle='summary'>
 	<div class="text-center">
 		<SummaryItem
 			key="Total Miles"
@@ -47,4 +47,4 @@
 				)}
 		/>
 	</div>
-</div>
+</Card>

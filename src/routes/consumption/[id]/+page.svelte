@@ -1,11 +1,10 @@
 <script lang="ts">
-	import CarSource from '$lib/CarSource.svelte';
-	import MileageData from './mileageData.svelte';
-	import ConsumptionSummary from './consumptionSummary.svelte';
-	import ConsumptionChart from './consumptionChart.svelte';
+	import CarSource from "$lib/CarSource.svelte";
+	import MileageData from "./MileageData.svelte";
+	import ConsumptionSummary from "./ConsumptionSummary.svelte";
+	import ConsumptionChart from "./ConsumptionChart.svelte";
 
 	export let data;
-	$: ({ cars, consumption, summary } = data);
 </script>
 
 <svelte:head>
@@ -14,16 +13,18 @@
 </svelte:head>
 
 <div class="container mx-auto">
-	<CarSource {cars} />
+	<CarSource cars={data.cars} />
 	<div class="md:flex gap-4 mb-2">
 		<div class="md:basis-4/12">
-			<ConsumptionSummary {summary} />
+			<ConsumptionSummary summary={data.summary} />
 		</div>
 		<div class="md:basis-8/12">
-			<MileageData tableRows={consumption.slice(0, 7)} />
+			<MileageData tableRows={data.consumption.slice(0, 7)} />
 		</div>
 	</div>
-	<div class="hidden md:block">
-		<ConsumptionChart chartData={consumption} />
+	<div class="hidden md:inline">
+		<ConsumptionChart chartData={data.consumption} selectedChart="mpg" />
+		<br />
+		<ConsumptionChart chartData={data.consumption} selectedChart="ppg" />
 	</div>
 </div>
