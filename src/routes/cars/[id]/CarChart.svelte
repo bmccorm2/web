@@ -1,7 +1,6 @@
 <script lang="ts">
-	import { Chart, getElementsAtEvent, getDatasetAtEvent, getElementAtEvent } from "svelte-chartjs";
 	import {
-		Chart as ChartJS,
+		Chart,
 		Tooltip,
 		Legend,
 		LineElement,
@@ -11,7 +10,7 @@
 		ScatterController,
 	} from "chart.js";
 
-	ChartJS.register(
+	Chart.register(
 		Tooltip,
 		Legend,
 		LineElement,
@@ -73,7 +72,9 @@
 							url: o.url,
 							displayName: o.displayName,
 							year: o.year,
-							effectiveDate: new Date(o.effectiveDate).toISOString().split("T")[0],
+							effectiveDate: new Date(o.effectiveDate)
+								.toISOString()
+								.split("T")[0],
 							distance: o.distance,
 						};
 					}),
@@ -88,13 +89,14 @@
 		if (!points.length) return;
 		isSelected = true;
 		const firstPoint = points[0];
-		const value: any = chart.data.datasets[firstPoint.datasetIndex].data[firstPoint.index];
+		const value: any =
+			chart.data.datasets[firstPoint.datasetIndex].data[firstPoint.index];
 		({ price, miles, url, displayName, year, effectiveDate } = value);
 	};
 </script>
 
 <div class="col-12" class:smallChart={isSelected}>
-	<Chart bind:chart type="scatter" on:click={handleClick} {data} {options} />
+	<!-- <Chart bind:chart type="scatter" on:click={handleClick} {data} {options} /> -->
 </div>
 <div class:hideDetails={!isSelected} class="col-3">
 	<div class="card">
