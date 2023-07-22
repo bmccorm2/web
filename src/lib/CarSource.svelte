@@ -11,7 +11,7 @@
 	{#each cars as { id, displayName }}
 		<a
 			href="/consumption/{id}"
-			class="text-green-700 text-xl font-bold underline px-3 hover:text-blue-600"
+			class="text-pink-700 text-xl font-bold underline px-3 hover:text-pink-600"
 			>{displayName}</a
 		>
 	{/each}
