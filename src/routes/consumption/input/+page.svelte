@@ -1,6 +1,7 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
-	import { superForm } from 'sveltekit-superforms/client';
+	import { enhance } from "$app/forms";
+	import { superForm } from "sveltekit-superforms/client";
+	import Card from "$lib/Card.svelte";
 
 	export let data;
 	const { form, valid, errors } = superForm(data.form);
@@ -8,11 +9,11 @@
 	$: mpg =
 		$form.miles && $form.gallons
 			? ($form.miles / $form.gallons).toFixed(2)
-			: '';
+			: "";
 	$: ppg =
 		$form.price && $form.gallons
 			? ($form.price / $form.gallons).toFixed(2)
-			: '';
+			: "";
 </script>
 
 <svelte:head>
@@ -21,10 +22,7 @@
 </svelte:head>
 
 <div class="container mx-auto">
-	<div class="card mt-4">
-		<div class="card-header {$valid ? 'bg-emerald-700' : 'card-header-rose'}">
-			Input
-		</div>
+	<Card cardTitle="input">
 		<form action="?/create" method="post" use:enhance>
 			<!-- PRICE -->
 			<div class="flex mt-4 mx-6 items-center">
@@ -163,5 +161,5 @@
 				disabled={$valid}>submit</button
 			>
 		</form>
-	</div>
+	</Card>
 </div>
