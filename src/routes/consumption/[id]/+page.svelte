@@ -26,6 +26,5 @@
 		<ConsumptionChart chartData={data.consumption} selectedChart="mpg" />
 		<br />
 		<ConsumptionChart chartData={data.consumption} selectedChart="ppg" />
-		s
 	</div>
 </div>
