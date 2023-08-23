@@ -23,7 +23,7 @@ export const load = async ({ params, fetch }) => {
 		const {
 			data: { cars, summary, consumption }
 		} = await res.json();
-		
+
 		return { cars, summary, consumption };
 	} catch (e: any) {
 		throw error(505, e.message);

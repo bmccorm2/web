@@ -1,30 +1,34 @@
 <script lang="ts">
-	import '../app.css';
-	import { page } from '$app/stores';
+	import "../app.css";
+	import { page } from "$app/stores";
 
 	let navMenu: HTMLElement;
 
 	const routes = [
 		{
-			location: '/consumption/1',
-			description: 'Consumption'
+			location: "/consumption/1",
+			description: "Consumption",
 		},
 		{
-			location: '/yields',
-			description: 'Yields'
+			location: "/books",
+			description: "Books",
 		},
 		{
-			location: '/cars/3',
-			description: 'Cars'
+			location: "/yields",
+			description: "Yields",
 		},
 		{
-			location: '/snake',
-			description: 'Snake'
+			location: "/cars/3",
+			description: "Cars",
 		},
 		{
-			location: '/life',
-			description: 'Life'
-		}
+			location: "/snake",
+			description: "Snake",
+		},
+		{
+			location: "/life",
+			description: "Life",
+		},
 	];
 </script>
 
@@ -33,14 +37,13 @@
 		<img src="/svelte.png" alt="svelte" />
 	</a>
 	<div class="md:flex md:justify-end w-full">
-		<div class="md:hidden cursor-pointer">
-		</div>
+		<div class="md:hidden cursor-pointer" />
 		<ul class="md:flex text-center hidden" bind:this={navMenu}>
 			{#each routes as { location, description }}
-				{@const currentLocation = $page.url.pathname.split('/')[1]}
+				{@const currentLocation = $page.url.pathname.split("/")[1]}
 				<li
 					class="mx-4 border-slate-200"
-					class:border-b-4={currentLocation != '' &&
+					class:border-b-4={currentLocation != "" &&
 						location.indexOf(currentLocation) != -1}
 				>
 					<a class="font-bold" href={location}>{description}</a>

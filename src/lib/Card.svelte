@@ -1,5 +1,5 @@
 <script lang="ts">
-  export let cardTitle = "default title";
+  export let header = "default title";
 </script>
 
 <div
@@ -8,7 +8,7 @@
   <div
     class="rounded-b-lg uppercase p-4 text-2xl bg-gradient-to-b from-emerald-800 to-emerald-700"
   >
-    {cardTitle}
+    {header}
   </div>
   <slot />
 </div>

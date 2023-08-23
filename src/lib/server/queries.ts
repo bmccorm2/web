@@ -69,3 +69,77 @@ export const GET_CAR_DETAILS = `
 		}
 	}
 `;
+
+export const GET_BOOKS = `
+query {
+  books {
+    title
+    id
+    author
+    pages
+    publishDate
+		rating
+		isFiction
+		createDate
+    genres {
+      description
+    }
+  }
+}
+`;
+
+export const GET_GENRES = `
+query {
+  genres {
+    id
+    description
+  }
+}
+`;
+
+export const CREATE_GENRE = `
+mutation createGenre(
+  $description: String!
+) {
+  createGenre(description: $description)
+}
+`;
+
+export const DELETE_GENRE = `
+mutation deleteGenre(
+  $id: Int!
+) {
+  deleteGenre(id: $id)
+}
+`;
+
+export const CREATE_BOOK = `
+mutation createBook(
+  $title: String!
+  $author: String!
+  $pages: Int!
+  $rating: Int!
+  $isFiction: Boolean!
+  $genreList: [Int!]!
+  $publishDate: String
+  
+) {
+  createBook(
+    title:$title
+    author:$author
+    pages:$pages
+    rating:$rating
+    isFiction:$isFiction
+    genreList:$genreList
+    publishDate:$publishDate
+  )
+}
+`;
+
+export const DELETE_BOOK = `
+mutation deleteBook(
+  $id: Int!
+) {
+  deleteBook(id: $id)
+}
+`;

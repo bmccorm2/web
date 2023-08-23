@@ -1,6 +1,6 @@
 <script lang="ts">
-	import Card from '$lib/Card.svelte';
-import SummaryItem from './SummaryItem.svelte';
+	import Card from "$lib/Card.svelte";
+	import SummaryItem from "./SummaryItem.svelte";
 
 	interface summary {
 		total_miles: number;
@@ -12,15 +12,15 @@ import SummaryItem from './SummaryItem.svelte';
 	export let summary: summary;
 	const roundTwoDecimals = {
 		minimumFractionDigits: 2,
-		maximumFractionDigits: 2
+		maximumFractionDigits: 2,
 	};
 	const roundZeroDecimals = {
 		minimumFractionDigits: 0,
-		maximumFractionDigits: 0
+		maximumFractionDigits: 0,
 	};
 </script>
 
-<Card cardTitle='summary'>
+<Card header="summary">
 	<div class="text-center">
 		<SummaryItem
 			key="Total Miles"
@@ -28,7 +28,7 @@ import SummaryItem from './SummaryItem.svelte';
 		/>
 		<SummaryItem
 			key="Total Cost:"
-			value={'$' +
+			value={"$" +
 				summary.total_price.toLocaleString(undefined, roundZeroDecimals)}
 		/>
 		<SummaryItem
@@ -40,7 +40,7 @@ import SummaryItem from './SummaryItem.svelte';
 		/>
 		<SummaryItem
 			key="Total Cost per Gallon:"
-			value={'$' +
+			value={"$" +
 				summary.total_price_per_gallon.toLocaleString(
 					undefined,
 					roundTwoDecimals
