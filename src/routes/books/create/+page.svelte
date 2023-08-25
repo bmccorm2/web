@@ -19,14 +19,13 @@
   });
 </script>
 
-<div class="container mx-auto flex gap-2">
-  <div class="w-9/12">
+<div class="container mx-auto lg:flex lg:gap-2">
+  <div class="lg:w-9/12">
     <Card header="create a book">
       <form action="?/createBook" method="post" use:enhance>
         <div class="m-4">
           <FloatingLabelInput
             style="outlined"
-            id="floating_outlined"
             classLabel="dark:bg-slate-800"
             name="title"
             type="text"
@@ -36,37 +35,37 @@
         <div class="m-4">
           <FloatingLabelInput
             style="outlined"
-            id="floating_outlined"
             classLabel="dark:bg-slate-800"
             name="author"
             type="text"
             label="Author"
           />
         </div>
-        <div class="m-4 flex justify-evenly content-center">
+        <div class="lg:flex lg:justify-evenly lg:content-center">
           <FloatingLabelInput
             style="outlined"
-            id="floating_outlined"
             classLabel="dark:bg-slate-800"
+            classDiv="lg:m-0 m-4"
             name="pages"
             type="number"
             label="Pages"
           />
-          <Checkbox name="isFiction">Is Fiction</Checkbox>
-          <div class="flex justify-center mb-2">
-            <Rating />
-            <input type="hidden" name="rating" value={$userRating} />
-          </div>
-        </div>
-        <div class="m-4">
           <FloatingLabelInput
             style="outlined"
-            id="floating_outlined"
             classLabel="dark:bg-slate-800"
+            classDiv="lg:m-0 m-4"
             name="publishDate"
             type="number"
             label="Publish Date"
           />
+        </div>
+        <div class="lg:m-4" />
+        <div class="mb-2 flex align-center justify-center">
+          <Rating />
+          <input type="hidden" name="rating" value={$userRating} />
+        </div>
+        <div class="flex justify-center">
+          <Checkbox name="isFiction" class="mb-4">Is Fiction</Checkbox>
         </div>
         <!-- <div class="m-4">
           <MultiSelect items={genreSelect} name="genreList" />
@@ -78,16 +77,19 @@
             {/each}
           </select>
         </div> -->
-        <div class="grid m-4 grid-cols-4 gap-2">
-          {#each data.genres as { id, description }}
-            <Checkbox value={id} name="genreList">{description}</Checkbox>
-          {/each}
+        <div class="border-2 border-purple-500 rounded-md px-2 py-1 mx-4">
+          <div class="font-bold underline mb-2">Genres</div>
+          <div class="grid grid-cols-2 lg:grid-cols-4 gap-2">
+            {#each data.genres as { id, description }}
+              <Checkbox value={id} name="genreList">{description}</Checkbox>
+            {/each}
+          </div>
         </div>
-        <button class="btn bg-blue-500 text-center my-2">Submit</button>
+        <button class="btn bg-blue-500 text-center my-4">Submit</button>
       </form>
     </Card>
   </div>
-  <div class="w-3/12">
+  <div class="lg:w-3/12 w-full mt-2">
     <Genres genres={data.genres} />
   </div>
 </div>
