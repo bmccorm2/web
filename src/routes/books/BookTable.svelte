@@ -19,11 +19,11 @@
 
 <Card header="Books">
   {#if books.length === 0}
-    <div class="font-bold">
-      No Books Found. Add a new book <a
-        class="text-blue-500 underline"
-        href="/books/create">here</a
-      >.
+    <div class="my-4">
+      No Books Found.
+      <a class="font-bold text-blue-500" href="/books/create">
+        Add a new book here.
+      </a>
     </div>
   {:else}
     <table class="table-auto w-max m-2 mx-auto">

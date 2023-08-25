@@ -89,7 +89,7 @@
       </form>
     </Card>
   </div>
-  <div class="lg:w-3/12 w-full mt-2">
+  <div class="lg:w-3/12 w-full mt-2 lg:mt-0">
     <Genres genres={data.genres} />
   </div>
 </div>
