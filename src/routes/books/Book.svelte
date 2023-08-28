@@ -30,7 +30,6 @@
     </div>
     <div>{author}</div>
   </div>
-  <hr class="mb-2" />
   <div class="flex justify-between mb-1">
     <div class="grid grid-cols-2 gap-1">
       {#each bookDetails.genres as { description }}
