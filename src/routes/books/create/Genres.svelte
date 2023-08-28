@@ -41,6 +41,7 @@
       type="text"
       placeholder="Add a Genre"
       name="description"
+      autocomplete="off"
     />
     <button class="btn bg-blue-500 text-center">Submit</button>
   </form>

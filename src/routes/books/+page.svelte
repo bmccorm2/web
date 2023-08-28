@@ -1,21 +1,19 @@
 <script lang="ts">
-  import "iconify-icon";
-  import BookTable from "./BookTable.svelte";
+  import Book from "./Book.svelte";
+  import { GradientButton } from "flowbite-svelte";
 
   export let data;
 </script>
 
-<div class="container mx-auto mt-2">
-  <div class="flex gap-2">
-    <div class="w-11/12">
-      <BookTable books={data.books} />
-    </div>
-    <div class="w-1/12 flex justify-center mt-4">
-      <button>
-        <a href="/books/create">
-          <iconify-icon icon="zondicons:add-solid" width="32" />
-        </a>
-      </button>
-    </div>
+<div class="container mx-auto">
+  <div class="flex justify-center">
+    <GradientButton class="w-1/2" shadow color="blue" href="/books/create"
+      >Add a New Book</GradientButton
+    >
+  </div>
+  <div class="grid gap-1 grid-cols-3 mt-3">
+    {#each data.books as bookDetails}
+      <Book {bookDetails} />
+    {/each}
   </div>
 </div>

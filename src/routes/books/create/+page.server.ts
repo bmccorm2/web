@@ -57,8 +57,6 @@ export const actions = {
     const { title, author, pages, publishDate, isFiction, genreList, rating } =
       form.data;
 
-    console.log(form);
-
     const headers = {
       "Content-Type": "application/json",
       Accept: "application/json",
@@ -82,7 +80,6 @@ export const actions = {
     };
     const res = await fetch(GRAPHQL_URL, options);
     const { data, errors } = await res.json();
-    console.log(data);
 
     if (errors) throw error(505, errors[0].message);
     if (data.createBook != true) throw error(505, "Unknown Error Occurred.");

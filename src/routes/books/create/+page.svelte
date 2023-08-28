@@ -29,6 +29,7 @@
             classLabel="dark:bg-slate-800"
             name="title"
             type="text"
+            autocomplete="off"
             label="Title"
           />
         </div>
@@ -38,6 +39,7 @@
             classLabel="dark:bg-slate-800"
             name="author"
             type="text"
+            autocomplete="off"
             label="Author"
           />
         </div>
@@ -56,6 +58,7 @@
             classDiv="lg:m-0 m-4"
             name="publishDate"
             type="number"
+            autocomplete="off"
             label="Publish Date"
           />
         </div>
