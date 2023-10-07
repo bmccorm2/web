@@ -1,9 +1,9 @@
 <script lang="ts">
   import { enhance } from "$app/forms";
   import { Toast } from "flowbite-svelte";
-  import { Icon } from "flowbite-svelte-icons";
+  import CheckCircleSolid from "flowbite-svelte-icons/CheckCircleSolid.svelte";
   import Card from "$lib/Card.svelte";
-  import GenreTable from "../GenreTable.svelte";
+  import GenreTable from "../routes/books/GenreTable.svelte";
 
   export let genres;
 
@@ -53,7 +53,7 @@
 
 <Toast position="top-right" color="green" bind:open={toastShow}>
   <svelte:fragment slot="icon">
-    <Icon name="check-circle-solid" class="w-5 h-5" />
+    <CheckCircleSolid name="check-circle-solid" class="w-5 h-5" />
     <span class="sr-only">Check icon</span>
   </svelte:fragment>
   {createdTitle} created successfully!

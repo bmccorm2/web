@@ -7,20 +7,7 @@ import {
 } from "$lib/server/queries";
 import { error, fail, redirect } from "@sveltejs/kit";
 import { superValidate } from "sveltekit-superforms/server";
-import { z } from "zod";
-
-const genreInputSchema = z.object({
-  description: z.string(),
-});
-const bookInputSchema = z.object({
-  title: z.string(),
-  author: z.string(),
-  pages: z.number().lt(1500).positive(),
-  publishDate: z.date().nullable(),
-  rating: z.number().gte(1).lte(5),
-  isFiction: z.boolean(),
-  genreList: z.array(z.number().positive()),
-});
+import { bookInputSchema, genreInputSchema } from "$lib/zodSchemas.js";
 
 export const load = async ({ request }) => {
   const form = superValidate(request, bookInputSchema);

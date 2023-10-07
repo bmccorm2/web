@@ -11,8 +11,8 @@
       >Add a New Book</GradientButton
     >
   </div>
-  <hr class="my-3" />
-  <div class="grid gap-1 grid-cols-3">
+  <hr class="my-4" />
+  <div class="grid gap-4 grid-cols-2">
     {#each data.books as bookDetails}
       <Book {bookDetails} />
     {/each}

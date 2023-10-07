@@ -79,9 +79,30 @@ query {
     pages
     publishDate
 		rating
+		review
 		isFiction
 		createDate
     genres {
+      description
+    }
+  }
+}
+`;
+
+export const GET_BOOK = `
+query book($id: Int!) {
+  book(id: $id) {
+    title
+    id
+    author
+    pages
+    publishDate
+    rating
+    review
+    isFiction
+    createDate
+    genres {
+			id
       description
     }
   }
@@ -132,6 +153,22 @@ mutation createBook(
     isFiction:$isFiction
     genreList:$genreList
     publishDate:$publishDate
+  )
+}
+`;
+
+export const UPDATE_BOOK = `
+mutation updateBook($id: Int!, $title: String!, $author: String!, $pages: Int!, $rating: Int!, $isFiction: Boolean!, $genreList: [Int!]!, $publishDate: String, $review: String) {
+  updateBook(
+    id: $id
+    title: $title
+    author: $author
+    pages: $pages
+    rating: $rating
+    isFiction: $isFiction
+    genreList: $genreList
+    publishDate: $publishDate
+    review: $review
   )
 }
 `;
