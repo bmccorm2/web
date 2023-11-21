@@ -15,7 +15,7 @@
     </div>
     <!-- ACTIONS -->
     <div class="flex gap-2">
-      <a href={`books/update/${id}`}>
+      <a href="books/modify/{id}">
         <iconify-icon icon="carbon:edit" />
       </a>
       <form action="?/deleteBook" method="post">

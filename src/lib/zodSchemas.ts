@@ -3,7 +3,8 @@ import { z } from "zod";
 export const genreInputSchema = z.object({
   description: z.string(),
 });
-export const bookInputSchema = z.object({
+export const bookSchema = z.object({
+  id: z.number(),
   title: z.string(),
   author: z.string(),
   pages: z.number().lt(1500).positive(),
@@ -11,5 +12,9 @@ export const bookInputSchema = z.object({
   rating: z.number().gte(1).lte(5),
   review: z.string().nullable(),
   isFiction: z.boolean(),
-  genreList: z.array(z.number().positive()),
+  selectedGenres: z.array(z.number().positive()).nonempty(),
+});
+
+export const bookCrudSchema = bookSchema.extend({
+  id: bookSchema.shape.id.optional(),
 });

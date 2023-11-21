@@ -141,7 +141,8 @@ mutation createBook(
   $pages: Int!
   $rating: Int!
   $isFiction: Boolean!
-  $genreList: [Int!]!
+  $genres: [Int!]!
+	$review: String
   $publishDate: String
   
 ) {
@@ -151,14 +152,15 @@ mutation createBook(
     pages:$pages
     rating:$rating
     isFiction:$isFiction
-    genreList:$genreList
+    genres:$genres
+		review:$review
     publishDate:$publishDate
   )
 }
 `;
 
 export const UPDATE_BOOK = `
-mutation updateBook($id: Int!, $title: String!, $author: String!, $pages: Int!, $rating: Int!, $isFiction: Boolean!, $genreList: [Int!]!, $publishDate: String, $review: String) {
+mutation updateBook($id: Int!, $title: String!, $author: String!, $pages: Int!, $rating: Int!, $isFiction: Boolean!, $selectedGenres: [Int!]!, $publishDate: String, $review: String) {
   updateBook(
     id: $id
     title: $title
@@ -166,7 +168,7 @@ mutation updateBook($id: Int!, $title: String!, $author: String!, $pages: Int!, 
     pages: $pages
     rating: $rating
     isFiction: $isFiction
-    genreList: $genreList
+    selectedGenres: $selectedGenres
     publishDate: $publishDate
     review: $review
   )
