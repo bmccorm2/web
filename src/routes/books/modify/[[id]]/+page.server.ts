@@ -66,7 +66,6 @@ export const load = async ({ params }) => {
 export const actions = {
   modify: async ({ request }) => {
     const form = await superValidate(request, bookCrudSchema);
-    console.log(form);
 
     if (!form.valid) return fail(400, { form });
 

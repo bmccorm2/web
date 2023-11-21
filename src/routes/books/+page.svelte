@@ -3,7 +3,6 @@
   import { GradientButton } from "flowbite-svelte";
 
   export let data;
-  data.books.reverse();
 </script>
 
 <div class="container mx-auto">
