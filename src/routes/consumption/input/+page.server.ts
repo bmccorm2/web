@@ -50,7 +50,7 @@ export const actions: Actions = {
     };
     const query = {
       query: CREATE_CONSUMPTION,
-      variables: { price, gallons, miles, notes, carId: 1 },
+      variables: { price, gallons, miles, notes, carId: 4 },
     };
     const options = {
       method: "POST",
