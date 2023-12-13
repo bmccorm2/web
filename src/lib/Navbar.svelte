@@ -18,7 +18,7 @@
       description: "Home",
     },
     {
-      location: "/consumption/1",
+      location: "/consumption/4",
       description: "Consumption",
     },
     {

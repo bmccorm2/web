@@ -13,7 +13,9 @@
 
   export let data;
 
-  const { form } = superForm(data.form);
+  const { form } = superForm(data.form, {
+    dataType: "json",
+  });
 
   //in flowbite, you MUST use the variable GROUP for bindings.
   //That's why we have a hack here to bind the selectedGenres to the group

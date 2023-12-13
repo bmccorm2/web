@@ -12,9 +12,23 @@ export const bookSchema = z.object({
   rating: z.number().gte(1).lte(5),
   review: z.string().nullable(),
   isFiction: z.boolean(),
-  selectedGenres: z.array(z.number().positive()).nonempty(),
+  genres: z.array(
+    z.object({
+      id: z.number().positive(),
+      description: z.string().min(1),
+    })
+  ),
+  selectedGenres: z.array(z.number().positive()).optional(),
 });
 
 export const bookCrudSchema = bookSchema.extend({
   id: bookSchema.shape.id.optional(),
+  selectedGenres: z.array(z.number().positive()).nonempty(),
 });
+
+export type Genre = {
+  id: number;
+  description: string;
+};
+
+export type Book = z.infer<typeof bookSchema>;

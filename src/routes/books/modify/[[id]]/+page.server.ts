@@ -9,8 +9,8 @@ import {
 } from "$lib/server/queries";
 import { error, fail, redirect, type Actions } from "@sveltejs/kit";
 import { superValidate } from "sveltekit-superforms/server";
-import { bookCrudSchema, genreInputSchema } from "$lib/zodSchemas.js";
-import type { Genres } from "$lib/types";
+import { bookCrudSchema, bookSchema, genreInputSchema } from "$lib/zodSchemas";
+import type { Genre, Book } from "$lib/zodSchemas";
 
 export const load = async ({ params }) => {
   const id = params.id ? parseInt(params.id) : -1;
@@ -32,7 +32,7 @@ export const load = async ({ params }) => {
     let res = await fetch(GRAPHQL_URL, options);
     const {
       data: { genres },
-    }: { data: { genres: Genres[] } } = await res.json();
+    }: { data: { genres: Genre[] } } = await res.json();
 
     const q2 = {
       query: GET_BOOK,
@@ -47,15 +47,15 @@ export const load = async ({ params }) => {
     const res2 = await fetch(GRAPHQL_URL, o2);
     let {
       data: { book },
-    } = await res2.json();
+    }: { data: { book: Book } } = await res2.json();
 
     //Add only the ids in an array so we can track in the form
     if (book) {
       book.selectedGenres = [];
-      book.genres.forEach((e) => book.selectedGenres.push(e.id));
+      book.genres.forEach((e) => book.selectedGenres?.push(e.id));
     }
 
-    const form = await superValidate(book, bookCrudSchema);
+    const form = await superValidate(book, bookSchema);
 
     return { genres, form };
   } catch (e: any) {
