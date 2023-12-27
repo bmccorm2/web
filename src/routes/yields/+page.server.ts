@@ -21,7 +21,7 @@ export const load = async ({ fetch }) => {
 	const {
 		data: { yields }
 	} = await res.json();
-	if (yields && yields.length != 3) throw error(505, 'Insufficient data.');
+	if (yields && yields.length != 3) error(505, 'Insufficient data.');
 
 	return { yields };
 };

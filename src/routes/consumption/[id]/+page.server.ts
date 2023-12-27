@@ -26,6 +26,6 @@ export const load = async ({ params, fetch }) => {
 
 		return { cars, summary, consumption };
 	} catch (e: any) {
-		throw error(505, e.message);
+		error(505, e.message);
 	}
 };

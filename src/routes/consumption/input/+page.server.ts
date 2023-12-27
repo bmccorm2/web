@@ -59,7 +59,7 @@ export const actions: Actions = {
     };
     const res = await fetch(GRAPHQL_URL, options);
     const { errors } = await res.json();
-    if (errors) throw error(505, errors.message);
+    if (errors) error(505, errors.message);
 
     return message(form, { isSuccess: true });
   },

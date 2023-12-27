@@ -59,7 +59,7 @@ export const load = async ({ params }) => {
 
     return { genres, form };
   } catch (e: any) {
-    throw error(505, e.message);
+    error(505, e.message);
   }
 };
 
@@ -100,10 +100,10 @@ export const actions = {
       const res = await fetch(GRAPHQL_URL, options);
       const { data, errors } = await res.json();
 
-      if (errors) throw error(505, errors[0].message);
-      if (data.updateBook != true) throw error(505, "Unknown Error Occurred.");
+      if (errors) error(505, errors[0].message);
+      if (data.updateBook != true) error(505, "Unknown Error Occurred.");
 
-      throw redirect(301, "/books");
+      redirect(301, "/books");
     } else {
       //Create Book
       const headers = {
@@ -131,10 +131,10 @@ export const actions = {
       const res = await fetch(GRAPHQL_URL, options);
       const { data, errors } = await res.json();
 
-      if (errors) throw error(505, errors[0].message);
-      if (data.createBook != true) throw error(505, "Unknown Error Occurred.");
+      if (errors) error(505, errors[0].message);
+      if (data.createBook != true) error(505, "Unknown Error Occurred.");
 
-      throw redirect(301, "/books");
+      redirect(301, "/books");
     }
   },
 
@@ -159,8 +159,8 @@ export const actions = {
     const res = await fetch(GRAPHQL_URL, options);
     const { data, errors } = await res.json();
 
-    if (errors) throw error(505, errors[0].message);
-    if (data.createGenre != true) throw error(505, "Unknown Error Occurred.");
+    if (errors) error(505, errors[0].message);
+    if (data.createGenre != true) error(505, "Unknown Error Occurred.");
   },
 
   deleteGenre: async ({ request }) => {
@@ -183,8 +183,8 @@ export const actions = {
     const res = await fetch(GRAPHQL_URL, options);
     const { data, errors } = await res.json();
 
-    if (errors) throw error(505, errors[0].message);
-    if (data.deleteGenre != true) throw error(505, "Deleting object failed.");
+    if (errors) error(505, errors[0].message);
+    if (data.deleteGenre != true) error(505, "Deleting object failed.");
 
     return { success: "true" };
   },
