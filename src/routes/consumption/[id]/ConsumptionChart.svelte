@@ -104,7 +104,8 @@
             parseFloat(o[chartTypes[selectedChart].datapoint].toFixed(2))
           )
           .reverse(),
-        backgroundColor: "#6d28d9", //violet-700
+        backgroundColor: "#0369a1", //sky-700
+        // backgroundColor: "#6d28d9", //violet-700
         borderColor: fontColor,
         fill: chartTypes[selectedChart].fill,
         radius: chartTypes[selectedChart].radius,
