@@ -25,7 +25,7 @@
 
 <Card header="genres">
   <form
-    action="?/createGenre"
+    action="?/insertGenre"
     class="my-4"
     method="post"
     use:enhance={async () => {

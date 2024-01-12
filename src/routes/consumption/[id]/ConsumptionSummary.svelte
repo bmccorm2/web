@@ -1,15 +1,10 @@
 <script lang="ts">
   import Card from "$lib/Card.svelte";
+  import type { Summary } from "$lib/types";
   import SummaryItem from "./SummaryItem.svelte";
 
-  interface summary {
-    total_miles: number;
-    total_price: number;
-    total_miles_per_gallon: number;
-    total_price_per_gallon: number;
-  }
+  export let summary: Summary;
 
-  export let summary: summary;
   const roundTwoDecimals = {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,

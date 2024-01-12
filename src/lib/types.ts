@@ -12,6 +12,7 @@ export const bookSchema = z.object({
   rating: z.number().gte(1).lte(5),
   review: z.string().nullable(),
   isFiction: z.boolean(),
+  created: z.string().optional(),
   genres: z.array(
     z.object({
       id: z.number().positive(),
@@ -26,9 +27,45 @@ export const bookCrudSchema = bookSchema.extend({
   selectedGenres: z.array(z.number().positive()).nonempty(),
 });
 
+export type BookSerialized = z.infer<typeof bookSchema>;
+
+export type Consumption = {
+  id: number;
+  miles_per_gallon: number;
+  price_per_gallon: number;
+  notes: string | null;
+  created: string;
+};
+
+export type Cars = {
+  id: number;
+  displayName: string;
+  searchUrl?: string;
+  isOwned?: number;
+};
+
+export type Summary = {
+  total_miles: number;
+  total_price: number;
+  total_miles_per_gallon: number;
+  total_price_per_gallon: number;
+};
+
 export type Genre = {
   id: number;
   description: string;
 };
 
-export type Book = z.infer<typeof bookSchema>;
+export type Book = {
+  id: number;
+  title: string;
+  author: string;
+  pages: number;
+  rating: number;
+  isFiction: number;
+  publishDate: string | null;
+  review: string;
+  created: Date;
+  genreId?: number;
+  genreDescription?: string;
+};

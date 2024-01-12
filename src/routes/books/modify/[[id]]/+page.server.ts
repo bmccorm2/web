@@ -1,58 +1,49 @@
-import { GRAPHQL_URL } from "$env/static/private";
+import { error, fail, redirect, type Actions } from "@sveltejs/kit";
+import { superValidate } from "sveltekit-superforms/server";
 import {
-  CREATE_BOOK,
-  CREATE_GENRE,
+  bookCrudSchema,
+  bookSchema,
+  genreInputSchema,
+  type Genre,
+  type Book,
+} from "$lib/types.js";
+import { client } from "$lib/server/dbClient.js";
+import {
+  DELETE_BGA,
   DELETE_GENRE,
   GET_BOOK,
   GET_GENRES,
+  INSERT_BGA,
+  INSERT_BOOK,
+  INSERT_GENRE,
   UPDATE_BOOK,
-} from "$lib/server/queries";
-import { error, fail, redirect, type Actions } from "@sveltejs/kit";
-import { superValidate } from "sveltekit-superforms/server";
-import { bookCrudSchema, bookSchema, genreInputSchema } from "$lib/zodSchemas";
-import type { Genre, Book } from "$lib/zodSchemas";
+} from "$lib/server/queries.js";
+import { serializeBooks } from "$lib/server/utilities.js";
 
 export const load = async ({ params }) => {
   const id = params.id ? parseInt(params.id) : -1;
 
   try {
-    const headers = {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-    };
-    let query = {
-      query: GET_GENRES,
-    };
-    let options = {
-      method: "POST",
-      headers,
-      body: JSON.stringify(query),
-    };
+    const rs = await client.batch(
+      [
+        GET_GENRES,
+        {
+          sql: GET_BOOK,
+          args: { id },
+        },
+      ],
+      "read"
+    );
+    const genres = rs[0].rows as unknown as Genre[];
+    const book = serializeBooks(rs[1].rows as unknown as Book[])[0];
 
-    let res = await fetch(GRAPHQL_URL, options);
-    const {
-      data: { genres },
-    }: { data: { genres: Genre[] } } = await res.json();
-
-    const q2 = {
-      query: GET_BOOK,
-      variables: { id },
-    };
-    const o2 = {
-      method: "POST",
-      headers,
-      body: JSON.stringify(q2),
-    };
-
-    const res2 = await fetch(GRAPHQL_URL, o2);
-    let {
-      data: { book },
-    }: { data: { book: Book } } = await res2.json();
-
-    //Add only the ids in an array so we can track in the form
     if (book) {
-      book.selectedGenres = [];
-      book.genres.forEach((e) => book.selectedGenres?.push(e.id));
+      // Need another structure because the form control (multi checkbox)
+      // can only support arrays of numbers and not array of objects.
+      book.selectedGenres = book.genres.map((e: Genre) => e.id);
+
+      // Erase the genres object so we don't have to use nested objects with superforms
+      book.genres = [];
     }
 
     const form = await superValidate(book, bookSchema);
@@ -71,14 +62,10 @@ export const actions = {
 
     if (form.data.id) {
       //Update Book
-      const headers = {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      };
-
-      const query = {
-        query: UPDATE_BOOK,
-        variables: {
+      const transaction = await client.transaction("write");
+      await transaction.execute({
+        sql: UPDATE_BOOK,
+        args: {
           id: form.data.id,
           title: form.data.title,
           author: form.data.author,
@@ -86,105 +73,80 @@ export const actions = {
           publishDate: form.data.publishDate,
           isFiction: form.data.isFiction,
           review: form.data.review,
-          selectedGenres: form.data.selectedGenres,
           rating: form.data.rating,
         },
-      };
+      });
 
-      const options = {
-        method: "POST",
-        headers,
-        body: JSON.stringify(query),
-      };
+      await transaction.execute({
+        sql: DELETE_BGA,
+        args: { id: form.data.id },
+      });
 
-      const res = await fetch(GRAPHQL_URL, options);
-      const { data, errors } = await res.json();
+      form.data.selectedGenres.forEach(async (e) => {
+        await transaction.execute({
+          sql: INSERT_BGA,
+          args: {
+            id: form.data.id,
+            genreId: e,
+          },
+        });
+      });
 
-      if (errors) error(505, errors[0].message);
-      if (data.updateBook != true) error(505, "Unknown Error Occurred.");
+      await transaction.commit();
 
       redirect(301, "/books");
     } else {
       //Create Book
-      const headers = {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      };
-      const query = {
-        query: CREATE_BOOK,
-        variables: {
+      const transaction = await client.transaction("write");
+      const rs = await transaction.execute({
+        sql: INSERT_BOOK,
+        args: {
           title: form.data.title,
           author: form.data.author,
           pages: form.data.pages,
           publishDate: form.data.publishDate,
           isFiction: form.data.isFiction,
           review: form.data.review,
-          genres: form.data.selectedGenres,
           rating: form.data.rating,
         },
-      };
-      const options = {
-        method: "POST",
-        headers,
-        body: JSON.stringify(query),
-      };
-      const res = await fetch(GRAPHQL_URL, options);
-      const { data, errors } = await res.json();
+      });
+      const id = rs.lastInsertRowid;
 
-      if (errors) error(505, errors[0].message);
-      if (data.createBook != true) error(505, "Unknown Error Occurred.");
+      form.data.selectedGenres.forEach(async (e) => {
+        await transaction.execute({
+          sql: INSERT_BGA,
+          args: {
+            id,
+            genreId: e,
+          },
+        });
+      });
+
+      await transaction.commit();
 
       redirect(301, "/books");
     }
   },
 
-  createGenre: async ({ request, fetch }) => {
+  insertGenre: async ({ request, fetch }) => {
     const form = await superValidate(request, genreInputSchema);
     if (!form.valid) return fail(400, { form });
 
     const { description } = form.data;
-    const headers = {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-    };
-    const query = {
-      query: CREATE_GENRE,
-      variables: { description },
-    };
-    const options = {
-      method: "POST",
-      headers,
-      body: JSON.stringify(query),
-    };
-    const res = await fetch(GRAPHQL_URL, options);
-    const { data, errors } = await res.json();
-
-    if (errors) error(505, errors[0].message);
-    if (data.createGenre != true) error(505, "Unknown Error Occurred.");
+    await client.execute({
+      sql: INSERT_GENRE,
+      args: { description },
+    });
   },
 
   deleteGenre: async ({ request }) => {
     const { id: t } = Object.fromEntries(await request.formData());
-    const id = parseInt(t);
+    const id = parseInt(t as string);
 
-    const headers = {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-    };
-    const query = {
-      query: DELETE_GENRE,
-      variables: { id },
-    };
-    const options = {
-      method: "POST",
-      headers,
-      body: JSON.stringify(query),
-    };
-    const res = await fetch(GRAPHQL_URL, options);
-    const { data, errors } = await res.json();
-
-    if (errors) error(505, errors[0].message);
-    if (data.deleteGenre != true) error(505, "Deleting object failed.");
+    await client.execute({
+      sql: DELETE_GENRE,
+      args: { id },
+    });
 
     return { success: "true" };
   },

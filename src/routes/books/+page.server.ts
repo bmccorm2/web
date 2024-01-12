@@ -1,27 +1,15 @@
-import { GRAPHQL_URL } from "$env/static/private";
-import { GET_BOOKS, DELETE_BOOK } from "$lib/server/queries";
 import { error } from "@sveltejs/kit";
 import type { Actions } from "./$types.js";
+import { client } from "$lib/server/dbClient.js";
+import { DELETE_BGA, DELETE_BOOK, GET_BOOKS } from "$lib/server/queries.js";
+import type { Book } from "$lib/types.js";
+import { serializeBooks } from "$lib/server/utilities.js";
 
-export const load = async ({ fetch }) => {
+export const load = async () => {
   try {
-    const headers = {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-    };
-    const query = {
-      query: GET_BOOKS,
-    };
-    const options = {
-      method: "POST",
-      headers,
-      body: JSON.stringify(query),
-    };
-
-    const res = await fetch(GRAPHQL_URL, options);
-    const {
-      data: { books },
-    } = await res.json();
+    const res = await client.execute(GET_BOOKS);
+    const rows = res.rows as unknown as Book[];
+    const books = serializeBooks(rows);
 
     return { books };
   } catch (e: any) {
@@ -31,26 +19,20 @@ export const load = async ({ fetch }) => {
 
 export const actions: Actions = {
   deleteBook: async ({ request }) => {
-    const { id: t } = Object.fromEntries(await request.formData());
-    const id = parseInt(t);
-    const headers = {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-    };
-    const query = {
-      query: DELETE_BOOK,
-      variables: { id },
-    };
-    const options = {
-      method: "POST",
-      headers,
-      body: JSON.stringify(query),
-    };
-    const res = await fetch(GRAPHQL_URL, options);
-    const { data, errors } = await res.json();
+    const formData = await request.formData();
+    const id = parseInt(formData.get("id") as string);
 
-    if (errors) error(505, errors[0].message);
-    if (data.deleteBook != true) error(505, "Deleting object failed.");
+    const transaction = await client.transaction("write");
+    await transaction.execute({
+      sql: DELETE_BGA,
+      args: { id },
+    });
+    await transaction.execute({
+      sql: DELETE_BOOK,
+      args: { id },
+    });
+
+    await transaction.commit();
 
     return { success: "true" };
   },

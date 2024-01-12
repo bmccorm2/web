@@ -1,184 +1,103 @@
+export const GET_CARS_OWNED = `
+  SELECT id, displayName
+  FROM cars t
+  where t.isOwned=1;
+`;
+
+export const GET_SUMMARY = `
+SELECT 
+  sum(t.miles) as total_miles
+  ,sum(t.price) as total_price
+  ,sum(t.miles) / sum(t.gallons) as total_miles_per_gallon
+  ,sum(t.price) / sum(t.gallons) as total_price_per_gallon
+FROM consumption t
+where t.carId=:carId;
+`;
+
 export const GET_CONSUMPTION = `
-	query Consumption($carId: Int!) {
-		cars(isOwned: true) {
-			id
-			displayName
-		}
-		summary(carId: $carId) {
-			total_miles
-			total_price
-			total_miles_per_gallon
-			total_price_per_gallon
-		}
-		consumption(carId: $carId) {
-			id
-			date
-			miles_per_gallon
-			price_per_gallon
-			notes
-		}
-	}
+SELECT
+  t.id
+  ,t.created
+  ,t.miles / t.gallons as miles_per_gallon
+  ,t.price / t.gallons as price_per_gallon
+  ,t.notes
+FROM consumption t
+where t.carId=:carId
+ORDER BY t.id DESC
+LIMIT 50;
 `;
 
-export const CREATE_CONSUMPTION = `
-	mutation CreateConsumption(
-		$carId: Int!
-		$price: Float!
-		$gallons: Float!
-		$miles: Float!
-		$notes: String
-	) {
-		createConsumption(carId: $carId, price: $price, gallons: $gallons, miles: $miles, notes: $notes)
-	}
-`;
-
-export const GET_YIELDS = `
-	{
-		yields {
-			id
-			effectiveDate
-			oneMonth
-			threeMonth
-			sixMonth
-			oneYear
-			twoYear
-			threeYear
-			fiveYear
-			sevenYear
-			tenYear
-			twentyYear
-			thirtyYear
-		}
-	}
-`;
-
-export const GET_CAR_DETAILS = `
-	query CarDetails($carId: Int!) {
-		cars(isOwned: false) {
-			id
-			displayName
-		}
-		carDetails(carId: $carId) {
-			url
-			price
-			miles
-			displayName
-			year
-			distance
-			effectiveDate
-		}
-	}
+export const INSERT_CONSUMPTION = `
+INSERT INTO consumption (carId, price, gallons, miles, notes) VALUES (
+  :carId
+  ,:price
+  ,:gallons
+  ,:miles
+  ,:notes
+)
 `;
 
 export const GET_BOOKS = `
-query {
-  books {
-    title
-    id
-    author
-    pages
-    publishDate
-		rating
-		review
-		isFiction
-		createDate
-    genres {
-      description
-    }
-  }
-}
+  SELECT b.id, b.title, b.author, b.pages, b.rating, b.isFiction, b.publishDate, b.review, b.created, g.description as genreDescription, bg.genreId
+  FROM books b
+  INNER JOIN books_genres_association bg on bg.bookId=b.id
+  INNER JOIN genres g on g.id=bg.genreId  
+  ORDER BY b.id DESC
 `;
 
 export const GET_BOOK = `
-query book($id: Int!) {
-  book(id: $id) {
-    title
-    id
-    author
-    pages
-    publishDate
-    rating
-    review
-    isFiction
-    createDate
-    genres {
-			id
-      description
-    }
-  }
-}
-`;
-
-export const GET_GENRES = `
-query {
-  genres {
-    id
-    description
-  }
-}
-`;
-
-export const CREATE_GENRE = `
-mutation createGenre(
-  $description: String!
-) {
-  createGenre(description: $description)
-}
-`;
-
-export const DELETE_GENRE = `
-mutation deleteGenre(
-  $id: Int!
-) {
-  deleteGenre(id: $id)
-}
-`;
-
-export const CREATE_BOOK = `
-mutation createBook(
-  $title: String!
-  $author: String!
-  $pages: Int!
-  $rating: Int!
-  $isFiction: Boolean!
-  $genres: [Int!]!
-	$review: String
-  $publishDate: String
-  
-) {
-  createBook(
-    title:$title
-    author:$author
-    pages:$pages
-    rating:$rating
-    isFiction:$isFiction
-    genres:$genres
-		review:$review
-    publishDate:$publishDate
-  )
-}
-`;
-
-export const UPDATE_BOOK = `
-mutation updateBook($id: Int!, $title: String!, $author: String!, $pages: Int!, $rating: Int!, $isFiction: Boolean!, $selectedGenres: [Int!]!, $publishDate: String, $review: String) {
-  updateBook(
-    id: $id
-    title: $title
-    author: $author
-    pages: $pages
-    rating: $rating
-    isFiction: $isFiction
-    selectedGenres: $selectedGenres
-    publishDate: $publishDate
-    review: $review
-  )
-}
+  SELECT b.id, b.title, b.author, b.pages, b.rating, b.isFiction, b.publishDate, b.review, b.created, g.description as genreDescription, bg.genreId
+  FROM books b
+  INNER JOIN books_genres_association bg on bg.bookId=b.id
+  INNER JOIN genres g on g.id=bg.genreId  
+  WHERE b.id=:id
 `;
 
 export const DELETE_BOOK = `
-mutation deleteBook(
-  $id: Int!
-) {
-  deleteBook(id: $id)
-}
+  DELETE FROM books
+  where id=:id;
+`;
+
+export const GET_GENRES = `
+  SELECT id, description
+  FROM genres;
+`;
+
+export const UPDATE_BOOK = `
+  UPDATE books
+  SET title=:title  
+    ,author=:author
+    ,pages=:pages
+    ,rating=:rating
+    ,isFiction=:isFiction
+    ,publishDate=:publishDate
+    ,review=:review
+  WHERE id=:id;
+`;
+
+export const DELETE_BGA = `
+  DELETE from books_genres_association
+  WHERE bookId=:id;
+`;
+
+export const INSERT_BGA = `  
+  INSERT INTO books_genres_association(bookId, genreId) VALUES (
+    :id
+    ,:genreId
+  )
+`;
+
+export const INSERT_BOOK = `
+  INSERT INTO books (title, author, pages, rating, isFiction, publishDate, review)
+  VALUES (:title, :author, :pages, :rating, :isFiction, :publishDate, :review);
+`;
+
+export const INSERT_GENRE = `
+  INSERT INTO genres (description)
+  VALUES (:description);
+`;
+
+export const DELETE_GENRE = `
+  DELETE FROM genres
+  where id=:id
 `;

@@ -1,7 +1,8 @@
-<script>
+<script lang="ts">
   import { enhance } from "$app/forms";
+  import type { Genre } from "$lib/types";
 
-  export let genres;
+  export let genres: Genre[];
 </script>
 
 <table class="mb-2 mx-4 table-auto w-full">

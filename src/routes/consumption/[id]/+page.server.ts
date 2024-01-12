@@ -1,31 +1,41 @@
-import { GRAPHQL_URL } from '$env/static/private';
-import { GET_CONSUMPTION } from '$lib/server/queries';
-import { error } from '@sveltejs/kit';
+import { error } from "@sveltejs/kit";
+import { client } from "$lib/server/dbClient";
+import {
+  GET_CARS_OWNED,
+  GET_CONSUMPTION,
+  GET_SUMMARY,
+} from "$lib/server/queries.js";
+import type { Cars, Consumption, Summary } from "$lib/types.js";
 
-export const load = async ({ params, fetch }) => {
-	try {
-		const carId = parseInt(params.id);
-		const headers = {
-			'Content-Type': 'application/json',
-			Accept: 'application/json'
-		};
-		const query = {
-			query: GET_CONSUMPTION,
-			variables: { carId }
-		};
-		const options = {
-			method: 'POST',
-			headers,
-			body: JSON.stringify(query)
-		};
+export const load = async ({ params }) => {
+  try {
+    const carId = parseInt(params.id);
 
-		const res = await fetch(GRAPHQL_URL, options);
-		const {
-			data: { cars, summary, consumption }
-		} = await res.json();
+    const rs = await client.batch(
+      [
+        GET_CARS_OWNED,
+        {
+          sql: GET_SUMMARY,
+          args: { carId },
+        },
+        {
+          sql: GET_CONSUMPTION,
+          args: { carId },
+        },
+      ],
+      "read"
+    );
 
-		return { cars, summary, consumption };
-	} catch (e: any) {
-		error(505, e.message);
-	}
+    const cars: Cars[] = rs[0].rows;
+    const summary: Summary = rs[1].rows[0];
+    const consumption: Consumption[] = rs[2].rows;
+
+    return {
+      cars,
+      summary,
+      consumption,
+    };
+  } catch (e: any) {
+    error(505, e.message);
+  }
 };

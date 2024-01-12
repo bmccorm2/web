@@ -1,8 +1,9 @@
 <script lang="ts">
+  import type { BookSerialized } from "$lib/types";
   import { Rating } from "flowbite-svelte";
   import "iconify-icon";
 
-  export let bookDetails;
+  export let bookDetails: BookSerialized;
 
   const { title, author, rating, pages, isFiction, id, review } = bookDetails;
 </script>

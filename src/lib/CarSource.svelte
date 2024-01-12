@@ -1,18 +1,21 @@
 <script lang="ts">
-	interface car {
-		id: number;
-		displayName: string;
-	}
+  import type { Cars } from "./types";
+  import { page } from "$app/stores";
 
-	export let cars: [car];
+  export let cars: Cars[];
 </script>
 
 <div class="text-center my-2">
-	{#each cars as { id, displayName }}
-		<a
-			href="/consumption/{id}"
-			class="text-pink-700 text-xl font-bold underline px-3 hover:text-pink-600"
-			>{displayName}</a
-		>
-	{/each}
+  {#each cars as car}
+    <a
+      href="/consumption/{car.id}"
+      class={`text-pink-600 text-xl font-bold px-3
+      ${
+        parseInt($page.params.id) === car.id
+          ? "opacity-100 underline"
+          : "opacity-60"
+      }
+      `}>{car.displayName}</a
+    >
+  {/each}
 </div>

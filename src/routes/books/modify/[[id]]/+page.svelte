@@ -13,13 +13,11 @@
 
   export let data;
 
-  const { form } = superForm(data.form, {
-    dataType: "json",
-  });
+  const { form } = superForm(data.form);
 
   //in flowbite, you MUST use the variable GROUP for bindings.
-  //That's why we have a hack here to bind the selectedGenres to the group
-  //variable instead of just binding to $form.selectedGenres
+  //That's why we have a hack here to bind the genres to the group
+  //variable instead of just binding to $form.genres
   let group = $form.selectedGenres;
   $: $form.selectedGenres = group;
 
@@ -30,16 +28,6 @@
   //For the star rating so we can bind it to the form
   userRating.set($form.rating);
   $: $form.rating = $userRating;
-
-  // let genreSelect: Array<{ value: string; name: string }> = [];
-  // let genreList: Array<number> = [];
-
-  // data.genres.forEach((e) => {
-  //   genreSelect.push({
-  //     value: e.id,
-  //     name: e.description,
-  //   });
-  // });
 </script>
 
 <div class="container mx-auto lg:flex lg:gap-2">
@@ -123,16 +111,6 @@
           >
         </div>
 
-        <!-- <div class="m-4">
-          <MultiSelect items={genreSelect} name="genreList" />
-        </div> -->
-        <!-- <div class="m-4">
-          <select multiple name="genreList">
-            {#each data.genres as { id, description }}
-              <option class="text-slate-800" value={id}>{description}</option>
-            {/each}
-          </select>
-        </div> -->
         <button class="btn bg-blue-500 text-center mb-4 w-1/2"
           >{#if $form.id}
             Update

@@ -1,6 +1,6 @@
+import { client } from "$lib/server/dbClient";
+import { INSERT_CONSUMPTION } from "$lib/server/queries";
 import type { Actions } from "./$types";
-import { CREATE_CONSUMPTION } from "$lib/server/queries";
-import { GRAPHQL_URL } from "$env/static/private";
 import { error, fail } from "@sveltejs/kit";
 import { superValidate, message } from "sveltekit-superforms/server";
 import { z } from "zod";
@@ -43,23 +43,18 @@ export const actions: Actions = {
     if (!form.valid) return fail(400, { form });
 
     const { price, gallons, miles, notes } = form.data;
+    const res = await client.execute({
+      sql: INSERT_CONSUMPTION,
+      args: {
+        carId: 4,
+        price,
+        gallons,
+        miles,
+        notes,
+      },
+    });
 
-    const headers = {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-    };
-    const query = {
-      query: CREATE_CONSUMPTION,
-      variables: { price, gallons, miles, notes, carId: 4 },
-    };
-    const options = {
-      method: "POST",
-      headers,
-      body: JSON.stringify(query),
-    };
-    const res = await fetch(GRAPHQL_URL, options);
-    const { errors } = await res.json();
-    if (errors) error(505, errors.message);
+    if (res.rowsAffected != 1) error(505, "Error creating record");
 
     return message(form, { isSuccess: true });
   },

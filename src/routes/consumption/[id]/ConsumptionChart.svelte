@@ -1,4 +1,5 @@
 <script lang="ts">
+  import type { Consumption } from "$lib/types";
   import {
     Chart,
     Tooltip,
@@ -23,11 +24,6 @@
     Filler
   );
 
-  type ChartData = {
-    date: string;
-    miles_per_gallon: number;
-    price_per_gallon: number;
-  }[];
   type ChartType = {
     label: string;
     datapoint: string;
@@ -38,7 +34,7 @@
     [key: string]: ChartType;
   };
 
-  export let chartData: ChartData;
+  export let chartData: Consumption[];
   export let selectedChart: string;
 
   let myCanvas: HTMLCanvasElement;
@@ -98,7 +94,7 @@
 
   $: data = {
     labels: chartData
-      .map((o) => new Date(o.date).toISOString().split("T")[0])
+      .map((o) => new Date(o.created).toISOString().split("T")[0])
       .reverse(),
     datasets: [
       {
