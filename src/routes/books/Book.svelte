@@ -8,7 +8,7 @@
   const { title, author, rating, pages, isFiction, id, review } = bookDetails;
 </script>
 
-<div class="border-2 border-red-500 rounded-lg p-4 bg-slate-800">
+<div class="border-2 border-teal-500 rounded-lg p-4 bg-slate-800">
   <div class="flex justify-between mb-2">
     <div class="flex gap-3 content-center">
       <!-- TITLE -->

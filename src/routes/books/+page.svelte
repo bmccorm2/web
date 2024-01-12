@@ -7,7 +7,7 @@
 
 <div class="container mx-auto">
   <div class="flex justify-center">
-    <GradientButton class="w-1/2" shadow color="blue" href="/books/modify"
+    <GradientButton class="w-1/2" shadow color="teal" href="/books/modify"
       >Add a New Book</GradientButton
     >
   </div>
