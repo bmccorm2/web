@@ -22,7 +22,7 @@
 </svelte:head>
 
 <div class="container mx-auto mt-2">
-  <Card header="input">
+  <Card header="input" isSuccess={$message?.isSuccess}>
     <form action="?/create" method="post" use:enhance>
       <!-- PRICE -->
       <div class="flex mt-4 mx-6 items-center">
