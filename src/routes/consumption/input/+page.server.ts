@@ -5,8 +5,6 @@ import { error, fail } from "@sveltejs/kit";
 import { superValidate, message } from "sveltekit-superforms/server";
 import { z } from "zod";
 
-export const prerender = false;
-
 const inputSchema = z.object({
   price: z
     .number()

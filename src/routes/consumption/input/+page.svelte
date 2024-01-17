@@ -114,7 +114,8 @@
         class="btn w-1/2 mb-4 mt-3 hover:ring {$message?.isSuccess
           ? 'bg-emerald-700'
           : 'bg-sky-700'}"
-        disabled={$message?.isSuccess}>submit</button
+        disabled={$message?.isSuccess}
+        >{$message?.isSuccess ? "sent!" : "submit"}</button
       >
     </form>
   </Card>
