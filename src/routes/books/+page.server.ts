@@ -1,6 +1,6 @@
 import { error } from "@sveltejs/kit";
 import type { Actions } from "./$types.js";
-import { client } from "$lib/server/dbClient.js";
+import { client } from "$lib/server/databaseClient.js";
 import { DELETE_BGA, DELETE_BOOK, GET_BOOKS } from "$lib/server/queries.js";
 import type { Book } from "$lib/types.js";
 import { serializeBooks } from "$lib/server/utilities.js";

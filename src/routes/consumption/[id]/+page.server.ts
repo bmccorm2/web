@@ -1,5 +1,5 @@
 import { error } from "@sveltejs/kit";
-import { client } from "$lib/server/dbClient";
+import { client } from "$lib/server/databaseClient";
 import {
   GET_CARS_OWNED,
   GET_CONSUMPTION,
@@ -25,7 +25,6 @@ export const load = async ({ params }) => {
       ],
       "read"
     );
-    console.log(rs);
 
     const cars: Cars[] = rs[0].rows;
     const summary: Summary = rs[1].rows[0];

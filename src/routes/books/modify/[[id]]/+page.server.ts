@@ -7,7 +7,7 @@ import {
   type Genre,
   type Book,
 } from "$lib/types.js";
-import { client } from "$lib/server/dbClient.js";
+import { client } from "$lib/server/databaseClient.js";
 import {
   DELETE_BGA,
   DELETE_GENRE,
