@@ -25,6 +25,7 @@ export const load = async ({ params }) => {
       ],
       "read"
     );
+    console.log(rs);
 
     const cars: Cars[] = rs[0].rows;
     const summary: Summary = rs[1].rows[0];
