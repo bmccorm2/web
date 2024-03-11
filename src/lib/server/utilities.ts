@@ -1,6 +1,6 @@
-import type { Book, BookSerialized } from "$lib/types";
+import type { Book, BookDb } from "$lib/types";
 
-export const serializeBooks = (books: Book[]): BookSerialized[] => {
+export const serializeBooks = (books: BookDb[]): Book[] => {
   const booksMap = new Map();
   books.forEach(
     ({

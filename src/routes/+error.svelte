@@ -1,6 +1,6 @@
 <script lang="ts">
   import { page } from "$app/stores";
-  import "../app.css";
+  import "../app.pcss";
 </script>
 
 <div class="container mx-auto">

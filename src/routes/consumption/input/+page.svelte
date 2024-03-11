@@ -1,122 +1,153 @@
 <script lang="ts">
-  import { superForm } from "sveltekit-superforms/client";
-  import Card from "$lib/Card.svelte";
-  import InputIcon from "./InputIcon.svelte";
+   import { superForm } from "sveltekit-superforms/client";
+   import Card from "$lib/Card.svelte";
+   import { zodClient } from "sveltekit-superforms/adapters";
+   import { inputSchema } from "$lib/types";
+   import * as Form from "$lib/components/ui/form";
+   import InputIcon from "./InputIcon.svelte";
+   import { CarFront, DollarSign, Fuel, StickyNote } from "lucide-svelte";
+   import Separator from "$lib/components/ui/separator/separator.svelte";
+   import { Input } from "$lib/components/ui/input";
+   import { Toaster } from "$lib/components/ui/sonner";
+   import { toast } from "svelte-sonner";
 
-  export let data;
-  const { form, errors, enhance, message } = superForm(data.form);
+   export let data;
 
-  $: mpg =
-    $form.miles && $form.gallons
-      ? ($form.miles / $form.gallons).toFixed(2)
-      : "";
-  $: ppg =
-    $form.price && $form.gallons
-      ? ($form.price / $form.gallons).toFixed(2)
-      : "";
+   let isSuccess = false;
+
+   const form = superForm(data.form, {
+      validators: zodClient(inputSchema),
+      onUpdated: ({ form: f }) => {
+         if (f.valid) {
+            toast.success("Successfully created record");
+            isSuccess = true;
+         }
+      },
+   });
+
+   const { form: formData, enhance } = form;
+
+   $: mpg =
+      $formData.miles && $formData.gallons
+         ? ($formData.miles / $formData.gallons).toFixed(2)
+         : "";
+   $: ppg =
+      $formData.price && $formData.gallons
+         ? ($formData.price / $formData.gallons).toFixed(2)
+         : "";
 </script>
 
 <svelte:head>
-  <title>Input</title>
-  <meta name="description" content="Input new consumption records" />
+   <title>Input</title>
+   <meta name="description" content="Input new consumption records" />
 </svelte:head>
 
-<div class="container mx-auto mt-2">
-  <Card header="input" isSuccess={$message?.isSuccess}>
-    <form action="?/create" method="post" use:enhance>
-      <!-- PRICE -->
-      <div class="flex mt-4 mx-6 items-center">
-        <InputIcon icon="icon-park-outline:dollar" />
-        <input
-          type="number"
-          class="px-3 py-1 border-2 border-slate-500 w-full rounded-r-md text-slate-800"
-          placeholder="Price"
-          required
-          maxlength={5}
-          inputmode="decimal"
-          pattern="(\d*)\.?(\d*)"
-          bind:value={$form.price}
-          name="price"
-          step=".01"
-        />
-        {#if $errors.price}
-          <small class="text-red-500">{$errors.price}</small>
-        {/if}
-      </div>
-      <!-- GALLONS -->
-      <div class="flex mt-1 mx-6 items-center">
-        <InputIcon icon="fluent:gas-pump-20-filled" />
-        <input
-          type="number"
-          class="px-3 py-1 border-2 border-slate-500 w-full rounded-r-md text-slate-800"
-          placeholder="Gallons"
-          required
-          maxlength={6}
-          inputmode="decimal"
-          pattern="(\d*)\.?(\d*)"
-          bind:value={$form.gallons}
-          name="gallons"
-          step=".001"
-        />
-        {#if $errors.gallons}
-          <small class="text-red-500">{$errors.gallons}</small>
-        {/if}
-      </div>
-      <!-- MILES -->
-      <div class="flex mt-1 mx-6 items-center">
-        <InputIcon icon="bx:car" />
-        <input
-          type="number"
-          class="px-3 py-1 border-2 border-slate-500 w-full rounded-r-md text-slate-800"
-          placeholder="Miles"
-          required
-          maxlength={6}
-          inputmode="decimal"
-          pattern="(\d*)\.?(\d*)"
-          bind:value={$form.miles}
-          name="miles"
-          step=".01"
-        />
-        {#if $errors.miles}
-          <small class="text-red-500">{$errors.miles}</small>
-        {/if}
-      </div>
-      <!-- NOTES -->
-      <div class="flex mt-1 mb-4 mx-6 items-center">
-        <InputIcon icon="fluent:note-24-filled" />
-        <input
-          type="text"
-          class="px-3 py-1 border-2 border-slate-500 w-full rounded-r-md text-slate-800"
-          placeholder="Notes"
-          bind:value={$form.notes}
-          name="notes"
-        />
-        {#if $errors.notes}
-          <small class="text-red-500">{$errors.notes}</small>
-        {/if}
-      </div>
-      <hr />
-      <div class="flex mx-16 mt-4">
-        <input
-          type="text"
-          readonly
-          class="px-3 py-1 border-2 text-sm border-slate-500 w-full rounded-md placeholder-slate-600"
-          placeholder={`MPG: ${mpg}`}
-        />
-        <input
-          type="text"
-          class="px-3 py-1 border-2 text-sm border-slate-500 w-full rounded-md placeholder-slate-600"
-          placeholder={`PPG: ${ppg}`}
-        />
-      </div>
-      <button
-        type="submit"
-        class="btn w-1/2 mb-4 mt-3 hover:ring {$message?.isSuccess
-          ? 'bg-emerald-700'
-          : 'bg-sky-700'}"
-        disabled={$message?.isSuccess}
-        >{$message?.isSuccess ? "sent!" : "submit"}</button
-      >
-    </form>
-  </Card>
+<div class="mt-2">
+   <Card header="input" {isSuccess}>
+      <form action="?/create" method="post" use:enhance>
+         <!-- PRICE -->
+         <div class="mx-6 mt-4 flex items-center">
+            <InputIcon>
+               <DollarSign />
+            </InputIcon>
+            <Form.Field {form} name="price" class="flex grow items-center">
+               <Form.Control let:attrs>
+                  <Input
+                     {...attrs}
+                     type="number"
+                     placeholder="Price"
+                     bind:value={$formData.price}
+                     inputmode="decimal"
+                     step=".01"
+                     class="rounded-r-md border-2 border-slate-500 px-3 py-1 text-slate-200"
+                  />
+               </Form.Control>
+               <Form.FieldErrors />
+            </Form.Field>
+         </div>
+         <!-- GALLONS -->
+         <div class="mx-6 mt-1 flex items-center">
+            <InputIcon>
+               <Fuel />
+            </InputIcon>
+            <Form.Field {form} name="gallons" class="flex grow items-center">
+               <Form.Control let:attrs>
+                  <Input
+                     {...attrs}
+                     type="number"
+                     placeholder="Gallons"
+                     bind:value={$formData.gallons}
+                     inputmode="decimal"
+                     step=".01"
+                     class="rounded-r-md border-2 border-slate-500 px-3 py-1 text-slate-200"
+                  />
+               </Form.Control>
+               <Form.FieldErrors />
+            </Form.Field>
+         </div>
+         <!-- MILES -->
+         <div class="mx-6 mt-1 flex items-center">
+            <InputIcon>
+               <CarFront />
+            </InputIcon>
+            <Form.Field {form} name="miles" class="flex grow items-center">
+               <Form.Control let:attrs>
+                  <Input
+                     {...attrs}
+                     type="number"
+                     placeholder="Miles"
+                     bind:value={$formData.miles}
+                     inputmode="decimal"
+                     step=".01"
+                     class="rounded-r-md border-2 border-slate-500 px-3 py-1 text-slate-200"
+                  />
+               </Form.Control>
+               <Form.FieldErrors />
+            </Form.Field>
+         </div>
+         <!-- NOTES -->
+         <div class="mx-6 mb-4 mt-1 flex items-center">
+            <InputIcon>
+               <StickyNote />
+            </InputIcon>
+            <Form.Field {form} name="notes" class="flex grow items-center">
+               <Form.Control let:attrs>
+                  <Input
+                     {...attrs}
+                     placeholder="Notes"
+                     bind:value={$formData.notes}
+                     class="rounded-r-md border-2 border-slate-500 px-3 py-1 text-slate-200"
+                  />
+               </Form.Control>
+               <Form.FieldErrors />
+            </Form.Field>
+         </div>
+         <Separator />
+         <!-- SUMMARY -->
+         <div class="mx-4 flex gap-2">
+            <input
+               type="text"
+               readonly
+               class="w-full rounded-md border-2 border-slate-500 px-3 py-1 text-sm placeholder-slate-600"
+               placeholder={`MPG: ${mpg}`}
+            />
+            <input
+               type="text"
+               class="w-full rounded-md border-2 border-slate-500 px-3 py-1 text-sm placeholder-slate-600"
+               placeholder={`PPG: ${ppg}`}
+            />
+         </div>
+         <div class="my-4 text-center">
+            <Form.Button
+               class="w-1/2 font-bold uppercase text-white {isSuccess
+                  ? 'bg-emerald-700'
+                  : 'bg-sky-700'}"
+               disabled={isSuccess}
+               >{isSuccess ? "sent!" : "submit"}</Form.Button
+            >
+         </div>
+      </form>
+   </Card>
 </div>
+
+<Toaster richColors />

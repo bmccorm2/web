@@ -1,18 +1,16 @@
 <script lang="ts">
-	import CarSource from '$lib/CarSource.svelte';
-	import type { PageServerData } from './$types';
-	import CarChart from './CarChart.svelte';
+   import CarSource from "$lib/CarSource.svelte";
+   import type { PageServerData } from "./$types";
+   import CarChart from "./CarChart.svelte";
 
-	export let data: PageServerData;
-	const { cars, carDetails } = data;
+   export let data: PageServerData;
+   const { cars, carDetails } = data;
 </script>
 
 <svelte:head>
-	<title>Cars</title>
-	<meta name="description" content="price to mileage charting" />
+   <title>Cars</title>
+   <meta name="description" content="price to mileage charting" />
 </svelte:head>
 
-<div class="container mx-auto">
-	<CarSource {cars} />
-	<CarChart chartData={carDetails} />
-</div>
+<CarSource {cars} />
+<CarChart chartData={carDetails} />

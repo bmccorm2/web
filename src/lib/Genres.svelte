@@ -1,60 +1,59 @@
 <script lang="ts">
-  import { enhance } from "$app/forms";
-  import { Toast } from "flowbite-svelte";
-  import CheckCircleSolid from "flowbite-svelte-icons/CheckCircleSolid.svelte";
-  import Card from "$lib/Card.svelte";
-  import GenreTable from "../routes/books/GenreTable.svelte";
+   import Card from "$lib/Card.svelte";
+   import {
+      type SuperValidated,
+      type Infer,
+      superForm,
+   } from "sveltekit-superforms";
+   import GenreTable from "../routes/books/GenreTable.svelte";
+   import { Input } from "./components/ui/input";
+   import { genreSchema, type Genre } from "./types";
+   import * as Form from "$lib/components/ui/form";
+   import { zodClient } from "sveltekit-superforms/adapters";
+   import { toast, Toaster } from "svelte-sonner";
 
-  export let genres;
+   export let data: SuperValidated<Infer<typeof genreSchema>>;
+   export let genres: Genre[];
 
-  let toastShow = false;
-  let autohideCounter: number;
-  let createdTitle: string;
+   const form = superForm(data, {
+      validators: zodClient(genreSchema),
+      onUpdated: ({ form: f }) => {
+         if (f.valid) {
+            toast.success(
+               `Created ${JSON.stringify(f.data.description, null, 2)}`,
+            );
+         }
+      },
+   });
 
-  const showToast = () => {
-    toastShow = true;
-    autohideCounter = 3;
-    timeout();
-  };
-
-  const timeout = () => {
-    if (autohideCounter-- > 0) return setTimeout(timeout, 1000);
-    toastShow = false;
-  };
+   const { form: formData } = form;
 </script>
 
 <Card header="genres">
-  <form
-    action="?/insertGenre"
-    class="my-4"
-    method="post"
-    use:enhance={async () => {
-      return async ({ update }) => {
-        await update();
-        createdTitle = "Genre";
-        showToast();
-      };
-    }}
-  >
-    <input
-      class="p-2 mb-2 rounded-md text-slate-800"
-      type="text"
-      placeholder="Add a Genre"
-      name="description"
-      autocomplete="off"
-    />
-    <button class="btn bg-blue-500 text-center">Submit</button>
-  </form>
-  <hr class="mx-2" />
-  <div class="mt-2">
-    <GenreTable {genres} />
-  </div>
+   <form action="?/insertGenre" class="my-4" method="post">
+      <Form.Field {form} name="description" class="mx-4">
+         <Form.Control let:attrs>
+            <Input
+               {...attrs}
+               placeholder="Add a Genre"
+               autocomplete="off"
+               spellcheck="false"
+               bind:value={$formData.description}
+               class="rounded-md p-2 ring-1 ring-slate-400"
+            />
+         </Form.Control>
+         <Form.FieldErrors />
+      </Form.Field>
+      <div class="text-center">
+         <Form.Button class="bg-blue-500 font-bold uppercase text-white"
+            >Submit</Form.Button
+         >
+      </div>
+   </form>
+   <hr class="mx-2 border-white" />
+   <div class="mt-2">
+      <GenreTable {genres} />
+   </div>
 </Card>
 
-<Toast position="top-right" color="green" bind:open={toastShow}>
-  <svelte:fragment slot="icon">
-    <CheckCircleSolid name="check-circle-solid" class="w-5 h-5" />
-    <span class="sr-only">Check icon</span>
-  </svelte:fragment>
-  {createdTitle} created successfully!
-</Toast>
+<Toaster richColors />

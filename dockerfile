@@ -1,5 +1,5 @@
 # stage build
-FROM node:20.11-alpine3.18 as build
+FROM node:lts as build
 WORKDIR /app
 RUN npm i -g pnpm
 # copy everything to the container
@@ -13,12 +13,11 @@ RUN pnpm run build
 
 
 # stage run
-FROM node:20.11-alpine3.18 
+FROM node:lts
 WORKDIR /app
 RUN npm i -g pnpm
 # copy dependency list
 COPY --from=build /app/package*.json ./
-COPY --from=build /app/web.sqlite ./
 # clean install dependencies, no devDependencies, no prepare script
 RUN pnpm i --production --ignore-scripts
 # remove potential security issues

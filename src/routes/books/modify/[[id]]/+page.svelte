@@ -1,127 +1,186 @@
 <script lang="ts">
-  import Card from "$lib/Card.svelte";
-  import { userRating } from "$lib/stores";
-  import {
-    FloatingLabelInput,
-    Checkbox,
-    Textarea,
-    NumberInput,
-  } from "flowbite-svelte";
-  import Genres from "$lib/Genres.svelte";
-  import { superForm } from "sveltekit-superforms/client";
-  import Rating from "../../Rating.svelte";
+   import Card from "$lib/Card.svelte";
+   import { userRating } from "$lib/stores";
+   import Genres from "$lib/Genres.svelte";
+   import { superForm } from "sveltekit-superforms/client";
+   import Rating from "../../Rating.svelte";
+   import { Textarea } from "$lib/components/ui/textarea";
+   import { Checkbox } from "$lib/components/ui/checkbox";
+   import * as Form from "$lib/components/ui/form";
+   import { zodClient } from "sveltekit-superforms/adapters";
+   import { bookSchema, type Genre } from "$lib/types";
+   import { Input } from "$lib/components/ui/input";
 
-  export let data;
+   export let data;
 
-  const { form } = superForm(data.form);
+   const form = superForm(data.form, {
+      validators: zodClient(bookSchema),
+      dataType: "json",
+   });
 
-  //in flowbite, you MUST use the variable GROUP for bindings.
-  //That's why we have a hack here to bind the genres to the group
-  //variable instead of just binding to $form.genres
-  let group = $form.selectedGenres;
-  $: $form.selectedGenres = group;
+   const { form: formData, enhance } = form;
 
-  //Same is true for NumberInputs and value
-  let value = $form.pages;
-  $: $form.pages = value;
+   //For the star rating so we can bind it to the form
+   userRating.set($formData.rating);
+   $: $formData.rating = $userRating;
 
-  //For the star rating so we can bind it to the form
-  userRating.set($form.rating);
-  $: $form.rating = $userRating;
+   const addGenre = (id: number, description: string) => {
+      $formData.genres = [...$formData.genres, { id, description }];
+   };
+
+   const removeGenre = (id: number) => {
+      $formData.genres = $formData.genres.filter((e: Genre) => e.id != id);
+   };
 </script>
 
-<div class="container mx-auto lg:flex lg:gap-2">
-  <div class="lg:w-9/12">
-    <Card header={$form.id ? "Update Book" : "Create a Book"}>
-      <form action="?/modify" method="post">
-        <div class="m-4">
-          <input type="hidden" bind:value={$form.id} name="id" />
-          <FloatingLabelInput
-            style="outlined"
-            classLabel="dark:bg-slate-800"
-            name="title"
-            bind:value={$form.title}
-            type="text"
-            autocomplete="off"
-            label="Title">Title</FloatingLabelInput
-          >
-        </div>
-        <div class="m-4">
-          <FloatingLabelInput
-            style="outlined"
-            classLabel="dark:bg-slate-800"
-            bind:value={$form.author}
-            type="text"
-            name="author"
-            autocomplete="off"
-            label="Author">Author</FloatingLabelInput
-          >
-        </div>
-        <div class="m-4">
-          <Textarea
-            unWrappedClass="dark:bg-slate-800 text-sm"
-            placeholder="Review"
-            rows="4"
-            name="review"
-            bind:value={$form.review}
-          />
-        </div>
-        <!-- GENRES -->
-        <div class="border-2 border-purple-500 rounded-md px-2 py-1 m-4">
-          <div class="font-bold underline mb-2">Genres</div>
-          <div class="grid grid-cols-2 lg:grid-cols-4 gap-2 mb-2">
-            {#each data.genres as genre}
-              <Checkbox bind:group value={genre.id} name="selectedGenres"
-                >{genre.description}</Checkbox
-              >
-            {/each}
-          </div>
-        </div>
+<div class="mt-2 lg:flex lg:gap-2">
+   <div class="lg:w-9/12">
+      <Card header={$formData.id ? "Update Book" : "Create Book"}>
+         <form action="?/modify" method="post" use:enhance>
+            <div class="mx-2">
+               <Form.Field {form} name="title" class="mx-4 mb-4 mt-4">
+                  <Form.Control let:attrs>
+                     <Input
+                        {...attrs}
+                        class="rounded-md p-2 ring-1 ring-slate-400"
+                        bind:value={$formData.title}
+                        placeholder="Title"
+                        autocomplete="off"
+                        spellcheck="false"
+                     />
+                  </Form.Control>
+                  <Form.FieldErrors />
+               </Form.Field>
+               <Form.Field {form} name="author" class="m-4">
+                  <Form.Control let:attrs>
+                     <Input
+                        {...attrs}
+                        class="rounded-md p-2 ring-1 ring-slate-400"
+                        bind:value={$formData.author}
+                        placeholder="Author"
+                        autocomplete="off"
+                        spellcheck="false"
+                     />
+                  </Form.Control>
+                  <Form.FieldErrors />
+               </Form.Field>
+               <Form.Field {form} name="review" class="m-4">
+                  <Form.Control let:attrs>
+                     <Textarea
+                        {...attrs}
+                        class="rounded-md p-2 ring-1 ring-slate-400"
+                        bind:value={$formData.review}
+                        placeholder="Review"
+                        autocomplete="off"
+                        spellcheck="false"
+                     />
+                  </Form.Control>
+                  <Form.FieldErrors />
+               </Form.Field>
+               <!-- GENRES -->
+               <div
+                  class="m-4 mt-6 rounded-md border-2 border-purple-500 px-2 py-1 text-center"
+               >
+                  <div class="mb-2 font-bold underline">Genres</div>
+                  <Form.Fieldset {form} name="genres">
+                     <div class="mb-2 grid grid-cols-2 gap-2 lg:grid-cols-4">
+                        {#each data.genres as genre}
+                           {@const checked = $formData.genres.some(
+                              (e) => e.id === genre.id,
+                           )}
+                           <div class="flex items-center">
+                              <Form.Control let:attrs>
+                                 <Checkbox
+                                    {...attrs}
+                                    {checked}
+                                    onCheckedChange={(e) => {
+                                       if (e)
+                                          addGenre(genre.id, genre.description);
+                                       else removeGenre(genre.id);
+                                    }}
+                                 />
+                                 <Form.Label class="ml-2"
+                                    >{genre.description}</Form.Label
+                                 >
+                                 <input
+                                    hidden
+                                    type="checkbox"
+                                    name={attrs.name}
+                                    value={genre.id}
+                                    {checked}
+                                 />
+                              </Form.Control>
+                              <Form.FieldErrors />
+                           </div>
+                        {/each}
+                     </div>
+                  </Form.Fieldset>
+               </div>
+               <!-- RATING -->
+               <div class="m-4 mt-6 flex items-center justify-center gap-12">
+                  <div>
+                     <Rating />
+                  </div>
+                  <div class="flex justify-center">
+                     <Form.Field {form} name="isFiction">
+                        <Form.Control let:attrs>
+                           <Checkbox
+                              {...attrs}
+                              bind:checked={$formData.isFiction}
+                           />
+                           <Form.Label>Is Fiction?</Form.Label>
+                           <input
+                              name={attrs.name}
+                              value={$formData.isFiction}
+                              hidden
+                           />
+                        </Form.Control>
+                        <Form.FieldErrors />
+                     </Form.Field>
+                  </div>
+               </div>
+               <!-- PAGES -->
+               <div class="m-4 lg:flex lg:content-center lg:justify-evenly">
+                  <Form.Field {form} name="pages">
+                     <Form.Control let:attrs>
+                        <Input
+                           {...attrs}
+                           type="number"
+                           placeholder="Pages"
+                           class="rounded-md p-2 ring-1 ring-slate-400"
+                           bind:value={$formData.pages}
+                           autocomplete="off"
+                        />
+                     </Form.Control>
+                     <Form.FieldErrors />
+                  </Form.Field>
+                  <Form.Field {form} name="publishDate">
+                     <Form.Control let:attrs>
+                        <Input
+                           {...attrs}
+                           type="number"
+                           placeholder="Publish Date"
+                           class="rounded-md p-2 ring-1 ring-slate-400"
+                           bind:value={$formData.publishDate}
+                           autocomplete="off"
+                        />
+                     </Form.Control>
+                     <Form.FieldErrors />
+                  </Form.Field>
+               </div>
 
-        <!-- RATING -->
-        <div class="flex justify-center gap-12 m-4">
-          <div>
-            <Rating />
-            <input type="hidden" bind:value={$form.rating} name="rating" />
-          </div>
-          <div class="flex justify-center">
-            <Checkbox bind:checked={$form.isFiction} name="isFiction"
-              >Is Fiction</Checkbox
-            >
-          </div>
-        </div>
-
-        <!-- PAGES -->
-        <div class="lg:flex lg:justify-evenly lg:content-center m-4">
-          <NumberInput
-            class="lg:m-0 mb-2 dark:bg-slate-800"
-            placeholder="pages"
-            bind:value
-            name="pages"
-          />
-          <FloatingLabelInput
-            style="outlined"
-            classLabel="dark:bg-slate-800"
-            classDiv="lg:m-0"
-            bind:value={$form.publishDate}
-            type="number"
-            name="publishDate"
-            autocomplete="off"
-            label="Publish Date">Publish Date</FloatingLabelInput
-          >
-        </div>
-
-        <button class="btn bg-blue-500 text-center mb-4 w-1/2"
-          >{#if $form.id}
-            Update
-          {:else}
-            Create
-          {/if}</button
-        >
-      </form>
-    </Card>
-  </div>
-  <div class="lg:w-3/12 w-full mt-2 lg:mt-0">
-    <Genres genres={data.genres} />
-  </div>
+               <!-- SUBMIT BUTTON -->
+               <div class="text-center">
+                  <Form.Button
+                     class="m-4 w-1/2 bg-blue-500 font-bold uppercase text-white"
+                     >{$formData.id ? "Update" : "Create"}
+                  </Form.Button>
+               </div>
+            </div>
+         </form>
+      </Card>
+   </div>
+   <div class="mt-2 w-full lg:mt-0 lg:w-3/12">
+      <Genres data={data.genreForm} genres={data.genres} />
+   </div>
 </div>
