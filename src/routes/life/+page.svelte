@@ -147,73 +147,58 @@
    <meta name="description" content="Game of life" />
 </svelte:head>
 
-<button
-   class="btn mr-2 mt-4 border bg-cyan-600 text-sm"
-   on:click={randomGenerator}>Random Generator!</button
->
-<button class="btn mr-2 mt-4 border bg-cyan-600 text-sm" on:click={toad}
-   >Toad</button
->
-<button class="btn mr-2 mt-4 border bg-cyan-600 text-sm" on:click={blinker}
-   >Blinker</button
->
-<button
-   class="btn mr-2 mt-4 border bg-cyan-600 text-sm"
-   on:click={pentaDecathlon}>Penta-Decathlon</button
->
-
-{#if isRunning}
+<div class="flex items-center justify-center">
    <button
       class="btn mr-2 mt-4 border bg-cyan-600 text-sm"
-      on:click={() => {
-         isRunning = !isRunning;
-         reset(false);
-      }}>Pause</button
+      on:click={randomGenerator}>Random Generator!</button
    >
-{:else}
+   <button class="btn mr-2 mt-4 border bg-cyan-600 text-sm" on:click={toad}
+      >Toad</button
+   >
+   <button class="btn mr-2 mt-4 border bg-cyan-600 text-sm" on:click={blinker}
+      >Blinker</button
+   >
    <button
-      class="btn mr-2 mt-4 border bg-gray-500 text-sm"
-      on:click={() => {
-         isRunning = !isRunning;
-         runLife();
-      }}>Resume</button
+      class="btn mr-2 mt-4 border bg-cyan-600 text-sm"
+      on:click={pentaDecathlon}>Penta-Decathlon</button
    >
-{/if}
 
-<h2 class="gen">Generation: {generation}</h2>
-
-<hr />
-
-<div class="center">
-   {#each grid as row}
-      <div class="row">
-         {#each row as cell}
-            <div class="square" class:bg-red-700={cell === 1} />
-         {/each}
-      </div>
-   {/each}
+   {#if isRunning}
+      <button
+         class="btn mr-2 mt-4 border bg-cyan-600 text-sm"
+         on:click={() => {
+            isRunning = !isRunning;
+            reset(false);
+         }}>Pause</button
+      >
+   {:else}
+      <button
+         class="btn mr-2 mt-4 border bg-gray-500 text-sm"
+         on:click={() => {
+            isRunning = !isRunning;
+            runLife();
+         }}>Resume</button
+      >
+   {/if}
 </div>
 
-<style>
-   .row {
-      display: flex;
-   }
+<h2 class="mt-4 text-center text-2xl font-bold text-zinc-300">
+   Generation: {generation}
+</h2>
 
-   .square {
-      border: 1px solid gray;
-      height: 26px;
-      width: 26px;
-   }
+<hr class="mt-4" />
 
-   .center {
-      justify-content: center;
-      display: grid;
-      margin-top: 2em;
-   }
-
-   .gen {
-      justify-content: center;
-      display: grid;
-      margin-top: 1em;
-   }
-</style>
+<div class="mt-4 flex justify-center">
+   <div>
+      {#each grid as row}
+         <div class="flex">
+            {#each row as cell}
+               <div
+                  class="h-6 w-6 border border-gray-500"
+                  class:bg-red-800={cell === 1}
+               />
+            {/each}
+         </div>
+      {/each}
+   </div>
+</div>

@@ -117,11 +117,13 @@
                   </Form.Fieldset>
                </div>
                <!-- RATING -->
-               <div class="m-4 mt-6 flex items-center justify-center gap-12">
-                  <div>
+               <div
+                  class="m-4 mt-6 md:flex md:items-center md:justify-center md:gap-12"
+               >
+                  <div class="mb-2 text-center md:mb-0">
                      <Rating />
                   </div>
-                  <div class="flex justify-center">
+                  <div class="text-center">
                      <Form.Field {form} name="isFiction">
                         <Form.Control let:attrs>
                            <Checkbox

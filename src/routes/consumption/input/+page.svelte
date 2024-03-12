@@ -128,18 +128,18 @@
             <input
                type="text"
                readonly
-               class="w-full rounded-md border-2 border-slate-500 px-3 py-1 text-sm placeholder-slate-600"
+               class="w-full rounded-md border-2 border-slate-500 px-3 py-1 text-sm placeholder-slate-200"
                placeholder={`MPG: ${mpg}`}
             />
             <input
                type="text"
-               class="w-full rounded-md border-2 border-slate-500 px-3 py-1 text-sm placeholder-slate-600"
+               class="w-full rounded-md border-2 border-slate-500 px-3 py-1 text-sm placeholder-slate-200"
                placeholder={`PPG: ${ppg}`}
             />
          </div>
          <div class="my-4 text-center">
             <Form.Button
-               class="w-1/2 font-bold uppercase text-white {isSuccess
+               class="w-2/3 font-bold uppercase text-white {isSuccess
                   ? 'bg-emerald-700'
                   : 'bg-sky-700'}"
                disabled={isSuccess}

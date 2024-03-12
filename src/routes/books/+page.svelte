@@ -14,7 +14,7 @@
    >
 </div>
 <hr class="my-4" />
-<div class="grid grid-cols-2 gap-4">
+<div class="md:grid md:grid-cols-2 md:gap-4">
    {#each data.books as bookDetails}
       <Book {bookDetails} />
    {/each}

@@ -128,63 +128,38 @@
    <meta name="description" content="retro snake game" />
 </svelte:head>
 
-<div class="center">
+<div class="mt-2 flex justify-center">
    <div>
-      <h3 style="float: left;">
-         Snake Length: {snakePosition.length}
-      </h3>
+      <div class="mb-4 flex justify-between">
+         <h3 class="text-2xl">
+            Snake Length: {snakePosition.length}
+         </h3>
 
-      <h3 style="float: right;">High Score: {highScore}</h3>
-   </div>
-
-   {#each grid as row}
-      <div class="row">
-         {#each row as cell}
-            <div class={`square ${cell}`} />
-         {/each}
+         <h3 class="text-2xl">High Score: {highScore}</h3>
       </div>
-   {/each}
 
-   {#if lost}
-      <h3 class="lost">You lost! Hit enter to play again.</h3>
-   {/if}
+      {#each grid as row}
+         <div class="flex">
+            {#each row as cell}
+               <div class={`h-8 w-8 border border-gray-500 ${cell}`} />
+            {/each}
+         </div>
+      {/each}
+
+      {#if lost}
+         <h3 class="mt-2 text-center text-2xl font-bold text-red-500">
+            You lost! Hit enter to play again.
+         </h3>
+      {/if}
+   </div>
 </div>
 
 <style>
-   .row {
-      display: flex;
-   }
-
-   .square {
-      height: 26px;
-      width: 26px;
-      border: solid 1px gray;
-   }
-
    .snake {
       background-color: blue;
    }
 
    .food {
       background-color: red;
-   }
-
-   .center {
-      display: grid;
-      justify-content: center;
-      align-items: center;
-      margin-top: 1rem;
-   }
-
-   .lost {
-      display: grid;
-      justify-content: center;
-      align-items: center;
-      margin-top: 1rem;
-      color: red;
-   }
-
-   .right {
-      text-align: right;
    }
 </style>

@@ -14,7 +14,7 @@
 
 <CarSource cars={data.cars} />
 <div class="mb-2 gap-4 md:flex">
-   <div class="md:basis-4/12">
+   <div class="mb-2 md:mb-0 md:basis-4/12">
       <ConsumptionSummary summary={data.summary} />
    </div>
    <div class="md:basis-8/12">

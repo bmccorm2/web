@@ -52,7 +52,7 @@
    }
 </script>
 
-<nav class="space-x-4 bg-zinc-800 px-4 py-3 lg:space-x-6">
+<nav class="sticky top-0 space-x-4 bg-zinc-800 px-4 py-3 lg:space-x-6">
    <ul class="flex items-center justify-between">
       <li>
          <a href="/">
