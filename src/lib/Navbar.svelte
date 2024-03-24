@@ -23,16 +23,16 @@
          description: "Books",
          searchPattern: "/books",
       },
-      {
-         location: "/yields",
-         description: "Yields",
-         searchPattern: "/yields",
-      },
-      {
-         location: "/cars/3",
-         description: "Cars",
-         searchPattern: "/cars",
-      },
+      // {
+      //    location: "/yields",
+      //    description: "Yields",
+      //    searchPattern: "/yields",
+      // },
+      // {
+      //    location: "/cars/3",
+      //    description: "Cars",
+      //    searchPattern: "/cars",
+      // },
       {
          location: "/snake",
          description: "Snake",

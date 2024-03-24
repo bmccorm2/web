@@ -4,6 +4,6 @@
 </script>
 
 <Navbar />
-<div class="container">
+<div class="md:container">
    <slot />
 </div>

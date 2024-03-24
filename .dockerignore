@@ -15,3 +15,4 @@ node_modules
 .svelte-kit
 build
 package
+web.sqlite
