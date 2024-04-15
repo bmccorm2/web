@@ -78,7 +78,7 @@
                      placeholder="Gallons"
                      bind:value={$formData.gallons}
                      inputmode="decimal"
-                     step=".01"
+                     step=".001"
                      class="rounded-r-md border-2 border-slate-500 px-3 py-1 text-slate-200"
                   />
                </Form.Control>
