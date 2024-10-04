@@ -26,9 +26,18 @@ export const load = async ({ params }) => {
       "read"
     );
 
-    const cars: Cars[] = rs[0].rows;
-    const summary: Summary = rs[1].rows[0];
-    const consumption: Consumption[] = rs[2].rows;
+    const cars: Cars[] = rs[0].rows.map((row: any) => ({
+      id: row.id,
+      displayName: row.displayName,
+    }));
+    const summary = rs[1].rows[0] as unknown as Summary;
+    const consumption: Consumption[] = rs[2].rows.map((row: any) => ({
+      id: row.id,
+      miles_per_gallon: row.miles_per_gallon,
+      price_per_gallon: row.price_per_gallon,
+      notes: row.notes,
+      created: row.created,
+    }));
 
     return {
       cars,
