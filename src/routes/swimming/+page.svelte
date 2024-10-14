@@ -42,7 +42,7 @@
   on:keyup={filterWorkouts}
 />
 
-<div class="md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-4">
+<div class="grid lg:grid-cols-2 xl:grid-cols-3 gap-4">
   {#each filteredWorkouts as workout}
     <SwimWorkout {...workout} />
   {/each}

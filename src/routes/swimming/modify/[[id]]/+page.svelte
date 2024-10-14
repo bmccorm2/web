@@ -2,13 +2,12 @@
   import * as Form from "$lib/components/ui/form";
   import { Textarea } from "$lib/components/ui/textarea";
   import { Input } from "$lib/components/ui/input";
-  import SuperDebug, { superForm } from "sveltekit-superforms";
-  import { type SwimTag, swimWorkoutSchema } from "$lib/types.js";
+  import { superForm } from "sveltekit-superforms";
+  import { swimWorkoutSchema } from "$lib/types.js";
   import { zodClient } from "sveltekit-superforms/adapters";
   import Card from "$lib/Card.svelte";
   import type { PageData } from "./$types";
   import { Checkbox } from "$lib/components/ui/checkbox";
-  import { dev } from "$app/environment";
 
   export let data: PageData;
 
@@ -44,7 +43,7 @@
   }
 </script>
 
-<div class="mt-2 lg:flex lg:gap-2">
+<div class="mt-2">
   <Card header={$formData.id ? "update workout" : "add a workout"}>
     <form method="post" action="?/modify" use:enhance>
       <div class="flex gap-2">
@@ -80,7 +79,7 @@
           </Form.Field>
           <!-- TAGS -->
           <Form.Fieldset {form} name="tags">
-            <div class="m-4 grid grid-cols-2 gap-2 lg:grid-cols-3">
+            <div class="m-4 grid lg:grid-cols-2 gap-2 xl:grid-cols-3">
               {#each data.swimTags as tag}
                 {@const checked = $formData.tags?.some((e) => e.id === tag.id)}
                 <div class="flex items-center justify-items-start">
@@ -120,7 +119,3 @@
     </form>
   </Card>
 </div>
-
-{#if dev}
-  <SuperDebug data={formData} />
-{/if}
