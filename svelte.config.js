@@ -8,7 +8,7 @@ const config = {
   preprocess: [vitePreprocess({})],
 
   kit: {
-    adapter: adapter({ runtime: "nodejs21.x" }),
+    adapter: adapter({ runtime: "nodejs20.x" }),
   },
 };
 
