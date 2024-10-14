@@ -45,7 +45,7 @@
 </script>
 
 <div class="mt-2 lg:flex lg:gap-2">
-  <Card header="Add a workout">
+  <Card header={$formData.id ? "update workout" : "add a workout"}>
     <form method="post" action="?/modify" use:enhance>
       <div class="flex gap-2">
         <!-- WORKOUT AREA -->
