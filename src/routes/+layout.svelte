@@ -1,9 +1,10 @@
-<script>
-   import Navbar from "$lib/Navbar.svelte";
-   import "../app.pcss";
-</script>
+<script>import "../app.css";
+import Navbar from "$lib/Navbar.svelte";
+import { ModeWatcher } from "mode-watcher";
+import "../app.pcss";</script>
 
-<Navbar />
+<ModeWatcher></ModeWatcher>
+<Navbar></Navbar>
 <div class="md:container">
-   <slot />
+  <slot></slot>
 </div>

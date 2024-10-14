@@ -1,17 +1,18 @@
 import { error } from "@sveltejs/kit";
-import { client } from "$lib/server/databaseClient";
+import { db } from "$lib/server/databaseClient";
 import {
   GET_CARS_OWNED,
   GET_CONSUMPTION,
   GET_SUMMARY,
 } from "$lib/server/queries.js";
 import type { Cars, Consumption, Summary } from "$lib/types.js";
+import type { PageServerLoad } from "./$types";
 
-export const load = async ({ params }) => {
+export const load: PageServerLoad = async ({ params }) => {
   try {
     const carId = parseInt(params.id);
 
-    const rs = await client.batch(
+    const rs = await db.batch(
       [
         GET_CARS_OWNED,
         {
@@ -23,7 +24,7 @@ export const load = async ({ params }) => {
           args: { carId },
         },
       ],
-      "read"
+      "read",
     );
 
     const cars: Cars[] = rs[0].rows.map((row: any) => ({

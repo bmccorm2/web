@@ -1,4 +1,4 @@
-import type { Book, BookDb } from "$lib/types";
+import type { Book, BookDb, SwimWorkout, SwimWorkoutDb } from "$lib/types";
 
 export const serializeBooks = (books: BookDb[]): Book[] => {
   const booksMap = new Map();
@@ -36,8 +36,29 @@ export const serializeBooks = (books: BookDb[]): Book[] => {
         id: genreId,
         description: genreDescription,
       });
-    }
+    },
   );
-
   return Array.from(booksMap.values());
+};
+
+export const serializeSwimWorkout = (
+  swimWorkouts: SwimWorkoutDb[],
+): SwimWorkout[] => {
+  const map = new Map();
+  swimWorkouts.forEach(
+    ({ swimWorkoutId, tagId, swimWorkoutText, yards, created, tag }) => {
+      const workoutId = swimWorkoutId;
+      if (!map.has(workoutId)) {
+        map.set(workoutId, {
+          id: workoutId,
+          swimWorkoutText,
+          yards,
+          created,
+          tags: [],
+        });
+      }
+      if (tag) map.get(workoutId).tags.push({ id: tagId, tag });
+    },
+  );
+  return Array.from(map.values());
 };
