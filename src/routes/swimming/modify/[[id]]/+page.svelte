@@ -62,7 +62,7 @@
           </Form.Control>
           <Form.FieldErrors />
         </Form.Field>
-        <div>
+        <div class="lg:w-4/12">
           <!-- YARDS -->
           <Form.Field {form} name="yards" class="m-4">
             <Form.Control let:attrs>
