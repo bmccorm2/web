@@ -67,5 +67,4 @@
   <div class="mb-3">
     <pre class="text-xs">{swimWorkoutText}</pre>
   </div>
-  <p>ID: {id}</p>
 </div>
