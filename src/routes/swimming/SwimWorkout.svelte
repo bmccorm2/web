@@ -52,13 +52,13 @@
           </div>
         {/each}
       {:else}
-        <div class="place-self-start rounded-xl bg-red-700 px-2 py-1 text-xs">
+        <div class="place-self-start rounded-xl bg-red-700 px-2 py-1 text-sm">
           No Tags
         </div>
       {/if}
     </div>
 
-    <div class="place-self-start rounded-xl bg-blue-700 px-2 py-1 text-smk">
+    <div class="place-self-start rounded-xl bg-blue-700 px-2 py-1 text-sm">
       {yards} yards
     </div>
   </div>
