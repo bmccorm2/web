@@ -44,7 +44,7 @@
 <Input
   placeholder="Search"
   bind:value={filterText}
-  class="mb-4"
+  class="mb-4 "
   on:keyup={filterWorkouts}
 />
 
