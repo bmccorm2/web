@@ -12,7 +12,7 @@
   const filterWorkouts = () => {
     if (filterText === "") filteredWorkouts = data.swimWorkouts;
     else {
-      filteredWorkouts = data.swimWorkouts.filter(
+      const matchByTags = data.swimWorkouts.filter(
         (workout: SwimWorkoutType) => {
           return (
             workout.tags?.some((e) =>
@@ -21,6 +21,12 @@
           );
         },
       );
+      const matchByAuthor = data.swimWorkouts.filter(
+        (workout: SwimWorkoutType) =>
+          workout.author?.toLowerCase().includes(filterText.toLowerCase()),
+      );
+
+      filteredWorkouts = [...new Set([...matchByTags, ...matchByAuthor])];
     }
   };
 </script>

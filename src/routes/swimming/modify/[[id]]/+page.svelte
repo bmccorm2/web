@@ -46,7 +46,7 @@
 <div class="mt-2">
   <Card header={$formData.id ? "update workout" : "add a workout"}>
     <form method="post" action="?/modify" use:enhance>
-      <div class="flex gap-2">
+      <div class="lg:flex lg:gap-2">
         <!-- WORKOUT AREA -->
         <Form.Field {form} name="swimWorkoutText" class="m-4 grow">
           <Form.Control let:attrs>
@@ -92,10 +92,10 @@
           </Form.Field>
           <!-- TAGS -->
           <Form.Fieldset {form} name="tags">
-            <div class="m-4 grid lg:grid-cols-2 gap-2 xl:grid-cols-3">
+            <div class="mx-4 grid grid-cols-2 gap-2 xl:grid-cols-3 mb-4">
               {#each data.swimTags as tag}
                 {@const checked = $formData.tags?.some((e) => e.id === tag.id)}
-                <div class="flex items-center justify-items-start">
+                <div class="flex items-center">
                   <Form.Control let:attrs>
                     <Checkbox
                       {...attrs}
