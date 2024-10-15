@@ -46,7 +46,15 @@ export const serializeSwimWorkout = (
 ): SwimWorkout[] => {
   const map = new Map();
   swimWorkouts.forEach(
-    ({ swimWorkoutId, tagId, swimWorkoutText, yards, created, tag }) => {
+    ({
+      swimWorkoutId,
+      tagId,
+      swimWorkoutText,
+      yards,
+      created,
+      tag,
+      author,
+    }) => {
       const workoutId = swimWorkoutId;
       if (!map.has(workoutId)) {
         map.set(workoutId, {
@@ -54,6 +62,7 @@ export const serializeSwimWorkout = (
           swimWorkoutText,
           yards,
           created,
+          author,
           tags: [],
         });
       }

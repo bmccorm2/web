@@ -45,14 +45,14 @@ export const actions: Actions = {
     const form = await superValidate(event, zod(swimWorkoutSchema));
     if (!form.valid) return fail(400, { form });
 
-    const { swimWorkoutText, yards, tags, id } = form.data;
+    const { swimWorkoutText, yards, tags, id, author } = form.data;
     const transaction = await db.transaction("write");
 
     if (id) {
       //UPDATE EXISTING WORKOUT
       await transaction.execute({
         sql: UPDATE_SWIM_WORKOUT,
-        args: { id, swimWorkoutText, yards },
+        args: { id, swimWorkoutText, yards, author: author || null },
       });
       await transaction.execute({
         sql: DELETE_STA,
@@ -71,6 +71,7 @@ export const actions: Actions = {
         args: {
           swimWorkoutText,
           yards,
+          author: author || null,
         },
       });
 

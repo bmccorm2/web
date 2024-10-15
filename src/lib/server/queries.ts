@@ -38,11 +38,12 @@ INSERT INTO consumption (carId, price, gallons, miles, notes) VALUES (
 `;
 
 export const INSERT_SWIM_WORKOUT = `
-  INSERT INTO swim_workouts (swimWorkoutText, yards) VALUES (:swimWorkoutText, :yards)
+  INSERT INTO swim_workouts (swimWorkoutText, yards, author)
+  VALUES (:swimWorkoutText, :yards, :author)
 `;
 
 export const GET_SWIM_WORKOUT = `
-  SELECT t.swimWorkoutText, t.yards, t.id as swimWorkoutId, t.created, st.tag, st.id as tagId
+  SELECT t.swimWorkoutText, t.yards, t.id as swimWorkoutId, t.created, st.tag, st.id as tagId, t.author
   FROM swim_workouts t
   LEFT OUTER JOIN swim_workout_tag_association sta on sta.swimWorkoutId=t.id
   LEFT OUTER JOIN swim_tags st on st.id=sta.swimTagId
@@ -51,7 +52,7 @@ export const GET_SWIM_WORKOUT = `
   `;
 
 export const GET_SWIM_WORKOUTS = `
-  SELECT t.swimWorkoutText, t.yards, t.id as swimWorkoutId, t.created, st.tag, st.id as tagId
+  SELECT t.swimWorkoutText, t.yards, t.id as swimWorkoutId, t.created, st.tag, st.id as tagId, t.author
   FROM swim_workouts t
   LEFT OUTER JOIN swim_workout_tag_association sta on sta.swimWorkoutId=t.id
   LEFT OUTER JOIN swim_tags st on st.id=sta.swimTagId
@@ -75,7 +76,8 @@ export const UPDATE_SWIM_WORKOUT = `
   UPDATE swim_workouts
   SET
     swimWorkoutText = :swimWorkoutText,
-    yards = :yards
+    yards = :yards,
+    author = :author
   WHERE id = :id
   `;
 

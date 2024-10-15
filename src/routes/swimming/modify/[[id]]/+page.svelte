@@ -63,6 +63,19 @@
           <Form.FieldErrors />
         </Form.Field>
         <div class="lg:w-4/12">
+          <!-- AUTHOR          -->
+          <Form.Field {form} name="author" class="m-4">
+            <Form.Control let:attrs>
+              <Input
+                {...attrs}
+                placeholder="Author"
+                class="rounded-md p-2 ring-1 ring-slate-400"
+                bind:value={$formData.author}
+                autocomplete="off"
+              />
+            </Form.Control>
+            <Form.FieldErrors />
+          </Form.Field>
           <!-- YARDS -->
           <Form.Field {form} name="yards" class="m-4">
             <Form.Control let:attrs>

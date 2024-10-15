@@ -5,10 +5,22 @@
   export let swimWorkoutText: string;
   export let yards: number;
   export let created: number;
+  export let author: string | undefined;
   export let tags: SwimTag[] | undefined = undefined;
   export let id: number | undefined = undefined;
 
-  const createdDate = new Date(created);
+  const localDate = new Date(created);
+  const utcDate = new Date(
+    Date.UTC(
+      localDate.getFullYear(),
+      localDate.getMonth(),
+      localDate.getDate(),
+      localDate.getHours(),
+      localDate.getMinutes(),
+      localDate.getSeconds(),
+    ),
+  );
+
   const dateFormatter = {
     month: "short",
     day: "numeric",
@@ -19,11 +31,11 @@
 <div
   class="mb-2 rounded-lg border-2 border-teal-500 dark:bg-slate-800 p-4 md:mb-0"
 >
-  <div class="mb-4 flex justify-between">
+  <div class={`flex justify-between ${author ? "mb-2" : "mb-4"}`}>
     <div class="flex content-center gap-3">
       <!-- DATE -->
       <div class="text-3xl font-bold underline">
-        {createdDate.toLocaleDateString("en-US", dateFormatter)}
+        {utcDate.toLocaleString("en-US", dateFormatter)}
       </div>
     </div>
     <!-- ACTIONS -->
@@ -39,6 +51,10 @@
       </form>
     </div>
   </div>
+  <!-- AUTHOR -->
+  {#if author}
+    <div><p class="text-xs mb-4 text-gray-500">By: {author}</p></div>
+  {/if}
   <!-- TAGS/YARDS -->
   <div class="flex justify-between">
     <div class="flex gap-2">

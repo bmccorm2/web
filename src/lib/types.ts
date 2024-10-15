@@ -9,6 +9,7 @@ export const swimWorkoutSchema = z.object({
   id: z.number().positive().optional(),
   created: z.number(),
   swimWorkoutText: z.string().min(1),
+  author: z.string().optional().nullable(),
   yards: z.coerce
     .number()
     .gte(500)
@@ -27,6 +28,7 @@ export type SwimWorkoutDb = {
   yards: number;
   created: number;
   tag: string;
+  author: string | undefined;
 };
 
 export const genreSchema = z.object({
