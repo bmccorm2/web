@@ -5,7 +5,7 @@
   export let swimWorkoutText: string;
   export let yards: number;
   export let created: number;
-  export let author: string | undefined;
+  export let author: string | undefined | null = undefined;
   export let tags: SwimTag[] | undefined = undefined;
   export let id: number | undefined = undefined;
 
