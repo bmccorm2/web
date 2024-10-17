@@ -31,6 +31,11 @@
   };
 </script>
 
+<svelte:head>
+  <title>Swimming</title>
+  <meta name="swim workouts" content="save swim workouts" />
+</svelte:head>
+
 <div class="flex justify-center">
   <Button
     variant="link"

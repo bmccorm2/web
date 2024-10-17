@@ -43,6 +43,11 @@
   }
 </script>
 
+<svelte:head>
+  <title>Modify Workout</title>
+  <meta name="swim workouts" content="add or change an existing swim workout" />
+</svelte:head>
+
 <div class="mt-2">
   <Card header={$formData.id ? "update workout" : "add a workout"}>
     <form method="post" action="?/modify" use:enhance>
