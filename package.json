@@ -12,6 +12,7 @@
     "format": "prettier --plugin-search-dir . --write ."
   },
   "devDependencies": {
+    "@libsql/client": "^0.14.0",
     "@sveltejs/adapter-auto": "^3.3.0",
     "@sveltejs/adapter-vercel": "^5.4.5",
     "@sveltejs/kit": "^2.7.2",
@@ -42,7 +43,6 @@
   },
   "type": "module",
   "dependencies": {
-    "@libsql/client": "^0.14.0",
     "chart.js": "^4.4.5"
   }
 }
