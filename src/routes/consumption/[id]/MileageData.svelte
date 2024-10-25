@@ -2,7 +2,11 @@
   import Card from "$lib/Card.svelte";
   import type { Consumption } from "$lib/types";
 
-  export let tableRows: Consumption[];
+  interface Props {
+    tableRows: Consumption[];
+  }
+
+  let { tableRows }: Props = $props();
 </script>
 
 <Card header="mileage data">

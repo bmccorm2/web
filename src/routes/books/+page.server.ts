@@ -2,7 +2,7 @@ import { error } from "@sveltejs/kit";
 import type { Actions } from "./$types.js";
 import { db } from "$lib/server/databaseClient.js";
 import { DELETE_BGA, DELETE_BOOK, GET_BOOKS } from "$lib/server/queries.js";
-import type { Book, BookDb } from "$lib/types.js";
+import type { BookDb } from "$lib/types.js";
 import { serializeBooks } from "$lib/server/utilities.js";
 
 export const load = async () => {

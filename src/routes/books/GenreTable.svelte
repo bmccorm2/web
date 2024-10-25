@@ -3,7 +3,11 @@
    import type { Genre } from "$lib/types";
    import { Trash2 } from "lucide-svelte";
 
-   export let genres: Genre[];
+   interface Props {
+      genres: Genre[];
+   }
+
+   let { genres }: Props = $props();
 </script>
 
 <table class="mx-4 mb-2 w-full table-auto">

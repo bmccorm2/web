@@ -3,7 +3,11 @@
   import type { Summary } from "$lib/types";
   import SummaryItem from "./SummaryItem.svelte";
 
-  export let summary: Summary;
+  interface Props {
+    summary: Summary;
+  }
+
+  let { summary }: Props = $props();
 
   const roundTwoDecimals = {
     minimumFractionDigits: 2,

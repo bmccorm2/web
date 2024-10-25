@@ -1,13 +1,13 @@
 <script lang="ts">
    let GRID_SIZE = 30;
    let TICK = 500;
-   let grid = new Array(GRID_SIZE)
+   let grid = $state(new Array(GRID_SIZE)
       .fill(0)
-      .map((e) => (e = new Array(GRID_SIZE)));
+      .map((e) => (e = new Array(GRID_SIZE))));
    let aliveCells: number[][] = [];
-   let generation = 0;
+   let generation = $state(0);
    let timers: NodeJS.Timeout[] = [];
-   let isRunning: Boolean = true;
+   let isRunning: Boolean = $state(true);
    const neighbors: number[][] = [
       [-1, -1],
       [0, -1],
@@ -150,23 +150,23 @@
 <div class="flex items-center justify-center">
    <button
       class="btn mr-2 mt-4 border bg-cyan-600 text-sm"
-      on:click={randomGenerator}>Random Generator!</button
+      onclick={randomGenerator}>Random Generator!</button
    >
-   <button class="btn mr-2 mt-4 border bg-cyan-600 text-sm" on:click={toad}
+   <button class="btn mr-2 mt-4 border bg-cyan-600 text-sm" onclick={toad}
       >Toad</button
    >
-   <button class="btn mr-2 mt-4 border bg-cyan-600 text-sm" on:click={blinker}
+   <button class="btn mr-2 mt-4 border bg-cyan-600 text-sm" onclick={blinker}
       >Blinker</button
    >
    <button
       class="btn mr-2 mt-4 border bg-cyan-600 text-sm"
-      on:click={pentaDecathlon}>Penta-Decathlon</button
+      onclick={pentaDecathlon}>Penta-Decathlon</button
    >
 
    {#if isRunning}
       <button
          class="btn mr-2 mt-4 border bg-cyan-600 text-sm"
-         on:click={() => {
+         onclick={() => {
             isRunning = !isRunning;
             reset(false);
          }}>Pause</button
@@ -174,7 +174,7 @@
    {:else}
       <button
          class="btn mr-2 mt-4 border bg-gray-500 text-sm"
-         on:click={() => {
+         onclick={() => {
             isRunning = !isRunning;
             runLife();
          }}>Resume</button
@@ -196,7 +196,7 @@
                <div
                   class="h-6 w-6 border border-gray-500"
                   class:bg-red-800={cell === 1}
-               />
+></div>
             {/each}
          </div>
       {/each}

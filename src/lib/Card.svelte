@@ -1,6 +1,11 @@
 <script lang="ts">
-  export let header = "default title";
-  export let isSuccess = false;
+  interface Props {
+    header?: string;
+    isSuccess?: boolean;
+    children?: import('svelte').Snippet;
+  }
+
+  let { header = "default title", isSuccess = false, children }: Props = $props();
 </script>
 
 <div class="w-full font-bold rounded-lg bg-slate-800 border-4 border-slate-400">
@@ -11,5 +16,5 @@
   >
     {header}
   </div>
-  <slot />
+  {@render children?.()}
 </div>

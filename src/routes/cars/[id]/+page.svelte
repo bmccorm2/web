@@ -3,7 +3,11 @@
    import type { PageServerData } from "./$types";
    import CarChart from "./CarChart.svelte";
 
-   export let data: PageServerData;
+   interface Props {
+      data: PageServerData;
+   }
+
+   let { data }: Props = $props();
    const { cars, carDetails } = data;
 </script>
 

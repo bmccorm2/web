@@ -2,7 +2,11 @@
   import type { Cars } from "./types";
   import { page } from "$app/stores";
 
-  export let cars: Cars[];
+  interface Props {
+    cars: Cars[];
+  }
+
+  let { cars }: Props = $props();
 </script>
 
 <div class="md:gap my-2 text-center md:flex md:items-center md:justify-center">

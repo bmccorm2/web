@@ -9,7 +9,11 @@
   import type { PageData } from "./$types";
   import { Checkbox } from "$lib/components/ui/checkbox";
 
-  export let data: PageData;
+  interface Props {
+    data: PageData;
+  }
+
+  let { data }: Props = $props();
 
   const form = superForm(data.form, {
     validators: zodClient(swimWorkoutSchema),
@@ -54,45 +58,51 @@
       <div class="lg:flex lg:gap-2">
         <!-- WORKOUT AREA -->
         <Form.Field {form} name="swimWorkoutText" class="m-4 grow">
-          <Form.Control let:attrs>
-            <Textarea
-              {...attrs}
-              class="rounded-md p-2 ring-1 ring-slate-400 h-72"
-              bind:value={$formData.swimWorkoutText}
-              on:keydown={handleTab}
-              placeholder="Workout"
-              autocomplete="off"
-              spellcheck="false"
-            />
-          </Form.Control>
+          <Form.Control >
+            {#snippet children({ attrs })}
+                        <Textarea
+                {...attrs}
+                class="rounded-md p-2 ring-1 ring-slate-400 h-72"
+                bind:value={$formData.swimWorkoutText}
+                on:keydown={handleTab}
+                placeholder="Workout"
+                autocomplete="off"
+                spellcheck="false"
+              />
+                                  {/snippet}
+                    </Form.Control>
           <Form.FieldErrors />
         </Form.Field>
         <div class="lg:w-4/12">
           <!-- AUTHOR          -->
           <Form.Field {form} name="author" class="m-4">
-            <Form.Control let:attrs>
-              <Input
-                {...attrs}
-                placeholder="Author"
-                class="rounded-md p-2 ring-1 ring-slate-400"
-                bind:value={$formData.author}
-                autocomplete="off"
-              />
-            </Form.Control>
+            <Form.Control >
+              {#snippet children({ attrs })}
+                            <Input
+                  {...attrs}
+                  placeholder="Author"
+                  class="rounded-md p-2 ring-1 ring-slate-400"
+                  bind:value={$formData.author}
+                  autocomplete="off"
+                />
+                                        {/snippet}
+                        </Form.Control>
             <Form.FieldErrors />
           </Form.Field>
           <!-- YARDS -->
           <Form.Field {form} name="yards" class="m-4">
-            <Form.Control let:attrs>
-              <Input
-                {...attrs}
-                type="number"
-                placeholder="Yards"
-                class="rounded-md p-2 ring-1 ring-slate-400"
-                bind:value={$formData.yards}
-                autocomplete="off"
-              />
-            </Form.Control>
+            <Form.Control >
+              {#snippet children({ attrs })}
+                            <Input
+                  {...attrs}
+                  type="number"
+                  placeholder="Yards"
+                  class="rounded-md p-2 ring-1 ring-slate-400"
+                  bind:value={$formData.yards}
+                  autocomplete="off"
+                />
+                                        {/snippet}
+                        </Form.Control>
             <Form.FieldErrors />
           </Form.Field>
           <!-- TAGS -->
@@ -101,26 +111,28 @@
               {#each data.swimTags as tag}
                 {@const checked = $formData.tags?.some((e) => e.id === tag.id)}
                 <div class="flex items-center">
-                  <Form.Control let:attrs>
-                    <Checkbox
-                      {...attrs}
-                      {checked}
-                      onCheckedChange={(v) => {
-                        if (v) {
-                          addTag(tag.id, tag.tag);
-                        } else {
-                          removeTag(tag.id);
-                        }
-                      }}
-                    />
-                    <Form.Label class="ml-2">{tag.tag}</Form.Label>
-                    <input
-                      hidden
-                      type="checkbox"
-                      name={attrs.name}
-                      value={tag.id}
-                    />
-                  </Form.Control>
+                  <Form.Control >
+                    {#snippet children({ attrs })}
+                                        <Checkbox
+                        {...attrs}
+                        {checked}
+                        onCheckedChange={(v) => {
+                          if (v) {
+                            addTag(tag.id, tag.tag);
+                          } else {
+                            removeTag(tag.id);
+                          }
+                        }}
+                      />
+                      <Form.Label class="ml-2">{tag.tag}</Form.Label>
+                      <input
+                        hidden
+                        type="checkbox"
+                        name={attrs.name}
+                        value={tag.id}
+                      />
+                                                          {/snippet}
+                                    </Form.Control>
                   <Form.FieldErrors />
                 </div>
               {/each}

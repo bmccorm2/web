@@ -11,7 +11,7 @@
    import { bookSchema, type Genre } from "$lib/types";
    import { Input } from "$lib/components/ui/input";
 
-   export let data;
+   let { data } = $props();
 
    const form = superForm(data.form, {
       validators: zodClient(bookSchema),
@@ -22,7 +22,9 @@
 
    //For the star rating so we can bind it to the form
    userRating.set($formData.rating);
-   $: $formData.rating = $userRating;
+   $effect(() => {
+      $formData.rating = $userRating;
+   });
 
    const addGenre = (id: number, description: string) => {
       $formData.genres = [...$formData.genres, { id, description }];
@@ -39,42 +41,48 @@
          <form action="?/modify" method="post" use:enhance>
             <div class="mx-2">
                <Form.Field {form} name="title" class="mx-4 mb-4 mt-4">
-                  <Form.Control let:attrs>
-                     <Input
-                        {...attrs}
-                        class="rounded-md p-2 ring-1 ring-slate-400"
-                        bind:value={$formData.title}
-                        placeholder="Title"
-                        autocomplete="off"
-                        spellcheck="false"
-                     />
-                  </Form.Control>
+                  <Form.Control >
+                     {#snippet children({ attrs })}
+                                          <Input
+                           {...attrs}
+                           class="rounded-md p-2 ring-1 ring-slate-400"
+                           bind:value={$formData.title}
+                           placeholder="Title"
+                           autocomplete="off"
+                           spellcheck="false"
+                        />
+                                                            {/snippet}
+                                    </Form.Control>
                   <Form.FieldErrors />
                </Form.Field>
                <Form.Field {form} name="author" class="m-4">
-                  <Form.Control let:attrs>
-                     <Input
-                        {...attrs}
-                        class="rounded-md p-2 ring-1 ring-slate-400"
-                        bind:value={$formData.author}
-                        placeholder="Author"
-                        autocomplete="off"
-                        spellcheck="false"
-                     />
-                  </Form.Control>
+                  <Form.Control >
+                     {#snippet children({ attrs })}
+                                          <Input
+                           {...attrs}
+                           class="rounded-md p-2 ring-1 ring-slate-400"
+                           bind:value={$formData.author}
+                           placeholder="Author"
+                           autocomplete="off"
+                           spellcheck="false"
+                        />
+                                                            {/snippet}
+                                    </Form.Control>
                   <Form.FieldErrors />
                </Form.Field>
                <Form.Field {form} name="review" class="m-4">
-                  <Form.Control let:attrs>
-                     <Textarea
-                        {...attrs}
-                        class="rounded-md p-2 ring-1 ring-slate-400"
-                        bind:value={$formData.review}
-                        placeholder="Review"
-                        autocomplete="off"
-                        spellcheck="false"
-                     />
-                  </Form.Control>
+                  <Form.Control >
+                     {#snippet children({ attrs })}
+                                          <Textarea
+                           {...attrs}
+                           class="rounded-md p-2 ring-1 ring-slate-400"
+                           bind:value={$formData.review}
+                           placeholder="Review"
+                           autocomplete="off"
+                           spellcheck="false"
+                        />
+                                                            {/snippet}
+                                    </Form.Control>
                   <Form.FieldErrors />
                </Form.Field>
                <!-- GENRES -->
@@ -89,27 +97,29 @@
                               (e) => e.id === genre.id,
                            )}
                            <div class="flex items-center">
-                              <Form.Control let:attrs>
-                                 <Checkbox
-                                    {...attrs}
-                                    {checked}
-                                    onCheckedChange={(e) => {
-                                       if (e)
-                                          addGenre(genre.id, genre.description);
-                                       else removeGenre(genre.id);
-                                    }}
-                                 />
-                                 <Form.Label class="ml-2"
-                                    >{genre.description}</Form.Label
-                                 >
-                                 <input
-                                    hidden
-                                    type="checkbox"
-                                    name={attrs.name}
-                                    value={genre.id}
-                                    {checked}
-                                 />
-                              </Form.Control>
+                              <Form.Control >
+                                 {#snippet children({ attrs })}
+                                                                  <Checkbox
+                                       {...attrs}
+                                       {checked}
+                                       onCheckedChange={(e) => {
+                                          if (e)
+                                             addGenre(genre.id, genre.description);
+                                          else removeGenre(genre.id);
+                                       }}
+                                    />
+                                    <Form.Label class="ml-2"
+                                       >{genre.description}</Form.Label
+                                    >
+                                    <input
+                                       hidden
+                                       type="checkbox"
+                                       name={attrs.name}
+                                       value={genre.id}
+                                       {checked}
+                                    />
+                                                                                                {/snippet}
+                                                            </Form.Control>
                               <Form.FieldErrors />
                            </div>
                         {/each}
@@ -125,18 +135,20 @@
                   </div>
                   <div class="text-center">
                      <Form.Field {form} name="isFiction">
-                        <Form.Control let:attrs>
-                           <Checkbox
-                              {...attrs}
-                              bind:checked={$formData.isFiction}
-                           />
-                           <Form.Label>Is Fiction?</Form.Label>
-                           <input
-                              name={attrs.name}
-                              value={$formData.isFiction}
-                              hidden
-                           />
-                        </Form.Control>
+                        <Form.Control >
+                           {#snippet children({ attrs })}
+                                                      <Checkbox
+                                 {...attrs}
+                                 bind:checked={$formData.isFiction}
+                              />
+                              <Form.Label>Is Fiction?</Form.Label>
+                              <input
+                                 name={attrs.name}
+                                 value={$formData.isFiction}
+                                 hidden
+                              />
+                                                                              {/snippet}
+                                                </Form.Control>
                         <Form.FieldErrors />
                      </Form.Field>
                   </div>
@@ -144,29 +156,33 @@
                <!-- PAGES -->
                <div class="m-4 lg:flex lg:content-center lg:justify-evenly">
                   <Form.Field {form} name="pages">
-                     <Form.Control let:attrs>
-                        <Input
-                           {...attrs}
-                           type="number"
-                           placeholder="Pages"
-                           class="rounded-md p-2 ring-1 ring-slate-400"
-                           bind:value={$formData.pages}
-                           autocomplete="off"
-                        />
-                     </Form.Control>
+                     <Form.Control >
+                        {#snippet children({ attrs })}
+                                                <Input
+                              {...attrs}
+                              type="number"
+                              placeholder="Pages"
+                              class="rounded-md p-2 ring-1 ring-slate-400"
+                              bind:value={$formData.pages}
+                              autocomplete="off"
+                           />
+                                                                     {/snippet}
+                                          </Form.Control>
                      <Form.FieldErrors />
                   </Form.Field>
                   <Form.Field {form} name="publishDate">
-                     <Form.Control let:attrs>
-                        <Input
-                           {...attrs}
-                           type="number"
-                           placeholder="Publish Date"
-                           class="rounded-md p-2 ring-1 ring-slate-400"
-                           bind:value={$formData.publishDate}
-                           autocomplete="off"
-                        />
-                     </Form.Control>
+                     <Form.Control >
+                        {#snippet children({ attrs })}
+                                                <Input
+                              {...attrs}
+                              type="number"
+                              placeholder="Publish Date"
+                              class="rounded-md p-2 ring-1 ring-slate-400"
+                              bind:value={$formData.publishDate}
+                              autocomplete="off"
+                           />
+                                                                     {/snippet}
+                                          </Form.Control>
                      <Form.FieldErrors />
                   </Form.Field>
                </div>

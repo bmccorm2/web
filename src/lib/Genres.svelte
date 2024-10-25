@@ -12,8 +12,12 @@
    import { zodClient } from "sveltekit-superforms/adapters";
    import { toast, Toaster } from "svelte-sonner";
 
-   export let data: SuperValidated<Infer<typeof genreSchema>>;
-   export let genres: Genre[];
+   interface Props {
+      data: SuperValidated<Infer<typeof genreSchema>>;
+      genres: Genre[];
+   }
+
+   let { data, genres }: Props = $props();
 
    const form = superForm(data, {
       validators: zodClient(genreSchema),
@@ -32,16 +36,18 @@
 <Card header="genres">
    <form action="?/insertGenre" class="my-4" method="post">
       <Form.Field {form} name="description" class="mx-4">
-         <Form.Control let:attrs>
-            <Input
-               {...attrs}
-               placeholder="Add a Genre"
-               autocomplete="off"
-               spellcheck="false"
-               bind:value={$formData.description}
-               class="rounded-md p-2 ring-1 ring-slate-400"
-            />
-         </Form.Control>
+         <Form.Control >
+            {#snippet children({ attrs })}
+                        <Input
+                  {...attrs}
+                  placeholder="Add a Genre"
+                  autocomplete="off"
+                  spellcheck="false"
+                  bind:value={$formData.description}
+                  class="rounded-md p-2 ring-1 ring-slate-400"
+               />
+                                 {/snippet}
+                  </Form.Control>
          <Form.FieldErrors />
       </Form.Field>
       <div class="text-center">

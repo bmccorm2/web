@@ -2,7 +2,11 @@
   import type { Book } from "$lib/types";
   import { Star, PencilLine, Trash2 } from "lucide-svelte";
 
-  export let bookDetails: Book;
+  interface Props {
+    bookDetails: Book;
+  }
+
+  let { bookDetails }: Props = $props();
 
   const { title, author, rating, pages, isFiction, id, review } = bookDetails;
 </script>

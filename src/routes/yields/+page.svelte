@@ -1,8 +1,8 @@
 <script lang="ts">
    import YieldChart from "./YieldChart.svelte";
 
-   export let data;
-   $: ({ yields } = data);
+   let { data } = $props();
+   let { yields } = $derived(data);
 </script>
 
 <svelte:head>

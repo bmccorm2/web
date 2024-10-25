@@ -4,10 +4,10 @@
   import SwimWorkout from "./SwimWorkout.svelte";
   import type { SwimWorkout as SwimWorkoutType } from "$lib/types";
 
-  export let data;
+  let { data } = $props();
 
-  let filterText: string;
-  let filteredWorkouts = data.swimWorkouts;
+  let filterText: string = $state();
+  let filteredWorkouts = $state(data.swimWorkouts);
 
   const filterWorkouts = () => {
     if (filterText === "") filteredWorkouts = data.swimWorkouts;

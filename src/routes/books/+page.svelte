@@ -2,7 +2,7 @@
    import { Button } from "$lib/components/ui/button";
    import Book from "./Book.svelte";
 
-   export let data;
+   let { data } = $props();
 </script>
 
 <div class="flex justify-center">

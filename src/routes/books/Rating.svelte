@@ -8,7 +8,7 @@
 </script>
 
 {#each [1, 2, 3, 4, 5] as star}
-   <button type="button" on:click={() => handleRating(star)}>
+   <button type="button" onclick={() => handleRating(star)}>
       <Star
          size={32}
          strokeWidth={0}

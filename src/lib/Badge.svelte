@@ -1,6 +1,10 @@
 <script lang="ts">
-  export let text = "Default";
-  export let textSize = "sm";
+  interface Props {
+    text?: string;
+    textSize?: string;
+  }
+
+  let { text = "Default", textSize = "sm" }: Props = $props();
 </script>
 
 <div class="px-2 py-1 rounded-xl text-{textSize}">

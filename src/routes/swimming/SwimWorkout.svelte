@@ -2,12 +2,23 @@
   import type { SwimTag } from "$lib/types";
   import { PencilLine, Trash2 } from "lucide-svelte";
 
-  export let swimWorkoutText: string;
-  export let yards: number;
-  export let created: number;
-  export let author: string | undefined | null = undefined;
-  export let tags: SwimTag[] | undefined = undefined;
-  export let id: number | undefined = undefined;
+  interface Props {
+    swimWorkoutText: string;
+    yards: number;
+    created: number;
+    author?: string | undefined | null;
+    tags?: SwimTag[] | undefined;
+    id?: number | undefined;
+  }
+
+  let {
+    swimWorkoutText,
+    yards,
+    created,
+    author = undefined,
+    tags = undefined,
+    id = undefined
+  }: Props = $props();
 
   const localDate = new Date(created);
   const utcDate = new Date(

@@ -6,10 +6,10 @@
   import { toggleMode } from "mode-watcher";
   import { Button } from "$lib/components/ui/button/index.js";
 
-  $: url = $page.url.pathname;
-  $: activeUrl = url === "/" ? "/home" : url;
+  let url = $derived($page.url.pathname);
+  let activeUrl = $derived(url === "/" ? "/home" : url);
 
-  let isShowNavbar = false;
+  let isShowNavbar = $state(false);
 
   const routes = [
     {
@@ -99,7 +99,7 @@
       </Button>
     </li>
     <li class="md:hidden">
-      <button on:click={toggleNavbar}>
+      <button onclick={toggleNavbar}>
         <Menu />
       </button>
     </li>

@@ -10,8 +10,8 @@
     CategoryScale,
     LineController,
     Filler,
+    type ChartItem,
   } from "chart.js";
-  import { afterUpdate } from "svelte";
 
   Chart.register(
     Tooltip,
@@ -21,7 +21,7 @@
     PointElement,
     CategoryScale,
     LineController,
-    Filler
+    Filler,
   );
 
   type ChartType = {
@@ -34,10 +34,15 @@
     [key: string]: ChartType;
   };
 
-  export let chartData: Consumption[];
-  export let selectedChart: string;
+  const {
+    chartData,
+    selectedChart,
+  }: {
+    chartData: Consumption[];
+    selectedChart: string;
+  } = $props();
 
-  let myCanvas: HTMLCanvasElement;
+  let myCanvas = $state<ChartItem>();
   let myChart: Chart;
 
   const fontColor = "#e2e8f0"; //slate-200
@@ -92,7 +97,7 @@
     },
   };
 
-  $: data = {
+  let data = $derived({
     labels: chartData
       .map((o) => new Date(o.created).toISOString().split("T")[0])
       .reverse(),
@@ -100,8 +105,10 @@
       {
         label: chartTypes[selectedChart].label,
         data: chartData
-          .map((o) =>
-            parseFloat(o[chartTypes[selectedChart].datapoint].toFixed(2))
+          .map((o: Consumption) =>
+            parseFloat(
+              (o as any)[chartTypes[selectedChart].datapoint].toFixed(2),
+            ),
           )
           .reverse(),
         backgroundColor: "#0369a1", //sky-700
@@ -111,13 +118,13 @@
         radius: chartTypes[selectedChart].radius,
       },
     ],
-  };
+  });
 
-  afterUpdate(() => {
+  $effect(() => {
     if (chartData.length != 0) {
       if (myChart) myChart.destroy();
 
-      myChart = new Chart(myCanvas, {
+      myChart = new Chart(myCanvas!, {
         type: "line",
         data,
         options,
@@ -130,6 +137,6 @@
   {#if chartData.length === 0}
     <h6>No Chart Data...</h6>
   {:else}
-    <canvas bind:this={myCanvas} />
+    <canvas bind:this={myCanvas}></canvas>
   {/if}
 </div>
