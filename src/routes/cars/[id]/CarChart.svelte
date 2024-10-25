@@ -1,5 +1,5 @@
 <!-- @migration-task Error while migrating Svelte code: Identifier 'chartData' has already been declared -->
-<script lang="ts">
+<!-- <script lang="ts">
   import {
     Chart,
     Tooltip,
@@ -96,7 +96,7 @@
     ({ price, miles, url, displayName, year, effectiveDate } = value);
   };
 </script>
-
+ -->
 <div class="col-12" class:smallChart={isSelected}>
   <!-- <Chart bind:chart type="scatter" on:click={handleClick} {data} {options} /> -->
 </div>
