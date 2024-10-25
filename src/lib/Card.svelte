@@ -1,11 +1,5 @@
 <script lang="ts">
-  interface Props {
-    header?: string;
-    isSuccess?: boolean;
-    children?: import('svelte').Snippet;
-  }
-
-  let { header = "default title", isSuccess = false, children }: Props = $props();
+  let { header = "default title", isSuccess = false, children } = $props();
 </script>
 
 <div class="w-full font-bold rounded-lg bg-slate-800 border-4 border-slate-400">
@@ -16,5 +10,10 @@
   >
     {header}
   </div>
-  {@render children?.()}
+  {#if children}
+    {@render children()}
+  {:else}
+    <p>No Content</p>
+  {/if}
+
 </div>
