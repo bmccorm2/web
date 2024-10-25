@@ -1,15 +1,10 @@
 <script lang="ts">
-	import * as Button from "$lib/components/ui/button";
-	interface Props {
-		children?: import('svelte').Snippet;
-		[key: string]: any
-	}
-
-	let { children, ...rest }: Props = $props();
+	import * as Button from "$lib/components/ui/button/index.js";
 
 	type $$Props = Button.Props;
+	type $$Events = Button.Events;
 </script>
 
-<Button.Root type="submit" {...rest}>
-	{@render children?.()}
+<Button.Root type="submit" on:click on:keydown {...$$restProps}>
+	<slot />
 </Button.Root>

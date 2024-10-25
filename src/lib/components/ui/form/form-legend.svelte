@@ -1,25 +1,17 @@
 <script lang="ts">
 	import * as FormPrimitive from "formsnap";
-	import { cn } from "$lib/utils";
+	import { cn } from "$lib/utils.js";
 
 	type $$Props = FormPrimitive.LegendProps;
 
-	interface Props {
-		class?: $$Props["class"];
-		children?: import('svelte').Snippet<[any]>;
-		[key: string]: any
-	}
-
-	let { class: className = undefined, children, ...rest }: Props = $props();
-	
+	let className: $$Props["class"] = undefined;
+	export { className as class };
 </script>
 
 <FormPrimitive.Legend
-	{...rest}
-	class={cn("text-sm font-medium leading-none data-[fs-error]:text-destructive", className)}
-	
+	{...$$restProps}
+	class={cn("data-[fs-error]:text-destructive text-sm font-medium leading-none", className)}
+	let:legendAttrs
 >
-	{#snippet children({ legendAttrs })}
-		{@render children?.({ legendAttrs, })}
-	{/snippet}
+	<slot {legendAttrs} />
 </FormPrimitive.Legend>

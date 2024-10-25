@@ -1,43 +1,42 @@
 <script lang="ts">
-   import { createBubbler } from 'svelte/legacy';
+	import type { HTMLInputAttributes } from "svelte/elements";
+	import type { InputEvents } from "./index.js";
+	import { cn } from "$lib/utils.js";
 
-   const bubble = createBubbler();
-   import type { HTMLInputAttributes } from "svelte/elements";
-   import { cn } from "$lib/utils";
-   import type { InputEvents } from ".";
+	type $$Props = HTMLInputAttributes;
+	type $$Events = InputEvents;
 
-   type $$Props = HTMLInputAttributes;
-   type $$Events = InputEvents;
+	let className: $$Props["class"] = undefined;
+	export let value: $$Props["value"] = undefined;
+	export { className as class };
 
-   interface Props {
-      class?: $$Props["class"];
-      value?: $$Props["value"];
-      [key: string]: any
-   }
-
-   let { class: className = undefined, value = $bindable(undefined), ...rest }: Props = $props();
-   
+	// Workaround for https://github.com/sveltejs/svelte/issues/9305
+	// Fixed in Svelte 5, but not backported to 4.x.
+	export let readonly: $$Props["readonly"] = undefined;
 </script>
 
 <input
-   class={cn(
-      "border-input placeholder:text-muted-foreground focus-visible:ring-ring flex h-9 w-full rounded-md border bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-1 disabled:cursor-not-allowed disabled:opacity-50",
-      className,
-   )}
-   bind:value
-   onblur={bubble('blur')}
-   onchange={bubble('change')}
-   onclick={bubble('click')}
-   onfocus={bubble('focus')}
-   onfocusin={bubble('focusin')}
-   onfocusout={bubble('focusout')}
-   onkeydown={bubble('keydown')}
-   onkeypress={bubble('keypress')}
-   onkeyup={bubble('keyup')}
-   onmouseover={bubble('mouseover')}
-   onmouseenter={bubble('mouseenter')}
-   onmouseleave={bubble('mouseleave')}
-   onpaste={bubble('paste')}
-   oninput={bubble('input')}
-   {...rest}
+	class={cn(
+		"border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+		className
+	)}
+	bind:value
+	{readonly}
+	on:blur
+	on:change
+	on:click
+	on:focus
+	on:focusin
+	on:focusout
+	on:keydown
+	on:keypress
+	on:keyup
+	on:mouseover
+	on:mouseenter
+	on:mouseleave
+	on:mousemove
+	on:paste
+	on:input
+	on:wheel|passive
+	{...$$restProps}
 />
