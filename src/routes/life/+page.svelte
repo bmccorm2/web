@@ -3,11 +3,11 @@
 
 	let GRID_SIZE = 30;
 	let TICK = 500;
-	let grid = $state(new Array(GRID_SIZE).fill(0).map((e) => (e = new Array(GRID_SIZE))));
+	let grid = $state(new Array(GRID_SIZE).fill(0).map(() => new Array(GRID_SIZE).fill(0)));
 	let aliveCells: number[][] = [];
 	let generation = $state(0);
-	let timers: NodeJS.Timeout[] = [];
-	let isRunning: Boolean = $state(true);
+	let timers: ReturnType<typeof setTimeout>[] = [];
+	let isRunning = $state(true);
 	const neighbors: number[][] = [
 		[-1, -1],
 		[0, -1],
@@ -116,7 +116,7 @@
 		runLife();
 	};
 
-	const reset = (resetGrid: Boolean) => {
+	const reset = (resetGrid: boolean) => {
 		if (resetGrid) {
 			clearGrid();
 			generation = 0;
@@ -142,18 +142,18 @@
 </svelte:head>
 
 <div class="flex items-center justify-center">
-	<Button class="mr-2 mt-4 border bg-cyan-600 text-sm" onclick={randomGenerator}
+	<Button class="mr-2 mt-4 border bg-blue-500 text-sm" onclick={randomGenerator}
 		>Random Generator!</Button
 	>
-	<Button class="mr-2 mt-4 border bg-cyan-600 text-sm" onclick={toad}>Toad</Button>
-	<Button class="mr-2 mt-4 border bg-cyan-600 text-sm" onclick={blinker}>Blinker</Button>
-	<Button class="mr-2 mt-4 border bg-cyan-600 text-sm" onclick={pentaDecathlon}
+	<Button class="mr-2 mt-4 border bg-blue-500 text-sm" onclick={toad}>Toad</Button>
+	<Button class="mr-2 mt-4 border bg-blue-500 text-sm" onclick={blinker}>Blinker</Button>
+	<Button class="mr-2 mt-4 border bg-blue-500 text-sm" onclick={pentaDecathlon}
 		>Penta-Decathlon</Button
 	>
 
 	{#if isRunning}
 		<Button
-			class="mr-2 mt-4 border bg-cyan-600 text-sm"
+			class="mr-2 mt-4 border bg-blue-500 text-sm"
 			onclick={() => {
 				isRunning = !isRunning;
 				reset(false);
@@ -170,7 +170,7 @@
 	{/if}
 </div>
 
-<h2 class="mt-4 text-center text-2xl font-bold text-zinc-300">
+<h2 class="mt-4 text-center text-2xl font-bold">
 	Generation: {generation}
 </h2>
 
@@ -181,7 +181,7 @@
 		{#each grid as row}
 			<div class="flex">
 				{#each row as cell}
-					<div class="h-6 w-6 border border-gray-500" class:bg-red-800={cell === 1}></div>
+					<div class="h-6 w-6 border border-gray-500" class:bg-red-600={cell === 1}></div>
 				{/each}
 			</div>
 		{/each}

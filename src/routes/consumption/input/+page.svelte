@@ -1,14 +1,16 @@
 <script lang="ts">
 	import { superForm } from 'sveltekit-superforms/client';
-	import Card from '$lib/Card.svelte';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { inputSchema } from '$lib/types';
 	import * as Form from '$lib/components/ui/form';
 	import InputIcon from './InputIcon.svelte';
-	import { CarFront, DollarSign, Fuel, StickyNote } from 'lucide-svelte';
+	import CarFront from 'lucide-svelte/icons/car-front';
+	import DollarSign from 'lucide-svelte/icons/dollar-sign';
+	import Fuel from 'lucide-svelte/icons/fuel';
+	import StickyNote from 'lucide-svelte/icons/sticky-note';
 	import Separator from '$lib/components/ui/separator/separator.svelte';
 	import { Input } from '$lib/components/ui/input';
-	import { Toaster } from '$lib/components/ui/sonner';
+	import * as Card from '$lib/components/ui/card/index.js';
 	import { toast } from 'svelte-sonner';
 
 	let { data } = $props();
@@ -17,9 +19,9 @@
 
 	const form = superForm(data.form, {
 		validators: zodClient(inputSchema),
-		onUpdated: ({ form: f }) => {
+		onUpdated({ form: f }) {
 			if (f.valid) {
-				toast.success('Successfully created record');
+				toast.success('Successfully created record!!');
 				isSuccess = true;
 			}
 		}
@@ -40,11 +42,12 @@
 	<meta name="description" content="Input new consumption records" />
 </svelte:head>
 
-<div class="mt-2">
-	<Card header="input" {isSuccess}>
+<Card.Root class="my-2 md:mb-0">
+	<Card.Header class={`${isSuccess && 'bg-emerald-700'}`}>INPUT</Card.Header>
+	<Card.Content>
 		<form action="?/create" method="post" use:enhance>
 			<!-- PRICE -->
-			<div class="mx-6 mt-4 flex items-center">
+			<div class="mx-6 flex items-center">
 				<InputIcon>
 					<DollarSign />
 				</InputIcon>
@@ -126,23 +129,18 @@
 				<input
 					type="text"
 					readonly
-					class="w-full rounded-md border-2 border-slate-500 px-3 py-1 text-sm placeholder-slate-200"
+					class="w-full rounded-md border-2 border-slate-500 px-3 py-1 text-sm"
 					placeholder={`MPG: ${mpg}`}
 				/>
 				<input
 					type="text"
-					class="w-full rounded-md border-2 border-slate-500 px-3 py-1 text-sm placeholder-slate-200"
+					class="w-full rounded-md border-2 border-slate-500 px-3 py-1 text-sm"
 					placeholder={`PPG: ${ppg}`}
 				/>
 			</div>
 			<div class="my-4 text-center">
-				<Form.Button
-					class="w-2/3 font-bold uppercase text-white {isSuccess ? 'bg-emerald-700' : 'bg-sky-700'}"
-					disabled={isSuccess}>{isSuccess ? 'sent!' : 'submit'}</Form.Button
-				>
+				<Form.Button class="w-2/3 font-bold text-white" disabled={isSuccess}>SUBMIT</Form.Button>
 			</div>
 		</form>
-	</Card>
-</div>
-
-<Toaster richColors />
+	</Card.Content>
+</Card.Root>
