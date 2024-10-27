@@ -177,9 +177,7 @@
 
 						<!-- SUBMIT BUTTON -->
 						<div class="text-center">
-							<Form.Button class="m-4 w-1/2 bg-blue-500 font-bold uppercase text-white"
-								>{$formData.id ? 'Update' : 'Create'}
-							</Form.Button>
+							<Form.Button class="m-4 w-1/2">{$formData.id ? 'Update' : 'Create'}</Form.Button>
 						</div>
 					</div>
 				</form>

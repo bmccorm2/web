@@ -139,7 +139,7 @@
 				/>
 			</div>
 			<div class="my-4 text-center">
-				<Form.Button class="w-2/3 font-bold text-white" disabled={isSuccess}>SUBMIT</Form.Button>
+				<Form.Button class="w-1/2 font-bold" disabled={isSuccess}>SUBMIT</Form.Button>
 			</div>
 		</form>
 	</Card.Content>

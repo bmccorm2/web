@@ -132,7 +132,7 @@
 				</div>
 			</div>
 			<div class="flex justify-center">
-				<Form.Button class="w-1/2 text-center font-bold uppercase text-white">Submit</Form.Button>
+				<Form.Button class="w-1/2">Submit</Form.Button>
 			</div>
 		</form>
 	</Card.Content>
