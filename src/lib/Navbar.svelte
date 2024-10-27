@@ -57,7 +57,7 @@
 	}
 </script>
 
-<nav class="sticky top-0 space-x-4 bg-gray-300 px-4 py-3 dark:bg-zinc-800 lg:space-x-6">
+<nav class="sticky top-0 space-x-4 bg-gray-300 px-4 py-3 dark:bg-slate-800 lg:space-x-6">
 	<ul class="flex items-center justify-between">
 		<!-- DON'T SHOW OTHER PAGES WHEN ON SWIMMING PAGE BECAUSE IT IS PUBLIC -->
 		{#if !activeUrl.startsWith('/swimming')}
