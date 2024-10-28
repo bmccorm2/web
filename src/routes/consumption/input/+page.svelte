@@ -3,6 +3,7 @@
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { inputSchema } from '$lib/types';
 	import * as Form from '$lib/components/ui/form';
+	import * as Card from '$lib/components/ui/card/index.js';
 	import InputIcon from './InputIcon.svelte';
 	import CarFront from 'lucide-svelte/icons/car-front';
 	import DollarSign from 'lucide-svelte/icons/dollar-sign';
@@ -10,7 +11,6 @@
 	import StickyNote from 'lucide-svelte/icons/sticky-note';
 	import Separator from '$lib/components/ui/separator/separator.svelte';
 	import { Input } from '$lib/components/ui/input';
-	import * as Card from '$lib/components/ui/card/index.js';
 	import { toast } from 'svelte-sonner';
 
 	let { data } = $props();
@@ -52,16 +52,18 @@
 					<DollarSign />
 				</InputIcon>
 				<Form.Field {form} name="price" class="flex grow items-center">
-					<Form.Control let:attrs>
-						<Input
-							{...attrs}
-							type="number"
-							placeholder="Price"
-							bind:value={$formData.price}
-							inputmode="decimal"
-							step=".01"
-							class="rounded-r-md border-2 border-slate-500 px-3 py-1 text-slate-200"
-						/>
+					<Form.Control>
+						{#snippet children({ props })}
+							<Input
+								{...props}
+								type="number"
+								placeholder="Price"
+								bind:value={$formData.price}
+								inputmode="decimal"
+								step=".01"
+								class="rounded-r-md border-2 border-slate-500 px-3 py-1 text-slate-200"
+							/>
+						{/snippet}
 					</Form.Control>
 					<Form.FieldErrors />
 				</Form.Field>
@@ -72,16 +74,18 @@
 					<Fuel />
 				</InputIcon>
 				<Form.Field {form} name="gallons" class="flex grow items-center">
-					<Form.Control let:attrs>
-						<Input
-							{...attrs}
-							type="number"
-							placeholder="Gallons"
-							bind:value={$formData.gallons}
-							inputmode="decimal"
-							step=".001"
-							class="rounded-r-md border-2 border-slate-500 px-3 py-1 text-slate-200"
-						/>
+					<Form.Control>
+						{#snippet children({ props })}
+							<Input
+								{...props}
+								type="number"
+								placeholder="Gallons"
+								bind:value={$formData.gallons}
+								inputmode="decimal"
+								step=".001"
+								class="rounded-r-md border-2 border-slate-500 px-3 py-1 text-slate-200"
+							/>
+						{/snippet}
 					</Form.Control>
 					<Form.FieldErrors />
 				</Form.Field>
@@ -92,16 +96,18 @@
 					<CarFront />
 				</InputIcon>
 				<Form.Field {form} name="miles" class="flex grow items-center">
-					<Form.Control let:attrs>
-						<Input
-							{...attrs}
-							type="number"
-							placeholder="Miles"
-							bind:value={$formData.miles}
-							inputmode="decimal"
-							step=".01"
-							class="rounded-r-md border-2 border-slate-500 px-3 py-1 text-slate-200"
-						/>
+					<Form.Control>
+						{#snippet children({ props })}
+							<Input
+								{...props}
+								type="number"
+								placeholder="Miles"
+								bind:value={$formData.miles}
+								inputmode="decimal"
+								step=".01"
+								class="rounded-r-md border-2 border-slate-500 px-3 py-1 text-slate-200"
+							/>
+						{/snippet}
 					</Form.Control>
 					<Form.FieldErrors />
 				</Form.Field>
@@ -112,13 +118,15 @@
 					<StickyNote />
 				</InputIcon>
 				<Form.Field {form} name="notes" class="flex grow items-center">
-					<Form.Control let:attrs>
-						<Input
-							{...attrs}
-							placeholder="Notes"
-							bind:value={$formData.notes}
-							class="rounded-r-md border-2 border-slate-500 px-3 py-1 text-slate-200"
-						/>
+					<Form.Control>
+						{#snippet children({ props })}
+							<Input
+								{...props}
+								placeholder="Notes"
+								bind:value={$formData.notes}
+								class="rounded-r-md border-2 border-slate-500 px-3 py-1 text-slate-200"
+							/>
+						{/snippet}
 					</Form.Control>
 					<Form.FieldErrors />
 				</Form.Field>

@@ -55,12 +55,12 @@
 				<!-- WORKOUT AREA -->
 				<Form.Field {form} name="swimWorkoutText" class="m-4 grow">
 					<Form.Control>
-						{#snippet children({ attrs })}
+						{#snippet children({ props })}
 							<Textarea
-								{...attrs}
+								{...props}
 								class="h-72 rounded-md p-2 ring-1 ring-slate-400"
 								bind:value={$formData.swimWorkoutText}
-								on:keydown={handleTab}
+								onkeydown={handleTab}
 								placeholder="Workout"
 								autocomplete="off"
 								spellcheck="false"
@@ -73,9 +73,9 @@
 					<!-- AUTHOR          -->
 					<Form.Field {form} name="author" class="m-4">
 						<Form.Control>
-							{#snippet children({ attrs })}
+							{#snippet children({ props })}
 								<Input
-									{...attrs}
+									{...props}
 									placeholder="Author"
 									class="rounded-md p-2 ring-1 ring-slate-400"
 									bind:value={$formData.author}
@@ -88,9 +88,9 @@
 					<!-- YARDS -->
 					<Form.Field {form} name="yards" class="m-4">
 						<Form.Control>
-							{#snippet children({ attrs })}
+							{#snippet children({ props })}
 								<Input
-									{...attrs}
+									{...props}
 									type="number"
 									placeholder="Yards"
 									class="rounded-md p-2 ring-1 ring-slate-400"
@@ -108,9 +108,9 @@
 								{@const checked = $formData.tags?.some((e) => e.id === tag.id)}
 								<div class="flex items-center">
 									<Form.Control>
-										{#snippet children({ attrs })}
+										{#snippet children({ props })}
 											<Checkbox
-												{...attrs}
+												{...props}
 												{checked}
 												onCheckedChange={(v) => {
 													if (v) {
@@ -121,7 +121,7 @@
 												}}
 											/>
 											<Form.Label class="ml-2">{tag.tag}</Form.Label>
-											<input hidden type="checkbox" name={attrs.name} value={tag.id} />
+											<input hidden type="checkbox" name={props.name} value={tag.id} />
 										{/snippet}
 									</Form.Control>
 									<Form.FieldErrors />
