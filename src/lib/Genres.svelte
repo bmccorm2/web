@@ -5,7 +5,7 @@
 	import { genreSchema, type Genre } from './types';
 	import * as Form from '$lib/components/ui/form';
 	import { zodClient } from 'sveltekit-superforms/adapters';
-	import { toast, Toaster } from 'svelte-sonner';
+	import { toast } from 'svelte-sonner';
 	import * as Card from '$lib/components/ui/card/index.js';
 
 	let { data, genres }: { data: SuperValidated<Infer<typeof genreSchema>>; genres: Genre[] } =
@@ -50,5 +50,3 @@
 		<GenreTable {genres} />
 	</Card.Content>
 </Card.Root>
-
-<Toaster richColors />
