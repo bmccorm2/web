@@ -68,7 +68,7 @@
 			<div><p class="mb-4 text-xs text-gray-500">By: {author}</p></div>
 		{/if}
 		<!-- TAGS/YARDS -->
-		<div class="flex justify-between">
+		<div class="lg:flex lg:justify-between">
 			<div class="flex gap-2">
 				<div class="self-center text-xs text-gray-500">Tags</div>
 				{#if tags && tags.length > 0}
@@ -80,7 +80,7 @@
 				{/if}
 			</div>
 
-			<Badge class="bg-blue-700 text-sm">{yards} yards</Badge>
+			<Badge class="mt-2 bg-blue-700 text-sm lg:mt-0">{yards} yards</Badge>
 		</div>
 		<hr class="my-4" />
 		<!-- WORKOUT -->
