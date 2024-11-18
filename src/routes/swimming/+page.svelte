@@ -49,7 +49,7 @@
 </div>
 <hr class="my-4" />
 
-<Input placeholder="Search" bind:value={filterText} class="mb-4 " on:keyup={filterWorkouts} />
+<Input placeholder="Search" bind:value={filterText} class="mb-4 " onkeyup={filterWorkouts} />
 
 <div class="md:grid md:gap-4 lg:grid-cols-2 xl:grid-cols-3">
 	{#each filteredWorkouts as workout}
