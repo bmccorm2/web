@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Button } from '$lib/components/ui/button';
 	import { Input } from '$lib/components/ui/input';
-	import SwimWorkout from './SwimWorkout.svelte';
+	import SwimWorkout from '$lib/SwimWorkout.svelte';
 	import type { SwimWorkout as SwimWorkoutType } from '$lib/types';
 	import { page } from '$app/stores';
 	import { toast } from 'svelte-sonner';

@@ -5,10 +5,7 @@
 	import * as Form from '$lib/components/ui/form';
 	import * as Card from '$lib/components/ui/card/index.js';
 	import InputIcon from './InputIcon.svelte';
-	import CarFront from 'lucide-svelte/icons/car-front';
-	import DollarSign from 'lucide-svelte/icons/dollar-sign';
-	import Fuel from 'lucide-svelte/icons/fuel';
-	import StickyNote from 'lucide-svelte/icons/sticky-note';
+	import {Fuel, StickyNote, DollarSign, CarFront} from 'lucide-svelte';
 	import Separator from '$lib/components/ui/separator/separator.svelte';
 	import { Input } from '$lib/components/ui/input';
 	import { toast } from 'svelte-sonner';

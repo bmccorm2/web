@@ -1,8 +1,10 @@
 <script lang="ts">
 	import { Badge } from '$lib/components/ui/badge';
 	import type { SwimTag } from '$lib/types';
-	import { PencilLine, Trash2 } from 'lucide-svelte';
+	import { PencilLine, Trash2, Link } from 'lucide-svelte';
 	import * as Card from '$lib/components/ui/card/index.js';
+	import { page } from '$app/stores';
+	import { toast } from 'svelte-sonner';
 
 	interface Props {
 		swimWorkoutText: string;
@@ -39,6 +41,13 @@
 		day: 'numeric',
 		year: 'numeric'
 	} as const;
+
+	const baseUrl = $page.url.origin + $page.route.id;
+
+	const copyLink = async (link: string) => {
+		await navigator.clipboard.writeText(link);
+		toast.info(`Copied: ${link}`);
+	};
 </script>
 
 <Card.Root class="mb-2 md:mb-0">
@@ -47,18 +56,23 @@
 			<div class="flex content-center gap-3">
 				<!-- DATE -->
 				<div class="text-3xl font-bold underline">
-					{utcDate.toLocaleString('en-US', dateFormatter)}
+					<a href={`swimming/display/${id}`}>
+						{utcDate.toLocaleString('en-US', dateFormatter)}
+					</a>
 				</div>
 			</div>
 			<!-- ACTIONS -->
-			<div class="flex gap-3">
+			<div class="flex items-center gap-3">
+				<button onclick={() => copyLink(`${baseUrl}/display/${id}`)}>
+					<Link class="h-4 w-4" />
+				</button>
 				<a href="swimming/modify/{id}">
-					<PencilLine class="h-4- w-4" />
+					<PencilLine class="h-4 w-4" />
 				</a>
-				<form action="?/deleteWorkout" method="post">
+				<form class="inline-flex" action="?/deleteWorkout" method="post">
 					<input type="hidden" name="id" value={id} />
 					<button>
-						<Trash2 class="h-4- w-4" />
+						<Trash2 class="h-4 w-4" />
 					</button>
 				</form>
 			</div>

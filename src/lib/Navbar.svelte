@@ -1,8 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { Terminal, Menu } from 'lucide-svelte';
-	import Sun from 'lucide-svelte/icons/sun';
-	import Moon from 'lucide-svelte/icons/moon';
+	import { Sun, Moon } from 'lucide-svelte';
 	import { Button } from './components/ui/button';
 	import { toggleMode } from 'mode-watcher';
 
