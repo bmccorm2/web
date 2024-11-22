@@ -5,10 +5,8 @@
 	import * as Form from '$lib/components/ui/form';
 	import * as Card from '$lib/components/ui/card/index.js';
 	import InputIcon from './InputIcon.svelte';
-	import {Fuel, StickyNote, DollarSign, CarFront} from 'lucide-svelte';
-	import Separator from '$lib/components/ui/separator/separator.svelte';
+	import { Fuel, StickyNote, DollarSign, CarFront } from 'lucide-svelte';
 	import { Input } from '$lib/components/ui/input';
-	import { toast } from 'svelte-sonner';
 
 	let { data } = $props();
 
@@ -18,7 +16,6 @@
 		validators: zodClient(inputSchema),
 		onUpdated({ form: f }) {
 			if (f.valid) {
-				toast.success('Successfully created record!!');
 				isSuccess = true;
 			}
 		}
@@ -40,8 +37,8 @@
 </svelte:head>
 
 <Card.Root class="my-2 md:mb-0">
-	<Card.Header class={`${isSuccess && 'bg-emerald-700'}`}>INPUT</Card.Header>
-	<Card.Content>
+	<Card.Header>INPUT</Card.Header>
+	<Card.Content class={`${isSuccess && 'bg-emerald-800'}`}>
 		<form action="?/create" method="post" use:enhance>
 			<!-- PRICE -->
 			<div class="mx-6 flex items-center">
@@ -128,7 +125,6 @@
 					<Form.FieldErrors />
 				</Form.Field>
 			</div>
-			<Separator />
 			<!-- SUMMARY -->
 			<div class="mx-4 flex gap-2">
 				<input
@@ -144,7 +140,9 @@
 				/>
 			</div>
 			<div class="my-4 text-center">
-				<Form.Button class="w-1/2 font-bold" disabled={isSuccess}>SUBMIT</Form.Button>
+				<Form.Button class="w-1/2" disabled={isSuccess}
+					>{isSuccess ? 'SUCCESS!' : 'SUBMIT'}</Form.Button
+				>
 			</div>
 		</form>
 	</Card.Content>
