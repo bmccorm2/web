@@ -46,7 +46,7 @@
 
 	const copyLink = async (link: string) => {
 		await navigator.clipboard.writeText(link);
-		toast.info(`Copied: ${link}`);
+		toast.info(`Copied link for swim workout!`);
 	};
 </script>
 
