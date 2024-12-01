@@ -51,7 +51,7 @@ export const bookSchema = z.object({
   rating: z.number().gte(1).lte(5).default(3),
   review: z.string().nullable(),
   isFiction: z.boolean(),
-  created: z.string().nullable(),
+  created: z.string(),
   genres: z.array(genre),
 });
 

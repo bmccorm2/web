@@ -5,11 +5,12 @@
 	import * as Card from '$lib/components/ui/card/index.js';
 	import { page } from '$app/stores';
 	import { toast } from 'svelte-sonner';
+	import { formatDate } from '$lib/utilities';
 
 	interface Props {
 		swimWorkoutText: string;
 		yards: number;
-		created: number;
+		created: string;
 		author?: string | undefined | null;
 		tags?: SwimTag[] | undefined;
 		id?: number | undefined;
@@ -24,29 +25,11 @@
 		id = undefined
 	}: Props = $props();
 
-	const localDate = new Date(created);
-	const utcDate = new Date(
-		Date.UTC(
-			localDate.getFullYear(),
-			localDate.getMonth(),
-			localDate.getDate(),
-			localDate.getHours(),
-			localDate.getMinutes(),
-			localDate.getSeconds()
-		)
-	);
-
-	const dateFormatter = {
-		month: 'short',
-		day: 'numeric',
-		year: 'numeric'
-	} as const;
-
 	const baseUrl = $page.url.origin + $page.route.id;
 
 	const copyLink = async (link: string) => {
 		await navigator.clipboard.writeText(link);
-		toast.info(`Copied link for swim workout!`);
+		toast.info(`Workout link copied!`);
 	};
 </script>
 
@@ -57,7 +40,7 @@
 				<!-- DATE -->
 				<div class="text-3xl font-bold underline">
 					<a href={`swimming/display/${id}`}>
-						{utcDate.toLocaleString('en-US', dateFormatter)}
+						{formatDate(created)}
 					</a>
 				</div>
 			</div>
@@ -66,9 +49,11 @@
 				<button onclick={() => copyLink(`${baseUrl}/display/${id}`)}>
 					<Link class="h-4 w-4" />
 				</button>
-				<a href="swimming/modify/{id}">
-					<PencilLine class="h-4 w-4" />
-				</a>
+				<button>
+					<a href="swimming/modify/{id}">
+						<PencilLine class="h-4 w-4" />
+					</a>
+				</button>
 				<form class="inline-flex" action="?/deleteWorkout" method="post">
 					<input type="hidden" name="id" value={id} />
 					<button>

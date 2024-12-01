@@ -3,6 +3,7 @@
 	import type { Book } from '$lib/types';
 	import { Star, PencilLine, Trash2 } from 'lucide-svelte';
 	import * as Card from '$lib/components/ui/card/index.js';
+	import { formatDate } from '$lib/utilities';
 
 	let {
 		bookDetails
@@ -10,7 +11,7 @@
 		bookDetails: Book;
 	} = $props();
 
-	const { title, author, rating, pages, isFiction, id, review } = bookDetails;
+	const { title, author, rating, pages, isFiction, id, review, created } = bookDetails;
 </script>
 
 <Card.Root class="mb-2 md:mb-0">
@@ -43,12 +44,15 @@
 				>
 			</div>
 		</div>
-		<!-- RATING -->
-		<div class="mb-2 flex content-center gap-2">
-			{#each [1, 2, 3, 4, 5] as rate}
-				{@const colored = rate <= rating}
-				<Star strokeWidth={0} fill={colored ? 'gold' : ''} />
-			{/each}
+		<!-- READ/RATING -->
+		<div class="mb-2 flex justify-between gap-2">
+			<p class="self-center text-xs text-slate-400">First read: {formatDate(created)}</p>
+			<div class="flex">
+				{#each [1, 2, 3, 4, 5] as rate}
+					{@const colored = rate <= rating}
+					<Star strokeWidth={0} fill={colored ? 'gold' : ''} />
+				{/each}
+			</div>
 		</div>
 		<!-- REVIEW -->
 		<div class="mb-3">
