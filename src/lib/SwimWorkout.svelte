@@ -10,7 +10,7 @@
 	interface Props {
 		swimWorkoutText: string;
 		yards: number;
-		created: string;
+		created: number;
 		author?: string | undefined | null;
 		tags?: SwimTag[] | undefined;
 		id?: number | undefined;
@@ -39,7 +39,7 @@
 			<div class="flex content-center gap-3">
 				<!-- DATE -->
 				<div class="text-3xl font-bold underline">
-					<a href={`swimming/display/${id}`}>
+					<a href={`/swimming/display/${id}`}>
 						{formatDate(created)}
 					</a>
 				</div>

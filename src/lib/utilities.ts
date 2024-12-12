@@ -4,7 +4,7 @@ const dateFormatter = {
 		year: 'numeric'
 	} as const;
 
-export const formatDate = (date: string) => {
+export const formatDate = (date: number) => {
 	const localDate = new Date(date);
 	const utcDate = new Date(
 		Date.UTC(
