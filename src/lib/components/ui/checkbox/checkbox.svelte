@@ -1,11 +1,13 @@
 <script lang="ts">
 	import { Checkbox as CheckboxPrimitive, type WithoutChildrenOrChild } from "bits-ui";
-	import {Check, Minus} from "lucide-svelte";
+	import Check from "lucide-svelte/icons/check";
+	import Minus from "lucide-svelte/icons/minus";
 	import { cn } from "$lib/utils.js";
 
 	let {
 		ref = $bindable(null),
 		checked = $bindable(false),
+		indeterminate = $bindable(false),
 		class: className,
 		...restProps
 	}: WithoutChildrenOrChild<CheckboxPrimitive.RootProps> = $props();
@@ -18,11 +20,12 @@
 		className
 	)}
 	bind:checked
+	bind:indeterminate
 	{...restProps}
 >
-	{#snippet children({ checked })}
+	{#snippet children({ checked, indeterminate })}
 		<div class="flex size-4 items-center justify-center text-current">
-			{#if checked === "indeterminate"}
+			{#if indeterminate}
 				<Minus class="size-3.5" />
 			{:else}
 				<Check class={cn("size-3.5", !checked && "text-transparent")} />
