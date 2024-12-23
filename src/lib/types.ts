@@ -47,7 +47,7 @@ export const bookSchema = z.object({
     .lt(1500)
     .positive()
     .default("" as unknown as number),
-  publishDate: z.date().nullable(),
+  publishDate: z.string().refine((val) => !isNaN(Date.parse(val))).nullable(),
   rating: z.number().gte(1).lte(5).default(3),
   review: z.string().nullable(),
   isFiction: z.boolean(),

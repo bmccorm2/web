@@ -161,7 +161,7 @@
 									{#snippet children({ props })}
 										<Input
 											{...props}
-											type="number"
+											type="date"
 											placeholder="Publish Date"
 											class="rounded-md p-2 ring-1 ring-slate-400"
 											bind:value={$formData.publishDate}
