@@ -3,7 +3,7 @@
 	import type { SwimTag } from '$lib/types';
 	import { PencilLine, Trash2, Link } from 'lucide-svelte';
 	import * as Card from '$lib/components/ui/card/index.js';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import { toast } from 'svelte-sonner';
 	import { formatDate } from '$lib/utilities';
 
@@ -25,7 +25,7 @@
 		id = undefined
 	}: Props = $props();
 
-	const baseUrl = $page.url.origin + $page.route.id;
+	const baseUrl = page.url.origin + page.route.id;
 
 	const copyLink = async (link: string) => {
 		await navigator.clipboard.writeText(link);
@@ -84,7 +84,7 @@
 		<hr class="my-4" />
 		<!-- WORKOUT -->
 		<div class="mb-3">
-			<pre class="text-xs">{swimWorkoutText}</pre>
+			<pre class="overflow-auto text-xs">{swimWorkoutText}</pre>
 		</div>
 	</Card.Content>
 </Card.Root>

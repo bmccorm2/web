@@ -22,3 +22,4 @@ vite.config.ts.timestamp-*
 
 # Added by Bryan
 web.sqlite
+web.db

@@ -3,7 +3,7 @@
 	import ConsumptionChart from './ConsumptionChart.svelte';
 	import ConsumptionSummary from './ConsumptionSummary.svelte';
 	import MileageData from './MileageData.svelte';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 
 	let { data } = $props();
 </script>

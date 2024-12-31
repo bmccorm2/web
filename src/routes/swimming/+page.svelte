@@ -1,38 +1,62 @@
 <script lang="ts">
 	import { Button } from '$lib/components/ui/button';
-	import { Input } from '$lib/components/ui/input';
 	import SwimWorkout from '$lib/SwimWorkout.svelte';
-	import type { SwimWorkout as SwimWorkoutType } from '$lib/types';
-	import { page } from '$app/stores';
+	import {
+		authorValues,
+		type AuthorFilter,
+		type TagFilter,
+		type SwimWorkout as SwimWorkoutType,
+		tagValues
+	} from '$lib/types';
+	import { page } from '$app/state';
 	import { toast } from 'svelte-sonner';
+	import { Tags } from 'lucide-svelte';
 
 	let { data } = $props();
 
-	let filterText = $state('');
-	let filteredWorkouts = $state(data.swimWorkouts);
+	let authorFilter: AuthorFilter = $state('All');
+	let tagFilter: TagFilter = $state('All');
+	let filteredWorkouts = $derived.by(() => {
+		if (authorFilter === 'All' && tagFilter === 'All') return data.swimWorkouts;
 
-	const filterWorkouts = () => {
-		if (filterText === '') filteredWorkouts = data.swimWorkouts;
-		else {
-			const matchByTags = data.swimWorkouts.filter((workout: SwimWorkoutType) => {
-				return (
-					workout.tags?.some((e) => e.tag?.toLowerCase().includes(filterText.toLowerCase())) ||
-					false
-				);
+		let authors: SwimWorkoutType[] = [];
+		let tags: SwimWorkoutType[] = [];
+
+		if (authorFilter != 'All')
+			authors = data.swimWorkouts.filter((e: SwimWorkoutType) => e.author === authorFilter);
+
+		if (tagFilter != 'All')
+			tags = data.swimWorkouts.filter((e1: SwimWorkoutType) => {
+				return e1.tags?.some((e2) => e2.tag === tagFilter);
 			});
-			const matchByAuthor = data.swimWorkouts.filter((workout: SwimWorkoutType) =>
-				workout.author?.toLowerCase().includes(filterText.toLowerCase())
-			);
 
-			filteredWorkouts = [...new Set([...matchByTags, ...matchByAuthor])];
-		}
-	};
+		if (tagFilter === 'All') return authors;
+		if (authorFilter === 'All') return tags;
+
+		//else return common elements
+		return authors.filter((e1) => tags.some((e2) => e1.id === e2.id));
+	});
 
 	$effect(() => {
-		if ($page.url.searchParams.get('success') === 'true')
+		if (page.url.searchParams.get('success') === 'true')
 			toast.success('Successfully created workout!!');
 	});
 </script>
+
+{#snippet authorButton(authorText: AuthorFilter)}
+	<Button
+		variant="secondary"
+		class={authorFilter === authorText ? 'bg-blue-500' : ''}
+		onclick={() => (authorFilter = authorText)}>{authorText}</Button
+	>
+{/snippet}
+{#snippet tagButton(tagText: TagFilter)}
+	<Button
+		variant="secondary"
+		class={tagFilter === tagText ? 'bg-blue-500' : ''}
+		onclick={() => (tagFilter = tagText)}>{tagText}</Button
+	>
+{/snippet}
 
 <svelte:head>
 	<title>Swimming</title>
@@ -49,7 +73,34 @@
 </div>
 <hr class="my-4" />
 
-<Input placeholder="Search" bind:value={filterText} class="mb-4 " onkeyup={filterWorkouts} />
+<!-- AUTHORS -->
+<div class="ml-2 md:ml-0 md:flex md:items-center">
+	<div class="md:w-3/4">
+		<div class="flex items-center gap-1 overflow-auto">
+			<p class="mr-2 w-16">Authors</p>
+			{#each authorValues as author}
+				{@render authorButton(author)}
+			{/each}
+		</div>
+		<!-- TAGS -->
+		<div class="mt-2 flex items-center gap-1 overflow-auto">
+			<p class="mr-2 min-w-16">Tags</p>
+			{#each tagValues as tag}
+				{@render tagButton(tag)}
+			{/each}
+		</div>
+	</div>
+	<div
+		class="mt-2 flex items-center justify-center text-4xl font-extrabold text-red-500 md:mt-0 md:justify-start"
+	>
+		<div class="mr-6 text-xs text-gray-500">TOTAL</div>
+		<div>
+			{filteredWorkouts.length}
+		</div>
+	</div>
+</div>
+
+<hr class="my-4" />
 
 <div class="md:grid md:gap-4 lg:grid-cols-2 xl:grid-cols-3">
 	{#each filteredWorkouts as workout}

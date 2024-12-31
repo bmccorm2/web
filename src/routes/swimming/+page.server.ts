@@ -14,8 +14,11 @@ export const load: PageServerLoad = async () => {
     const swimWorkouts = serializeSwimWorkout(
       rs.rows as unknown as SwimWorkoutDb[],
     );
+
+    // console.log(swimWorkouts.slice(0,2));
+    
     return {
-      swimWorkouts,
+      swimWorkouts
     };
   } catch (e: any) {
     error(505, e.message);

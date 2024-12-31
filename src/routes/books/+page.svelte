@@ -1,13 +1,13 @@
 <script lang="ts">
 	import { Button } from '$lib/components/ui/button';
 	import Book from './Book.svelte';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import { toast } from 'svelte-sonner';
 
 	let { data } = $props();
 
 	$effect(() => {
-		if ($page.url.searchParams.get('success') === 'true')
+		if (page.url.searchParams.get('success') === 'true')
 			toast.success('Successfully created book!!');
 	});
 </script>

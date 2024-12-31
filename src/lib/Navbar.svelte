@@ -1,11 +1,11 @@
 <script lang="ts">
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import { Terminal, Menu } from 'lucide-svelte';
 	import { Sun, Moon } from 'lucide-svelte';
 	import { Button } from './components/ui/button';
 	import { toggleMode } from 'mode-watcher';
 
-	let url = $derived($page.url.pathname);
+	let url = $derived(page.url.pathname);
 	let activeUrl = $derived(url === '/' ? '/home' : url);
 
 	let isShowNavbar = $state(false);

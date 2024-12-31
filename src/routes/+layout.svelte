@@ -7,7 +7,7 @@
 	let { children } = $props();
 </script>
 
-<Toaster richColors />
+<Toaster richColors position="top-right" />
 <ModeWatcher></ModeWatcher>
 <Navbar />
 <div class="md:container">

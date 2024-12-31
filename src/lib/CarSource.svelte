@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Cars } from './types';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 
 	let { cars }: { cars: Cars[] } = $props();
 </script>
@@ -11,7 +11,7 @@
 			<a
 				href="/consumption/{car.id}"
 				class={`px-3 text-xl font-bold dark:text-pink-600 ${
-					parseInt($page.params.id) === car.id ? 'underline opacity-100' : 'opacity-60'
+					parseInt(page.params.id) === car.id ? 'underline opacity-100' : 'opacity-60'
 				} `}
 				>{car.displayName}
 			</a>
