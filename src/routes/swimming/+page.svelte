@@ -10,7 +10,6 @@
 	} from '$lib/types';
 	import { page } from '$app/state';
 	import { toast } from 'svelte-sonner';
-	import { Tags } from 'lucide-svelte';
 
 	let { data } = $props();
 
@@ -77,7 +76,7 @@
 <div class="ml-2 md:ml-0 md:flex md:items-center">
 	<div class="md:w-3/4">
 		<div class="flex items-center gap-1 overflow-auto">
-			<p class="mr-2 w-16">Authors</p>
+			<p class="mr-2 min-w-16">Authors</p>
 			{#each authorValues as author}
 				{@render authorButton(author)}
 			{/each}
