@@ -14,8 +14,8 @@
 <div
 	bind:this={ref}
 	class={cn(
-		className,
-		'flex flex-col space-y-1.5 rounded-md bg-gradient-to-b from-blue-700 to-blue-600 p-4 text-center text-2xl font-bold text-white'
+		'flex flex-col space-y-1.5 rounded-md bg-gradient-to-b from-blue-700 to-blue-600 p-4 text-center text-2xl font-bold text-white',
+		className
 	)}
 	{...restProps}
 >

@@ -37,9 +37,9 @@
 </svelte:head>
 
 <Card.Root class="my-2 md:mb-0">
-	<Card.Header>INPUT</Card.Header>
-	<Card.Content class={`${isSuccess && 'bg-emerald-800'}`}>
-		<form action="?/create" method="post" use:enhance>
+	<Card.Header class={`${isSuccess && 'from-emerald-800 to-emerald-700'}`}>INPUT</Card.Header>
+	<form action="?/create" method="post" use:enhance>
+		<Card.Content>
 			<!-- PRICE -->
 			<div class="mx-6 flex items-center">
 				<InputIcon>
@@ -126,24 +126,25 @@
 				</Form.Field>
 			</div>
 			<!-- SUMMARY -->
-			<div class="mx-4 flex gap-2">
+			<div class="mx-6 flex gap-2">
 				<input
 					type="text"
 					readonly
-					class="w-full rounded-md border-2 border-slate-500 px-3 py-1 text-sm"
+					class="w-full rounded-md border-2 border-slate-500 bg-slate-900 px-3 py-1 text-sm"
 					placeholder={`MPG: ${mpg}`}
 				/>
 				<input
 					type="text"
-					class="w-full rounded-md border-2 border-slate-500 px-3 py-1 text-sm"
+					class="w-full rounded-md border-2 border-slate-500 bg-slate-900 px-3 py-1 text-sm"
 					placeholder={`PPG: ${ppg}`}
 				/>
 			</div>
-			<div class="my-4 text-center">
-				<Form.Button class="w-1/2" disabled={isSuccess}
-					>{isSuccess ? 'SUCCESS!' : 'SUBMIT'}</Form.Button
-				>
-			</div>
-		</form>
-	</Card.Content>
+		</Card.Content>
+		<Card.Footer class="flex justify-center">
+			<Form.Button
+				class={`w-1/2 ${isSuccess && 'from-emerald-800 to-emerald-700'}`}
+				disabled={isSuccess}>{isSuccess ? 'SENT!' : 'SUBMIT'}</Form.Button
+			>
+		</Card.Footer>
+	</form>
 </Card.Root>
