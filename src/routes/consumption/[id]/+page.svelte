@@ -3,7 +3,6 @@
 	import ConsumptionChart from './ConsumptionChart.svelte';
 	import ConsumptionSummary from './ConsumptionSummary.svelte';
 	import MileageData from './MileageData.svelte';
-	import { page } from '$app/state';
 
 	let { data } = $props();
 </script>
@@ -14,12 +13,12 @@
 </svelte:head>
 
 <CarSource cars={data.cars} />
-<div class="mb-2 gap-4 md:flex">
+<div class="mb-4 gap-4 md:flex">
 	<div class="mb-2 md:mb-0 md:basis-4/12">
 		<ConsumptionSummary summary={data.summary} />
 	</div>
-	<div class="md:basis-8/12">
-		<MileageData tableRows={data.consumption.slice(0, 7)} />
+	<div class="md:w-8/12">
+		<MileageData tableRows={data.consumption.slice(0, 9)} />
 	</div>
 </div>
 <div class="hidden md:inline">

@@ -11,7 +11,7 @@
 		{#if tableRows.length === 0}
 			<h6>No Data...</h6>
 		{:else}
-			<div class="overflow-x-auto px-4 py-4">
+			<div class="overflow-x-auto">
 				<table class="w-full table-auto">
 					<thead class="border-b-2 border-black font-bold dark:border-white">
 						<tr class="text-left">
