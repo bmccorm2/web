@@ -100,7 +100,7 @@
 													<Checkbox
 														{...props}
 														{checked}
-														onCheckedChange={(e) => {
+														onCheckedChange={(e: boolean) => {
 															if (e) addGenre(genre.id, genre.description);
 															else removeGenre(genre.id);
 														}}

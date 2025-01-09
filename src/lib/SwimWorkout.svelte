@@ -25,8 +25,6 @@
 		id = undefined
 	}: Props = $props();
 
-	const baseUrl = page.url.origin + page.route.id;
-
 	const copyLink = async (link: string) => {
 		await navigator.clipboard.writeText(link);
 		toast.info(`Workout link copied!`);
@@ -46,7 +44,7 @@
 			</div>
 			<!-- ACTIONS -->
 			<div class="flex items-center gap-3">
-				<button onclick={() => copyLink(`${baseUrl}/display/${id}`)}>
+				<button onclick={() => copyLink(`${page.url.origin}/swimming/display/${id}`)}>
 					<Link class="h-4 w-4" />
 				</button>
 				<button>

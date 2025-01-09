@@ -15,8 +15,6 @@ export const load: PageServerLoad = async () => {
       rs.rows as unknown as SwimWorkoutDb[],
     );
 
-    // console.log(swimWorkouts.slice(0,2));
-    
     return {
       swimWorkouts
     };
