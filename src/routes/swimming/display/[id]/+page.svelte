@@ -1,7 +1,7 @@
 <script lang="ts">
 	import SwimWorkout from '$lib/SwimWorkout.svelte';
 	import * as Breadcrumb from '$lib/components/ui/breadcrumb/index.js';
-	import { formatDate } from '$lib/utilities.js';
+	import { formatToMST } from '$lib/utilities.js';
 
 	const { data } = $props();
 </script>
@@ -14,7 +14,7 @@
 			</Breadcrumb.Item>
 			<Breadcrumb.Separator />
 			<Breadcrumb.Item>
-				{formatDate(data.swimWorkout.created)}
+				{formatToMST(data.swimWorkout.created)}
 			</Breadcrumb.Item>
 		</Breadcrumb.List>
 	</Breadcrumb.Root>

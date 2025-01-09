@@ -1,21 +1,13 @@
-const dateFormatter = {
+export const formatToMST = (date: string) => {
+	const localDate = new Date(date);
+	localDate.setHours(localDate.getHours() - 7);
+
+	const options = {
+		timeZone: 'America/Denver',
 		month: 'short',
 		day: 'numeric',
 		year: 'numeric'
 	} as const;
 
-export const formatDate = (date: number) => {
-	const localDate = new Date(date);
-	const utcDate = new Date(
-		Date.UTC(
-			localDate.getFullYear(),
-			localDate.getMonth(),
-			localDate.getDate(),
-			localDate.getHours(),
-			localDate.getMinutes(),
-			localDate.getSeconds()
-		)
-	);
-
-	return utcDate.toLocaleString('en-US', dateFormatter)
+	return localDate.toLocaleString('en-US', options);
 }

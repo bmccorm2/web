@@ -5,12 +5,12 @@
 	import * as Card from '$lib/components/ui/card/index.js';
 	import { page } from '$app/state';
 	import { toast } from 'svelte-sonner';
-	import { formatDate } from '$lib/utilities';
+	import { formatToMST } from '$lib/utilities';
 
 	interface Props {
 		swimWorkoutText: string;
 		yards: number;
-		created: number;
+		created: string;
 		author?: string | undefined | null;
 		tags?: SwimTag[] | undefined;
 		id?: number | undefined;
@@ -38,7 +38,7 @@
 				<!-- DATE -->
 				<div class="text-3xl font-bold underline">
 					<a href={`/swimming/display/${id}`}>
-						{formatDate(created)}
+						{formatToMST(created)}
 					</a>
 				</div>
 			</div>

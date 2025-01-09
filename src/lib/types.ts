@@ -7,7 +7,7 @@ export const swimTag = z.object({
 
 export const swimWorkoutSchema = z.object({
   id: z.number().positive().optional(),
-  created: z.number(),
+  created: z.string(),
   swimWorkoutText: z.string().min(1),
   author: z.string().nullable().optional(),
   yards: z.coerce
@@ -26,7 +26,7 @@ export type SwimWorkoutDb = {
   tagId: number;
   swimWorkoutText: string;
   yards: number;
-  created: number;
+  created: string;
   tag: string;
   author: string | undefined | null;
 };

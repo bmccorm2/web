@@ -3,7 +3,7 @@
 	import type { Book } from '$lib/types';
 	import { Star, PencilLine, Trash2 } from 'lucide-svelte';
 	import * as Card from '$lib/components/ui/card/index.js';
-	import { formatDate } from '$lib/utilities';
+	import { formatToMST } from '$lib/utilities';
 
 	let {
 		bookDetails
@@ -46,7 +46,7 @@
 		</div>
 		<!-- READ/RATING -->
 		<div class="mb-2 flex justify-between gap-2">
-			<p class="self-center text-xs text-slate-400">First read: {formatDate(created)}</p>
+			<p class="self-center text-xs text-slate-400">First read: {formatToMST(created)}</p>
 			<div class="flex">
 				{#each [1, 2, 3, 4, 5] as rate}
 					{@const colored = rate <= rating}
