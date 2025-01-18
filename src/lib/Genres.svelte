@@ -29,9 +29,9 @@
 		<form action="?/insertGenre" method="post">
 			<Form.Field {form} name="description" class="mx-4">
 				<Form.Control>
-					{#snippet children({ attrs })}
+					{#snippet children({ props })}
 						<Input
-							{...attrs}
+							{...props}
 							placeholder="Add a Genre"
 							autocomplete="off"
 							spellcheck="false"
