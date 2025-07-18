@@ -13,7 +13,7 @@ import {
 	UPDATE_BOOK
 } from '$lib/server/queries.js';
 import { serializeBooks } from '$lib/server/utilities.js';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ params }) => {
@@ -33,8 +33,8 @@ export const load: PageServerLoad = async ({ params }) => {
 		const genres = rs[0].rows as unknown as Genre[];
 		const book = serializeBooks(rs[1].rows as unknown as BookDb[])[0];
 
-		const form = await superValidate(book, zod(bookSchema));
-		const genreForm = await superValidate(zod(genreSchema));
+		const form = await superValidate(book, zod4(bookSchema));
+		const genreForm = await superValidate(zod4(genreSchema));
 
 		return { genres, form, genreForm };
 	} catch (e) {
@@ -44,7 +44,7 @@ export const load: PageServerLoad = async ({ params }) => {
 
 export const actions = {
 	modify: async (event) => {
-		const form = await superValidate(event, zod(bookSchema));
+		const form = await superValidate(event, zod4(bookSchema));
 
 		if (!form.valid) return fail(400, { form });
 
@@ -115,7 +115,7 @@ export const actions = {
 	},
 
 	insertGenre: async (event) => {
-		const form = await superValidate(event, zod(genreSchema));
+		const form = await superValidate(event, zod4(genreSchema));
 		if (!form.valid) return fail(400, { form });
 
 		const { description } = form.data;

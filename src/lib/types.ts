@@ -1,4 +1,4 @@
-import { number, z } from "zod";
+import { z, number } from "zod/v4";
 
 export const swimTag = z.object({
   id: z.number().positive(),

@@ -1,5 +1,5 @@
 import { superValidate } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 import { swimWorkoutSchema, type SwimTag, type SwimWorkoutDb } from '$lib/types';
 import { fail, redirect, type Actions } from '@sveltejs/kit';
 import { db } from '$lib/server/databaseClient';
@@ -22,7 +22,7 @@ export const load: PageServerLoad = async ({ params }) => {
 	// Giving an ID so this will always come back with one record.  Grabbing it.
 	const swimWorkout = serializeSwimWorkout(rs[1].rows as unknown as SwimWorkoutDb[])[0];
 
-	const form = await superValidate(swimWorkout, zod(swimWorkoutSchema));
+	const form = await superValidate(swimWorkout, zod4(swimWorkoutSchema));
 
 	return {
 		form,
@@ -33,7 +33,7 @@ export const load: PageServerLoad = async ({ params }) => {
 
 export const actions: Actions = {
 	modify: async (event) => {
-		const form = await superValidate(event, zod(swimWorkoutSchema));
+		const form = await superValidate(event, zod4(swimWorkoutSchema));
 		if (!form.valid) return fail(400, { form });
 
 		const { swimWorkoutText, yards, tags, id, author } = form.data;

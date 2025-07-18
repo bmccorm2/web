@@ -6,17 +6,14 @@
 	import { Textarea } from '$lib/components/ui/textarea';
 	import { Checkbox } from '$lib/components/ui/checkbox';
 	import * as Form from '$lib/components/ui/form';
-	import { zodClient } from 'sveltekit-superforms/adapters';
+	import { zod4Client } from 'sveltekit-superforms/adapters';
 	import { bookSchema, type Genre } from '$lib/types';
 	import { Input } from '$lib/components/ui/input';
 	import * as Card from '$lib/components/ui/card/index.js';
 
 	let { data } = $props();
 
-	const form = superForm(data.form, {
-		validators: zodClient(bookSchema),
-		dataType: 'json'
-	});
+	const form = superForm(data.form, { validators: zod4Client(bookSchema), dataType: 'json' });
 
 	const { form: formData, enhance } = form;
 

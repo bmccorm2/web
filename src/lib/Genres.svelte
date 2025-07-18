@@ -4,7 +4,7 @@
 	import { Input } from './components/ui/input';
 	import { genreSchema, type Genre } from './types';
 	import * as Form from '$lib/components/ui/form';
-	import { zodClient } from 'sveltekit-superforms/adapters';
+	import { zod4Client } from 'sveltekit-superforms/adapters';
 	import { toast } from 'svelte-sonner';
 	import * as Card from '$lib/components/ui/card/index.js';
 
@@ -12,7 +12,7 @@
 		$props();
 
 	const form = superForm(data, {
-		validators: zodClient(genreSchema),
+		validators: zod4Client(genreSchema),
 		onUpdated: ({ form: f }) => {
 			if (f.valid) {
 				toast.success(`Created ${JSON.stringify(f.data.description, null, 2)}`);

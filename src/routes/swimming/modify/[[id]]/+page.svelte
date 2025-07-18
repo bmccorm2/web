@@ -4,14 +4,14 @@
 	import { Input } from '$lib/components/ui/input';
 	import { superForm } from 'sveltekit-superforms';
 	import { swimWorkoutSchema } from '$lib/types.js';
-	import { zodClient } from 'sveltekit-superforms/adapters';
+	import { zod4Client } from 'sveltekit-superforms/adapters';
 	import { Checkbox } from '$lib/components/ui/checkbox';
 	import * as Card from '$lib/components/ui/card/index.js';
 
 	let { data } = $props();
 
 	const form = superForm(data.form, {
-		validators: zodClient(swimWorkoutSchema),
+		validators: zod4Client(swimWorkoutSchema),
 		dataType: 'json'
 	});
 

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { superForm } from 'sveltekit-superforms/client';
-	import { zodClient } from 'sveltekit-superforms/adapters';
+	import { zod4Client } from 'sveltekit-superforms/adapters';
 	import { inputSchema } from '$lib/types';
 	import * as Form from '$lib/components/ui/form';
 	import * as Card from '$lib/components/ui/card/index.js';
@@ -13,7 +13,7 @@
 	let isSuccess = $state(false);
 
 	const form = superForm(data.form, {
-		validators: zodClient(inputSchema),
+		validators: zod4Client(inputSchema),
 		onUpdated({ form: f }) {
 			if (f.valid) {
 				isSuccess = true;
@@ -41,7 +41,7 @@
 	<form action="?/create" method="post" use:enhance>
 		<Card.Content>
 			<!-- PRICE -->
-			<div class="mx-6 flex items-center">
+			<div class="mx-6 flex items-center space-y-2">
 				<InputIcon>
 					<DollarSign />
 				</InputIcon>
@@ -55,7 +55,7 @@
 								bind:value={$formData.price}
 								inputmode="decimal"
 								step=".01"
-								class="rounded-r-md border-2 border-slate-500 px-3 py-1 text-slate-200"
+								class="border-2 border-slate-500"
 							/>
 						{/snippet}
 					</Form.Control>
@@ -63,7 +63,7 @@
 				</Form.Field>
 			</div>
 			<!-- GALLONS -->
-			<div class="mx-6 mt-1 flex items-center">
+			<div class="mx-6 mt-1 flex items-center space-y-2">
 				<InputIcon>
 					<Fuel />
 				</InputIcon>
@@ -77,7 +77,7 @@
 								bind:value={$formData.gallons}
 								inputmode="decimal"
 								step=".001"
-								class="rounded-r-md border-2 border-slate-500 px-3 py-1 text-slate-200"
+								class="border-2 border-slate-500"
 							/>
 						{/snippet}
 					</Form.Control>
@@ -85,7 +85,7 @@
 				</Form.Field>
 			</div>
 			<!-- MILES -->
-			<div class="mx-6 mt-1 flex items-center">
+			<div class="mx-6 mt-1 flex items-center space-y-2">
 				<InputIcon>
 					<CarFront />
 				</InputIcon>
@@ -99,7 +99,7 @@
 								bind:value={$formData.miles}
 								inputmode="decimal"
 								step=".01"
-								class="rounded-r-md border-2 border-slate-500 px-3 py-1 text-slate-200"
+								class="border-2 border-slate-500"
 							/>
 						{/snippet}
 					</Form.Control>
@@ -107,7 +107,7 @@
 				</Form.Field>
 			</div>
 			<!-- NOTES -->
-			<div class="mx-6 mb-4 mt-1 flex items-center">
+			<div class="mx-6 mt-1 mb-4 flex items-center space-y-2">
 				<InputIcon>
 					<StickyNote />
 				</InputIcon>
@@ -118,7 +118,7 @@
 								{...props}
 								placeholder="Notes"
 								bind:value={$formData.notes}
-								class="rounded-r-md border-2 border-slate-500 px-3 py-1 text-slate-200"
+								class="border-2 border-slate-500"
 							/>
 						{/snippet}
 					</Form.Control>
