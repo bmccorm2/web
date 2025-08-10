@@ -1,4 +1,4 @@
-<script lang="ts">
+<!-- <script lang="ts">
 	import * as Form from '$lib/components/ui/form';
 	import { Textarea } from '$lib/components/ui/textarea';
 	import { Input } from '$lib/components/ui/input';
@@ -40,9 +40,9 @@
 			el.value = el.value.substring(0, start) + '   ' + el.value.substring(end);
 		}
 	}
-</script>
+</script> -->
 
-<svelte:head>
+<!-- <svelte:head>
 	<title>Modify Workout</title>
 	<meta name="swim workouts" content="add or change an existing swim workout" />
 </svelte:head>
@@ -51,9 +51,9 @@
 	<Card.Header>{$formData.id ? 'UPDATE WORKOUT' : 'ADD A WORKOUT'}</Card.Header>
 	<Card.Content>
 		<form method="post" action="?/modify" use:enhance>
-			<div class="mb-4 lg:flex lg:gap-2">
-				<!-- WORKOUT AREA -->
-				<Form.Field {form} name="swimWorkoutText" class="m-4 grow">
+			<div class="mb-4 lg:flex lg:gap-2"> -->
+<!-- WORKOUT AREA -->
+<!-- <Form.Field {form} name="swimWorkoutText" class="m-4 grow">
 					<Form.Control>
 						{#snippet children({ props })}
 							<Textarea
@@ -69,9 +69,9 @@
 					</Form.Control>
 					<Form.FieldErrors />
 				</Form.Field>
-				<div class="lg:w-4/12">
-					<!-- AUTHOR          -->
-					<Form.Field {form} name="author" class="m-4">
+				<div class="lg:w-4/12"> -->
+<!-- AUTHOR          -->
+<!-- <Form.Field {form} name="author" class="m-4">
 						<Form.Control>
 							{#snippet children({ props })}
 								<Input
@@ -84,9 +84,9 @@
 							{/snippet}
 						</Form.Control>
 						<Form.FieldErrors />
-					</Form.Field>
-					<!-- YARDS -->
-					<Form.Field {form} name="yards" class="m-4">
+					</Form.Field> -->
+<!-- YARDS -->
+<!-- <Form.Field {form} name="yards" class="m-4">
 						<Form.Control>
 							{#snippet children({ props })}
 								<Input
@@ -100,9 +100,9 @@
 							{/snippet}
 						</Form.Control>
 						<Form.FieldErrors />
-					</Form.Field>
-					<!-- TAGS -->
-					<Form.Fieldset {form} name="tags">
+					</Form.Field> -->
+<!-- TAGS -->
+<!-- <Form.Fieldset {form} name="tags">
 						<div class="mx-4 mb-4 grid grid-cols-2 gap-2 xl:grid-cols-3">
 							{#each data.swimTags as tag}
 								{@const checked = $formData.tags?.some((e) => e.id === tag.id)}
@@ -136,4 +136,4 @@
 			</div>
 		</form>
 	</Card.Content>
-</Card.Root>
+</Card.Root> -->

@@ -46,7 +46,8 @@
 		"zod": "^4.0.5"
 	},
 	"dependencies": {
-		"@libsql/client": "^0.14.0",
-		"chart.js": "^4.5.0"
+		"chart.js": "^4.5.0",
+		"convex": "^1.25.4",
+		"convex-svelte": "^0.0.11"
 	}
 }

@@ -1,4 +1,4 @@
-<script lang="ts">
+<!-- <script lang="ts">
   import CarSource from "$lib/CarSource.svelte";
   import type { PageServerData } from "./$types";
   import CarChart from "./CarChart.svelte";
@@ -12,5 +12,5 @@
   <meta name="description" content="price to mileage charting" />
 </svelte:head>
 
-<CarSource {cars} />
+<CarSource {cars} /> -->
 <!-- <CarChart chartData={carDetails} /> -->

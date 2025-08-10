@@ -1,4 +1,4 @@
-<script lang="ts">
+<!-- <script lang="ts">
 	import { Button } from '$lib/components/ui/button';
 	import Book from './Book.svelte';
 	import { page } from '$app/state';
@@ -10,9 +10,9 @@
 		if (page.url.searchParams.get('success') === 'true')
 			toast.success('Successfully created book!!');
 	});
-</script>
+</script> -->
 
-<div class="flex justify-center">
+<!-- <div class="flex justify-center">
 	<Button
 		variant="link"
 		href="/books/modify"
@@ -25,4 +25,4 @@
 	{#each data.books as bookDetails}
 		<Book {bookDetails} />
 	{/each}
-</div>
+</div> -->

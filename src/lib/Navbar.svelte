@@ -12,7 +12,7 @@
 
 	const routes = [
 		{
-			location: '/consumption/4',
+			location: '/consumption/j974gq57tzkh75gkqwqxcn0hx97n0nv8',
 			description: 'Consumption',
 			searchPattern: '/consumption'
 		},
@@ -40,11 +40,6 @@
 			location: '/life',
 			description: 'Life',
 			searchPattern: '/life'
-		},
-		{
-			location: '/swimming',
-			description: 'Swim Workouts',
-			searchPattern: '/swimming'
 		}
 	];
 
@@ -55,27 +50,25 @@
 	}
 </script>
 
-<nav class="sticky top-0 space-x-4 bg-gray-300 px-4 py-3 dark:bg-slate-800 lg:space-x-6">
+<nav class="sticky top-0 space-x-4 bg-gray-300 px-4 py-3 lg:space-x-6 dark:bg-slate-800">
 	<ul class="flex items-center justify-between">
 		<!-- DON'T SHOW OTHER PAGES WHEN ON SWIMMING PAGE BECAUSE IT IS PUBLIC -->
-		{#if !activeUrl.startsWith('/swimming')}
-			<li>
-				<a href="/">
-					<Terminal />
-				</a>
-			</li>
-			<div class="md:display-block hidden space-x-4 md:flex md:items-center lg:space-x-6">
-				{#each routes as { location, description, searchPattern }}
-					{@const isActive = activeUrl.startsWith(searchPattern)}
-					<li>
-						<a
-							class="text-sm font-medium hover:text-blue-500 {isActive && activeClass}"
-							href={location}>{description}</a
-						>
-					</li>
-				{/each}
-			</div>
-		{/if}
+		<li>
+			<a href="/">
+				<Terminal />
+			</a>
+		</li>
+		<div class="md:display-block hidden space-x-4 md:flex md:items-center lg:space-x-6">
+			{#each routes as { location, description, searchPattern }}
+				{@const isActive = activeUrl.startsWith(searchPattern)}
+				<li>
+					<a
+						class="text-sm font-medium hover:text-blue-500 {isActive && activeClass}"
+						href={location}>{description}</a
+					>
+				</li>
+			{/each}
+		</div>
 		<li class="pl-6">
 			<Button
 				onclick={toggleMode}
@@ -84,10 +77,10 @@
 				class="border-0 bg-gray-300 dark:bg-slate-800 dark:hover:bg-slate-900"
 			>
 				<Sun
-					class="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0"
+					class="h-[1.2rem] w-[1.2rem] scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90"
 				/>
 				<Moon
-					class="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100"
+					class="absolute h-[1.2rem] w-[1.2rem] scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0"
 				/>
 				<span class="sr-only">Toggle theme</span>
 			</Button>
@@ -98,18 +91,14 @@
 			</button>
 		</li>
 	</ul>
-	<!-- DON'T SHOW OTHER PAGES WHEN ON SWIMMING PAGE BECAUSE IT IS PUBLIC -->
-	{#if !activeUrl.startsWith('/swimming')}
-		<nav class="list-none text-center md:hidden {isShowNavbar ? 'display-block' : 'hidden'}">
-			{#each routes as { location, description, searchPattern }}
-				{@const isActive = activeUrl.startsWith(searchPattern)}
-				<li>
-					<a
-						class="text-sm font-medium hover:text-blue-500 {isActive && activeClass}"
-						href={location}>{description}</a
-					>
-				</li>
-			{/each}
-		</nav>
-	{/if}
+	<nav class="list-none text-center md:hidden {isShowNavbar ? 'display-block' : 'hidden'}">
+		{#each routes as { location, description, searchPattern }}
+			{@const isActive = activeUrl.startsWith(searchPattern)}
+			<li>
+				<a class="text-sm font-medium hover:text-blue-500 {isActive && activeClass}" href={location}
+					>{description}</a
+				>
+			</li>
+		{/each}
+	</nav>
 </nav>

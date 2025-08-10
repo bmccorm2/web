@@ -1,4 +1,4 @@
-<script lang="ts">
+<!-- <script lang="ts">
    import YieldChart from "./YieldChart.svelte";
 
    let { data } = $props();
@@ -10,4 +10,4 @@
    <meta name="description" content="US treasury yield curve" />
 </svelte:head>
 
-<YieldChart chartData={yields} />
+<YieldChart chartData={yields} /> -->

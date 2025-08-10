@@ -1,4 +1,4 @@
-<script lang="ts">
+<!-- <script lang="ts">
 	import { userRating } from '$lib/stores';
 	import Genres from '$lib/Genres.svelte';
 	import { superForm } from 'sveltekit-superforms/client';
@@ -30,9 +30,9 @@
 	const removeGenre = (id: number) => {
 		$formData.genres = $formData.genres.filter((e: Genre) => e.id != id);
 	};
-</script>
+</script> -->
 
-<div class="mt-2 lg:flex lg:gap-2">
+<!-- <div class="mt-2 lg:flex lg:gap-2">
 	<div class="lg:w-9/12">
 		<Card.Root class="mt-2">
 			<Card.Header>{$formData.id ? 'UPDATE BOOK' : 'CREATE BOOK'}</Card.Header>
@@ -83,9 +83,9 @@
 								{/snippet}
 							</Form.Control>
 							<Form.FieldErrors />
-						</Form.Field>
-						<!-- GENRES -->
-						<div class="m-4 mt-6 rounded-md border-2 border-purple-500 px-2 py-1 text-center">
+						</Form.Field> -->
+<!-- GENRES -->
+<!-- <div class="m-4 mt-6 rounded-md border-2 border-purple-500 px-2 py-1 text-center">
 							<div class="mb-2 font-bold underline">Genres</div>
 							<Form.Fieldset {form} name="genres">
 								<div class="mb-2 grid grid-cols-2 gap-2 lg:grid-cols-4">
@@ -117,9 +117,9 @@
 									{/each}
 								</div>
 							</Form.Fieldset>
-						</div>
-						<!-- RATING -->
-						<div class="m-4 mt-6 md:flex md:items-center md:justify-center md:gap-12">
+						</div> -->
+<!-- RATING -->
+<!-- <div class="m-4 mt-6 md:flex md:items-center md:justify-center md:gap-12">
 							<div class="mb-2 text-center md:mb-0">
 								<Rating />
 							</div>
@@ -135,9 +135,9 @@
 									<Form.FieldErrors />
 								</Form.Field>
 							</div>
-						</div>
-						<!-- PAGES -->
-						<div class="m-4 lg:flex lg:content-center lg:justify-evenly">
+						</div> -->
+<!-- PAGES -->
+<!-- <div class="m-4 lg:flex lg:content-center lg:justify-evenly">
 							<Form.Field {form} name="pages">
 								<Form.Control>
 									{#snippet children({ props })}
@@ -168,10 +168,10 @@
 								</Form.Control>
 								<Form.FieldErrors />
 							</Form.Field>
-						</div>
+						</div> -->
 
-						<!-- SUBMIT BUTTON -->
-						<div class="text-center">
+<!-- SUBMIT BUTTON -->
+<!-- <div class="text-center">
 							<Form.Button class="m-4 w-1/2">{$formData.id ? 'Update' : 'Create'}</Form.Button>
 						</div>
 					</div>
@@ -182,4 +182,4 @@
 	<div class="mt-2 w-full lg:w-3/12">
 		<Genres data={data.genreForm} genres={data.genres} />
 	</div>
-</div>
+</div> -->

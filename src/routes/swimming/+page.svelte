@@ -1,4 +1,4 @@
-<script lang="ts">
+<!-- <script lang="ts">
 	import { Button } from '$lib/components/ui/button';
 	import SwimWorkout from '$lib/SwimWorkout.svelte';
 	import {
@@ -40,24 +40,24 @@
 		if (page.url.searchParams.get('success') === 'true')
 			toast.success('Successfully created workout!!');
 	});
-</script>
+</script> -->
 
-{#snippet authorButton(authorText: AuthorFilter)}
+<!-- {#snippet authorButton(authorText: AuthorFilter)}
 	<Button
 		variant="secondary"
 		class={authorFilter === authorText ? 'bg-blue-500' : ''}
 		onclick={() => (authorFilter = authorText)}>{authorText}</Button
 	>
-{/snippet}
-{#snippet tagButton(tagText: TagFilter)}
+{/snippet} -->
+<!-- {#snippet tagButton(tagText: TagFilter)}
 	<Button
 		variant="secondary"
 		class={tagFilter === tagText ? 'bg-blue-500' : ''}
 		onclick={() => (tagFilter = tagText)}>{tagText}</Button
 	>
-{/snippet}
+{/snippet} -->
 
-<svelte:head>
+<!-- <svelte:head>
 	<title>Swimming</title>
 	<meta name="swim workouts" content="save swim workouts" />
 </svelte:head>
@@ -70,39 +70,39 @@
 		>Add a Workout</Button
 	>
 </div>
-<hr class="my-4" />
+<hr class="my-4" /> -->
 
 <!-- AUTHORS -->
-<div class="ml-2 md:ml-0 md:flex md:items-center">
-	<div class="md:w-3/4">
-		<div class="flex items-center gap-1 overflow-auto">
-			<p class="mr-2 min-w-16">Authors</p>
-			{#each authorValues as author}
-				{@render authorButton(author)}
-			{/each}
+<!-- <div class="ml-2 md:ml-0 md:flex md:items-center">
+		<div class="md:w-3/4">
+			<div class="flex items-center gap-1 overflow-auto">
+				<p class="mr-2 min-w-16">Authors</p>
+				{#each authorValues as author}
+					{@render authorButton(author)}
+				{/each}
+			</div> -->
+<!-- TAGS -->
+<!-- <div class="mt-2 flex items-center gap-1 overflow-auto">
+				<p class="mr-2 min-w-16">Tags</p>
+				{#each tagValues as tag}
+					{@render tagButton(tag)}
+				{/each}
+			</div>
 		</div>
-		<!-- TAGS -->
-		<div class="mt-2 flex items-center gap-1 overflow-auto">
-			<p class="mr-2 min-w-16">Tags</p>
-			{#each tagValues as tag}
-				{@render tagButton(tag)}
-			{/each}
+		<div
+			class="mt-2 flex items-center justify-center text-4xl font-extrabold text-red-500 md:mt-0 md:justify-start"
+		>
+			<div class="mr-6 text-xs text-gray-500">TOTAL</div>
+			<div>
+				{filteredWorkouts.length}
+			</div>
 		</div>
 	</div>
-	<div
-		class="mt-2 flex items-center justify-center text-4xl font-extrabold text-red-500 md:mt-0 md:justify-start"
-	>
-		<div class="mr-6 text-xs text-gray-500">TOTAL</div>
-		<div>
-			{filteredWorkouts.length}
-		</div>
-	</div>
-</div>
-
-<hr class="my-4" />
-
-<div class="md:grid md:gap-4 lg:grid-cols-2 xl:grid-cols-3">
-	{#each filteredWorkouts as workout}
-		<SwimWorkout {...workout} />
-	{/each}
-</div>
+	
+	<hr class="my-4" />
+	
+	<div class="md:grid md:gap-4 lg:grid-cols-2 xl:grid-cols-3">
+		{#each filteredWorkouts as workout}
+			<SwimWorkout {...workout} />
+		{/each}
+	</div> -->

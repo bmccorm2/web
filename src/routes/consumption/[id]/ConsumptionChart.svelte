@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Consumption } from '$lib/types';
+	import type { ConsumptionType } from '$lib/types';
 	import {
 		Chart,
 		Tooltip,
@@ -38,8 +38,8 @@
 		chartData,
 		selectedChart
 	}: {
-		chartData: Consumption[];
-		selectedChart: string;
+		chartData: ConsumptionType[];
+		selectedChart: 'mpg' | 'ppg';
 	} = $props();
 
 	let myCanvas = $state<ChartItem>();
@@ -50,13 +50,13 @@
 	const chartTypes: ChartTypes = {
 		ppg: {
 			label: 'Price Per Gallon',
-			datapoint: 'price_per_gallon',
+			datapoint: 'pricePerGallon',
 			radius: 0,
 			fill: true
 		},
 		mpg: {
 			label: 'Miles Per Gallon',
-			datapoint: 'miles_per_gallon',
+			datapoint: 'milesPerGallon',
 			radius: 5,
 			fill: false
 		}
@@ -98,12 +98,12 @@
 	};
 
 	let data = $derived({
-		labels: chartData.map((o) => new Date(o.created).toISOString().split('T')[0]).reverse(),
+		labels: chartData.map((o) => new Date(o._creationTime).toISOString().split('T')[0]).reverse(),
 		datasets: [
 			{
 				label: chartTypes[selectedChart].label,
 				data: chartData
-					.map((o: Consumption) =>
+					.map((o: ConsumptionType) =>
 						parseFloat((o as any)[chartTypes[selectedChart].datapoint].toFixed(2))
 					)
 					.reverse(),

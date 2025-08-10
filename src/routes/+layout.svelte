@@ -3,8 +3,12 @@
 	import Navbar from '$lib/Navbar.svelte';
 	import { ModeWatcher } from 'mode-watcher';
 	import { Toaster } from '$lib/components/ui/sonner';
+	import { PUBLIC_CONVEX_URL } from '$env/static/public';
+	import { setupConvex } from 'convex-svelte';
 
-	let { children } = $props();
+	const { children } = $props();
+
+	setupConvex(PUBLIC_CONVEX_URL);
 </script>
 
 <Toaster richColors position="top-right" />

@@ -1,4 +1,4 @@
-<script lang="ts">
+<!-- <script lang="ts">
 	import SwimWorkout from '$lib/SwimWorkout.svelte';
 	import * as Breadcrumb from '$lib/components/ui/breadcrumb/index.js';
 	import { formatToMST } from '$lib/utilities.js';
@@ -19,4 +19,4 @@
 		</Breadcrumb.List>
 	</Breadcrumb.Root>
 	<SwimWorkout {...data.swimWorkout} />
-</div>
+</div> -->
