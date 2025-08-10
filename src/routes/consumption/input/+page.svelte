@@ -11,7 +11,7 @@
 	import type { Id } from '../../../convex/_generated/dataModel';
 
 	const client = useConvexClient();
-	const CAR_ID: Id<'Cars'> = 'j974gq57tzkh75gkqwqxcn0hx97n0nv8' as Id<'Cars'>;
+	const CAR_ID: Id<'Cars'> = 'j571fyshxpyyat5stm0a32b0bn7nccs6' as Id<'Cars'>;
 
 	let isSuccess = $state(false);
 	let price: number | undefined = $state();
