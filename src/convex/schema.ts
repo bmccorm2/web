@@ -13,5 +13,21 @@ export default defineSchema({
 		miles: v.float64(),
 		notes: v.optional(v.string()),
 		price: v.float64()
-	}).index('by_carId', ['carId'])
+	}).index('by_carId', ['carId']),
+	Books: defineTable({
+		author: v.string(),
+		isFiction: v.boolean(),
+		pages: v.float64(),
+		publishDate: v.optional(v.float64()),
+		rating: v.float64(),
+		review: v.string(),
+		title: v.string()
+	}),
+	Genres: defineTable({
+		description: v.string()
+	}),
+	Books_Genres_Association: defineTable({
+		bookId: v.id('Books'),
+		genreId: v.id('Genres')
+	})
 });

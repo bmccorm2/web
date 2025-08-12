@@ -2,8 +2,8 @@ import json
 from datetime import datetime
 
 # File paths
-input_path = "consumption.jsonl"
-output_path = "consumption_epoch.jsonl"
+input_path = "books.jsonl"
+output_path = "books_epoch.jsonl"
 
 # Read the input JSONL file and convert the 'created' field
 output_lines = []
@@ -14,6 +14,10 @@ with open(input_path, "r") as infile:
             # Parse ISO date and convert to epoch ms
             dt = datetime.fromisoformat(record["_creationTime"])
             record["_creationTime"] = int(dt.timestamp() * 1000)
+        if "publishDate" in record:
+            # Parse ISO date and convert to epoch ms
+            dt = datetime.fromisoformat(record["publishDate"])
+            record["publishDate"] = int(dt.timestamp() * 1000)            
         output_lines.append(json.dumps(record))
 
 # Write the updated records to a new JSONL file
