@@ -1,17 +1,18 @@
 <script lang="ts">
 	import { inputSchema } from '$lib/zodSchemas';
 	import * as Card from '$lib/components/ui/card/index.js';
-	import * as z from 'zod';
+	import { prettifyError } from 'zod';
 	import InputIcon from './InputIcon.svelte';
 	import { Fuel, StickyNote, DollarSign, CarFront } from 'lucide-svelte';
 	import { Input } from '$lib/components/ui/input';
 	import { Button } from '$lib/components/ui/button';
 	import { useConvexClient } from 'convex-svelte';
-	import { api } from '../../../convex/_generated/api';
-	import type { Id } from '../../../convex/_generated/dataModel';
+	import { api } from '../../../../convex/_generated/api';
+	import type { Id } from '../../../../convex/_generated/dataModel';
+	import { page } from '$app/state';
 
 	const client = useConvexClient();
-	const CAR_ID: Id<'Cars'> = 'j571fyshxpyyat5stm0a32b0bn7nccs6' as Id<'Cars'>;
+	const carId = page.params.id as Id<'Cars'>;
 
 	let isSuccess = $state(false);
 	let price: number | undefined = $state();
@@ -29,13 +30,13 @@
 			price,
 			gallons,
 			miles,
-			carId: CAR_ID,
+			carId,
 			...(notes !== undefined && { notes })
 		};
 		const result = inputSchema.safeParse(formData);
 
 		if (!result.success) {
-			errors = z.prettifyError(result.error);
+			errors = prettifyError(result.error);
 			return false;
 		}
 		return true;
@@ -49,7 +50,7 @@
 				price,
 				gallons,
 				miles,
-				carId: CAR_ID
+				carId
 			});
 
 			if (consumptionId) {

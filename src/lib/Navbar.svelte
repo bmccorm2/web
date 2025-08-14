@@ -12,7 +12,7 @@
 
 	const routes = [
 		{
-			location: '/consumption/j571fyshxpyyat5stm0a32b0bn7nccs6',
+			location: '/consumption',
 			description: 'Consumption',
 			searchPattern: '/consumption'
 		},

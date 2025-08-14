@@ -7,11 +7,12 @@
 	import MileageData from './MileageData.svelte';
 	import { page } from '$app/state';
 	import type { Id } from '../../../convex/_generated/dataModel';
+	import { Button } from '$lib/components/ui/button';
 
+	const carId = $derived(page.params.id as Id<'Cars'>);
 	const cars = useQuery(api.cars.getOwnedCars, {});
-	const consumption = $derived(
-		useQuery(api.consumption.byCar, { carId: page.params.id as Id<'Cars'> })
-	);
+
+	const consumption = $derived(useQuery(api.consumption.byCar, { carId }));
 	const CHART_DATA_ROWS = 9;
 </script>
 
@@ -20,11 +21,21 @@
 	<meta name="description" content="automobile consumption" />
 </svelte:head>
 
+<!-- Floating Add Record Button -->
+<div class="fixed top-14 right-2 z-50 md:right-8">
+	<Button
+		variant="link"
+		href={`/consumption/input/${carId}`}
+		class="flex h-12 w-12 items-end justify-center rounded-full bg-pink-600 text-3xl font-bold text-white shadow-lg hover:bg-pink-700"
+		>+</Button
+	>
+</div>
+
 <div class="md:gap my-2 text-center md:flex md:items-center md:justify-center">
 	{#if cars.isLoading}
 		<p>Loading Cars...</p>
 	{:else if cars.error}
-		<p>Error Loading Cars.</p>
+		<p class="font-bold text-red-500">Error Loading Cars.</p>
 	{:else}
 		<CarSource cars={cars.data} />
 	{/if}
@@ -36,7 +47,7 @@
 	</div>
 {:else if consumption.error}
 	<div class="mb-4 gap-4 md:flex md:justify-center">
-		<p>Error Loading Data.</p>
+		<p class="font-bold text-red-500">Error Loading Data.</p>
 	</div>
 {:else}
 	<div class="mb-4 gap-4 md:flex">
