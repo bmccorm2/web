@@ -1,29 +1,38 @@
 <script lang="ts">
-   import { enhance } from "$app/forms";
-   import type { Genre } from "$lib/types";
-   import { Trash2 } from "lucide-svelte";
+	import { Trash2 } from 'lucide-svelte';
+	import type { GenreType } from '../../convex/schema';
+	import type { Id } from '../../convex/_generated/dataModel';
+	import { useConvexClient } from 'convex-svelte';
+	import { api } from '../../convex/_generated/api';
+	import { toast } from 'svelte-sonner';
 
-   interface Props {
-      genres: Genre[];
-   }
+	let {
+		genres
+	}: {
+		genres: GenreType[];
+	} = $props();
 
-   let { genres }: Props = $props();
+	const client = useConvexClient();
+
+	async function handleSubmit(genreId: Id<'Genres'>, description: string) {
+		const res = await client.mutation(api.genres.deleteGenre, { genreId });
+		if (res.success === true) toast.success(`Deleted ${description}`);
+	}
 </script>
 
 <table class="mx-4 mb-2 w-full table-auto">
-   <tbody>
-      {#each genres as { description, id }}
-         <tr>
-            <td class="text-start">{description}</td>
-            <td class="w-24">
-               <form action="?/deleteGenre" method="post" use:enhance>
-                  <input type="hidden" name="id" value={id} />
-                  <button>
-                     <Trash2 color="crimson" size={16} />
-                  </button>
-               </form>
-            </td>
-         </tr>
-      {/each}
-   </tbody>
+	<tbody>
+		{#each genres as { description, _id }}
+			<tr>
+				<td class="text-start">{description}</td>
+				<td class="w-24">
+					<form>
+						<button onclick={() => handleSubmit(_id, description)}>
+							<Trash2 color="crimson" class="cursor-pointer" size={16} />
+						</button>
+					</form>
+				</td>
+			</tr>
+		{/each}
+	</tbody>
 </table>

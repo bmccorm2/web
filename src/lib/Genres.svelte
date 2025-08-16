@@ -1,49 +1,58 @@
 <script lang="ts">
-	import { type SuperValidated, type Infer, superForm } from 'sveltekit-superforms';
 	import GenreTable from '../routes/books/GenreTable.svelte';
 	import { Input } from './components/ui/input';
-	import { genreSchema, type Genre } from './types';
-	import * as Form from '$lib/components/ui/form';
-	import { zod4Client } from 'sveltekit-superforms/adapters';
 	import { toast } from 'svelte-sonner';
 	import * as Card from '$lib/components/ui/card/index.js';
+	import type { GenreType } from '../convex/schema';
+	import { Button } from './components/ui/button';
+	import { useConvexClient } from 'convex-svelte';
+	import { AudioWaveform } from 'lucide-svelte';
+	import { api } from '../convex/_generated/api';
 
-	let { data, genres }: { data: SuperValidated<Infer<typeof genreSchema>>; genres: Genre[] } =
-		$props();
+	let { genres }: { genres: GenreType[] } = $props();
 
-	const form = superForm(data, {
-		validators: zod4Client(genreSchema),
-		onUpdated: ({ form: f }) => {
-			if (f.valid) {
-				toast.success(`Created ${JSON.stringify(f.data.description, null, 2)}`);
-			}
+	const client = useConvexClient();
+
+	let newGenre = $state('');
+
+	// const form = superForm(data, {
+	// 	validators: zod4Client(genreSchema),
+	// 	onUpdated: ({ form: f }) => {
+	// 		if (f.valid) {
+	// 			toast.success(`Created ${JSON.stringify(f.data.description, null, 2)}`);
+	// 		}
+	// 	}
+	// });
+
+	async function handleSubmit() {
+		const id = await client.mutation(api.genres.insert, {
+			description: newGenre
+		});
+
+		if (id) {
+			toast.success(`Successfully created ${newGenre}`);
+			newGenre = '';
 		}
-	});
-
-	const { form: formData } = form;
+	}
 </script>
 
 <Card.Root>
 	<Card.Header>GENRES</Card.Header>
 	<Card.Content>
-		<form action="?/insertGenre" method="post">
-			<Form.Field {form} name="description" class="mx-4">
-				<Form.Control>
-					{#snippet children({ props })}
-						<Input
-							{...props}
-							placeholder="Add a Genre"
-							autocomplete="off"
-							spellcheck="false"
-							bind:value={$formData.description}
-							class="rounded-md p-2 ring-1 ring-slate-400"
-						/>
-					{/snippet}
-				</Form.Control>
-				<Form.FieldErrors />
-			</Form.Field>
+		<form onsubmit={handleSubmit}>
+			<Input
+				placeholder="Add a Genre"
+				autocomplete="off"
+				spellcheck="false"
+				bind:value={newGenre}
+				class="rounded-md p-2 ring-1 ring-slate-400"
+			/>
 			<div class="mt-4 text-center">
-				<Form.Button class="w-1/2 bg-blue-500 font-bold uppercase text-white">Submit</Form.Button>
+				<Button
+					onclick={handleSubmit}
+					class="w-1/2 bg-gradient-to-b from-blue-700 to-blue-600 font-bold text-white uppercase hover:cursor-pointer"
+					>Submit</Button
+				>
 			</div>
 		</form>
 		<hr class="mx-2 my-4 border-white" />
