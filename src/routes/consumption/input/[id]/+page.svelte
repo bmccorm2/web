@@ -11,6 +11,7 @@
 	import type { Id } from '../../../../convex/_generated/dataModel';
 	import { page } from '$app/state';
 
+	const client = useConvexClient();
 	const carId = page.params.id as Id<'Cars'>;
 
 	let isSuccess = $state(false);
@@ -42,7 +43,6 @@
 	}
 
 	async function handleSubmit(e: SubmitEvent) {
-		const client = useConvexClient();
 		e.preventDefault();
 		if (validateForm() && price !== undefined && gallons !== undefined && miles !== undefined) {
 			const consumptionId = await client.mutation(api.consumption.insert, {
