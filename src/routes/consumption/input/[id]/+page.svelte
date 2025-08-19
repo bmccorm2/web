@@ -9,9 +9,12 @@
 	import CarFront from '@lucide/svelte/icons/car-front';
 	import { Input } from '$lib/components/ui/input';
 	import { Button } from '$lib/components/ui/button';
-
+	import { useConvexClient } from 'convex-svelte';
+	import { api } from '../../../../convex/_generated/api';
 	import type { Id } from '../../../../convex/_generated/dataModel';
 	import { page } from '$app/state';
+
+	const client = useConvexClient();
 
 	const carId = page.params.id as Id<'Cars'>;
 
@@ -46,10 +49,6 @@
 	async function handleSubmit(e: SubmitEvent) {
 		e.preventDefault();
 		if (validateForm() && price !== undefined && gallons !== undefined && miles !== undefined) {
-			const { useConvexClient } = await import('convex-svelte');
-			const { api } = await import('../../../../convex/_generated/api');
-			const client = useConvexClient();
-
 			const consumptionId = await client.mutation(api.consumption.insert, {
 				notes,
 				price,
@@ -150,7 +149,7 @@
 		<Card.Footer class="flex justify-center">
 			<Button
 				type="submit"
-				class={`w-1/2 bg-gradient-to-b from-blue-700 to-blue-600 font-bold text-white uppercase ${isSuccess && 'bg-gradient-to-b from-emerald-800 to-emerald-700'}`}
+				class={`w-1/2 cursor-pointer bg-gradient-to-b from-blue-700 to-blue-600 font-bold text-white uppercase ${isSuccess && 'bg-gradient-to-b from-emerald-800 to-emerald-700'}`}
 				disabled={isSuccess}>{isSuccess ? 'SENT!' : 'SUBMIT'}</Button
 			>
 		</Card.Footer>
