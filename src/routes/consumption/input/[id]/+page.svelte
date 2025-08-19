@@ -9,12 +9,10 @@
 	import CarFront from '@lucide/svelte/icons/car-front';
 	import { Input } from '$lib/components/ui/input';
 	import { Button } from '$lib/components/ui/button';
-	import { useConvexClient } from 'convex-svelte';
-	import { api } from '../../../../convex/_generated/api';
+
 	import type { Id } from '../../../../convex/_generated/dataModel';
 	import { page } from '$app/state';
 
-	const client = useConvexClient();
 	const carId = page.params.id as Id<'Cars'>;
 
 	let isSuccess = $state(false);
@@ -48,6 +46,10 @@
 	async function handleSubmit(e: SubmitEvent) {
 		e.preventDefault();
 		if (validateForm() && price !== undefined && gallons !== undefined && miles !== undefined) {
+			const { useConvexClient } = await import('convex-svelte');
+			const { api } = await import('../../../../convex/_generated/api');
+			const client = useConvexClient();
+
 			const consumptionId = await client.mutation(api.consumption.insert, {
 				notes,
 				price,
