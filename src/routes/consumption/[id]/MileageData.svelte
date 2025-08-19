@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { ConsumptionType } from '$lib/types';
+	import type { ConsumptionType } from '$lib/types.ts.bak';
 	import * as Card from '$lib/components/ui/card/index.js';
 
 	let { tableRows }: { tableRows: ConsumptionType[] } = $props();

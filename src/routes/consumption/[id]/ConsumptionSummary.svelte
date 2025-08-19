@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Summary } from '$lib/types';
+	import type { Summary } from '$lib/types.ts.bak';
 	import SummaryItem from './SummaryItem.svelte';
 	import * as Card from '$lib/components/ui/card/index.js';
 

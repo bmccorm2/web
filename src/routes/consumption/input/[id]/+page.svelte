@@ -3,7 +3,10 @@
 	import * as Card from '$lib/components/ui/card/index.js';
 	import { prettifyError } from 'zod';
 	import InputIcon from './InputIcon.svelte';
-	import { Fuel, StickyNote, DollarSign, CarFront } from 'lucide-svelte';
+	import Fuel from '@lucide/svelte/icons/fuel';
+	import StickyNote from '@lucide/svelte/icons/sticky-note';
+	import DollarSign from '@lucide/svelte/icons/dollar-sign';
+	import CarFront from '@lucide/svelte/icons/car-front';
 	import { Input } from '$lib/components/ui/input';
 	import { Button } from '$lib/components/ui/button';
 	import { useConvexClient } from 'convex-svelte';
