@@ -21,6 +21,11 @@
 			description: 'Books',
 			searchPattern: '/books'
 		},
+		{
+			location: '/cooking',
+			description: 'Cooking',
+			searchPattern: '/cooking'
+		},
 		// {
 		//    location: "/yields",
 		//    description: "Yields",

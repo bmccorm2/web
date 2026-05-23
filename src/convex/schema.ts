@@ -1,6 +1,6 @@
 import { defineSchema, defineTable } from 'convex/server';
 import { v } from 'convex/values';
-import { Doc } from './_generated/dataModel';
+import type { Doc } from './_generated/dataModel';
 
 export const bookFields = {
 	author: v.string(),
@@ -48,5 +48,17 @@ export default defineSchema({
 	Books_Genres_Association: defineTable({
 		bookId: v.id('Books'),
 		genreId: v.id('Genres')
-	}).index('by_book', ['bookId'])
+	}).index('by_book', ['bookId']),
+	Recipes: defineTable({
+		title: v.string(),
+		url: v.optional(v.string()),
+		prepTime: v.optional(v.string()),
+		cookTime: v.optional(v.string()),
+		totalTime: v.optional(v.string()),
+		yield: v.optional(v.string()),
+		ingredients: v.array(v.string()),
+		instructions: v.array(v.string()),
+		notes: v.optional(v.string()),
+		imageUrl: v.optional(v.string())
+	})
 });
