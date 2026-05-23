@@ -15,66 +15,98 @@
 	} = $props();
 
 	const client = useConvexClient();
-	const { title, author, rating, pages, isFiction, _id, review, _creationTime, genres } =
-		bookDetails;
+	let isDeleting = $state(false);
 
 	async function handleDelete() {
-		const res = await client.mutation(api.books.deleteBook, { bookId: _id });
-		if (res.success === true) toast.success(`Deleted ${title}`);
+		if (!confirm(`Delete "${bookDetails.title}"? This cannot be undone.`)) return;
+		isDeleting = true;
+
+		try {
+			const res = await client.mutation(api.books.deleteBook, { bookId: bookDetails._id });
+			if (res.success === true) toast.success(`Deleted ${bookDetails.title}`);
+		} catch {
+			toast.error('Unable to delete book. Try again.');
+		} finally {
+			isDeleting = false;
+		}
 	}
 </script>
 
-<Card.Root class="mb-2 md:mb-0">
+<Card.Root
+	class="mb-2 border-slate-200/80 bg-white/90 shadow-sm transition-shadow hover:shadow-md md:mb-0 dark:border-slate-700 dark:bg-slate-900"
+>
 	<Card.Content>
 		<div class="mb-2 flex justify-between">
 			<div class="flex content-center gap-3">
-				<!-- TITLE -->
-				<div class="text-3xl font-bold underline">{title}</div>
+				<div>
+					<div class="text-2xl font-bold tracking-tight">{bookDetails.title}</div>
+					<p class="text-xs text-slate-500 dark:text-slate-400">
+						Added {formatToMST(bookDetails._creationTime)}
+					</p>
+				</div>
 			</div>
-			<!-- ACTIONS -->
 			<div class="flex items-center gap-3">
-				<a href="books/modify/{_id}">
-					<PencilLine class="h-4- w-4" />
+				<a
+					href={`/books/modify/${bookDetails._id}`}
+					class="text-slate-500 transition-colors hover:text-sky-600"
+					aria-label={`Edit ${bookDetails.title}`}
+				>
+					<PencilLine class="h-4 w-4" />
 				</a>
-				<button onclick={handleDelete}>
-					<Trash2 class="h-4- w-4 cursor-pointer text-red-500" />
+				<button
+					type="button"
+					onclick={handleDelete}
+					disabled={isDeleting}
+					aria-label={`Delete ${bookDetails.title}`}
+				>
+					<Trash2
+						class="h-4 w-4 cursor-pointer text-red-500 disabled:cursor-not-allowed disabled:opacity-50"
+					/>
 				</button>
 			</div>
 		</div>
-		<!-- AUTHOR/PAGES/FICTION -->
+
 		<div class="mb-2 flex justify-between">
-			<div class="self-center text-xs text-slate-400">By {author}</div>
+			<div class="self-center text-xs text-slate-400">By {bookDetails.author}</div>
 			<div class="flex gap-4">
-				<Badge class="bg-blue-600 text-xs text-black dark:bg-blue-600">{pages} pages</Badge>
+				<Badge class="bg-sky-600 text-xs text-white dark:bg-sky-600"
+					>{bookDetails.pages} pages</Badge
+				>
 				<Badge class="bg-gray-500 text-xs text-black dark:bg-gray-500"
-					>{isFiction ? 'Fiction' : 'Non-Fiction'}</Badge
+					>{bookDetails.isFiction ? 'Fiction' : 'Non-Fiction'}</Badge
 				>
 			</div>
 		</div>
-		<!-- READ/RATING -->
+
 		<div class="mb-2 flex justify-between gap-2">
-			<p class="self-center text-xs text-slate-400">First read: {formatToMST(_creationTime)}</p>
-			<div class="flex">
+			<p class="self-center text-xs text-slate-400">Rating</p>
+			<div class="flex" aria-label={`Rated ${bookDetails.rating} out of 5`}>
 				{#each [1, 2, 3, 4, 5] as rate}
-					{@const colored = rate <= rating}
-					<Star strokeWidth={0} fill={colored ? 'gold' : ''} />
+					{@const colored = rate <= bookDetails.rating}
+					<Star class="h-4 w-4" strokeWidth={0} fill={colored ? '#f59e0b' : '#cbd5e1'} />
 				{/each}
 			</div>
 		</div>
-		<!-- REVIEW -->
+
 		<div class="mb-3">
-			{#if review}
-				<div>{review}</div>
+			{#if bookDetails.review}
+				<div class="rounded-md bg-slate-50 p-3 text-sm dark:bg-slate-800/60">
+					{bookDetails.review}
+				</div>
 			{:else}
-				<div>No Review for this book.</div>
+				<div
+					class="rounded-md bg-slate-50 p-3 text-sm text-slate-500 dark:bg-slate-800/60 dark:text-slate-400"
+				>
+					No review for this book.
+				</div>
 			{/if}
 		</div>
-		<!-- GENRES -->
+
 		<div class="flex justify-between">
-			<div class="flex gap-2">
+			<div class="flex flex-wrap gap-2">
 				<div class="self-center text-xs text-gray-500">Genres</div>
-				{#each genres as { description }}
-					<Badge class="bg-purple-600 text-xs text-black dark:bg-purple-600">{description}</Badge>
+				{#each bookDetails.genres as { description }}
+					<Badge class="bg-indigo-600 text-xs text-white dark:bg-indigo-600">{description}</Badge>
 				{/each}
 			</div>
 		</div>

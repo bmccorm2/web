@@ -5,6 +5,7 @@
 	import ConsumptionChart from './ConsumptionChart.svelte';
 	import ConsumptionSummary from './ConsumptionSummary.svelte';
 	import MileageData from './MileageData.svelte';
+	import { Plus } from 'lucide-svelte';
 	import { page } from '$app/state';
 	import type { Id } from '../../../convex/_generated/dataModel';
 	import { Button } from '$lib/components/ui/button';
@@ -22,13 +23,16 @@
 </svelte:head>
 
 <!-- Floating Add Record Button -->
-<div class="fixed top-14 right-2 z-50 md:right-8">
+<div class="fixed right-4 bottom-6 z-50 md:right-8">
 	<Button
-		variant="link"
+		variant="default"
 		href={`/consumption/input/${carId}`}
-		class="flex h-12 w-12 items-end justify-center rounded-full bg-pink-600 text-3xl font-bold text-white shadow-lg hover:bg-pink-700"
-		>+</Button
+		size="icon"
+		class="h-14 w-14 rounded-full bg-pink-600 text-white shadow-lg shadow-pink-950/30 hover:bg-pink-700"
+		aria-label="Add consumption record"
 	>
+		<Plus class="h-6 w-6" />
+	</Button>
 </div>
 
 <div class="md:gap my-2 text-center md:flex md:items-center md:justify-center">
@@ -55,12 +59,13 @@
 			<ConsumptionSummary summary={consumption.data.summary} />
 		</div>
 		<div class="md:w-8/12">
-			<MileageData tableRows={consumption.data.data.slice(0, CHART_DATA_ROWS)} />
+			<MileageData
+				tableRows={consumption.data.data.slice(0, CHART_DATA_ROWS)}
+				averageMpg={consumption.data.summary.milesPerGallon}
+			/>
 		</div>
 	</div>
-	<div class="hidden md:inline">
-		<ConsumptionChart chartData={consumption.data.data} selectedChart="mpg" />
-		<br />
-		<ConsumptionChart chartData={consumption.data.data} selectedChart="ppg" />
+	<div>
+		<ConsumptionChart chartData={consumption.data.data} />
 	</div>
 {/if}

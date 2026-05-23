@@ -1,29 +1,39 @@
 import { v } from 'convex/values';
 import { mutation, query } from './_generated/server';
-import { bookFullFields, bookFullUpdateFields, BookTypeFull } from './schema';
+import { bookFullFields, bookFullUpdateFields } from './schema';
+import type { BookTypeFull } from './schema';
+import type { Id } from './_generated/dataModel';
 
 export const getAll = query({
 	handler: async (ctx) => {
-		let booksFull: BookTypeFull[] = [];
+		const [books, genres, associations] = await Promise.all([
+			ctx.db.query('Books').order('desc').collect(),
+			ctx.db.query('Genres').collect(),
+			ctx.db.query('Books_Genres_Association').collect()
+		]);
 
-		const books = await ctx.db.query('Books').order('desc').collect();
-		const genres = await ctx.db.query('Genres').collect();
+		const genreById = new Map<Id<'Genres'>, BookTypeFull['genres'][number]>(
+			genres.map((genre) => [genre._id, genre])
+		);
+		const genreIdsByBook = new Map<Id<'Books'>, Id<'Genres'>[]>();
 
-		for (let i = 0; i < books.length; i++) {
-			const e = books[i];
-			const bookGenres = await ctx.db
-				.query('Books_Genres_Association')
-				.withIndex('by_book', (q) => q.eq('bookId', e._id))
-				.collect();
-			const genreObjects = genres.filter((genre) =>
-				bookGenres.some((bg) => bg.genreId === genre._id)
-			);
-
-			booksFull.push({
-				...e,
-				genres: genreObjects
-			});
+		for (const association of associations) {
+			const current = genreIdsByBook.get(association.bookId) ?? [];
+			current.push(association.genreId);
+			genreIdsByBook.set(association.bookId, current);
 		}
+
+		const booksFull: BookTypeFull[] = books.map((book) => {
+			const genreIds = genreIdsByBook.get(book._id) ?? [];
+			const fullGenres = genreIds
+				.map((genreId: Id<'Genres'>) => genreById.get(genreId))
+				.filter((genre): genre is BookTypeFull['genres'][number] => genre !== undefined);
+
+			return {
+				...book,
+				genres: fullGenres
+			};
+		});
 
 		return booksFull;
 	}

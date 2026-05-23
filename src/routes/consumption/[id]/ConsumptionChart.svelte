@@ -1,5 +1,8 @@
 <script lang="ts">
+	import { browser } from '$app/environment';
 	import type { ConsumptionType } from '$lib/types.ts.bak';
+	import { Button } from '$lib/components/ui/button';
+	import { mode } from 'mode-watcher';
 	import {
 		Chart,
 		Tooltip,
@@ -10,7 +13,9 @@
 		CategoryScale,
 		LineController,
 		Filler,
-		type ChartItem
+		type ChartData,
+		type ChartItem,
+		type ChartOptions
 	} from 'chart.js';
 
 	Chart.register(
@@ -34,18 +39,16 @@
 		[key: string]: ChartType;
 	};
 
-	const {
-		chartData,
-		selectedChart
-	}: {
-		chartData: ConsumptionType[];
-		selectedChart: 'mpg' | 'ppg';
-	} = $props();
+	const { chartData }: { chartData: ConsumptionType[] } = $props();
+
+	let selectedChart = $state<'mpg' | 'ppg'>('mpg');
 
 	let myCanvas = $state<ChartItem>();
-	let myChart: Chart;
+	let myChart: Chart | undefined;
 
-	const fontColor = '#e2e8f0'; //slate-200
+	function isDarkTheme() {
+		return browser ? document.documentElement.classList.contains('dark') : $mode === 'dark';
+	}
 
 	const chartTypes: ChartTypes = {
 		ppg: {
@@ -62,42 +65,48 @@
 		}
 	};
 
-	const options: any = {
-		responsive: true,
-		maintainAspectRatio: false,
-		interaction: {
-			mode: 'index',
-			intersect: false
-		},
-		plugins: {
-			legend: {
-				labels: {
-					color: fontColor
-				}
-			}
-		},
-		scales: {
-			x: {
-				ticks: {
-					color: fontColor
-				},
-				grid: {
-					display: false
+	function getChartOptions(isDark: boolean): ChartOptions<'line'> {
+		const fontColor = isDark ? '#e2e8f0' : '#334155';
+		const gridColor = isDark ? '#334155' : '#cbd5e1';
+
+		return {
+			responsive: true,
+			maintainAspectRatio: false,
+			interaction: {
+				mode: 'index',
+				intersect: false
+			},
+			plugins: {
+				legend: {
+					display: false,
+					labels: {
+						color: fontColor
+					}
 				}
 			},
-			y: {
-				type: 'linear',
-				ticks: {
-					color: fontColor
+			scales: {
+				x: {
+					ticks: {
+						color: fontColor
+					},
+					grid: {
+						display: false
+					}
 				},
-				grid: {
-					color: '#334155'
+				y: {
+					type: 'linear',
+					ticks: {
+						color: fontColor
+					},
+					grid: {
+						color: gridColor
+					}
 				}
 			}
-		}
-	};
+		};
+	}
 
-	let data = $derived({
+	let data = $derived<ChartData<'line'>>({
 		labels: chartData.map((o) => new Date(o._creationTime).toISOString().split('T')[0]).reverse(),
 		datasets: [
 			{
@@ -107,32 +116,56 @@
 						parseFloat((o as any)[chartTypes[selectedChart].datapoint].toFixed(2))
 					)
 					.reverse(),
-				backgroundColor: '#3b82f6', //blue-500
-				// backgroundColor: "#6d28d9", //violet-700
-				borderColor: fontColor,
+				backgroundColor: 'rgba(236, 72, 153, 0.28)',
+				borderColor: '#ec4899',
+				borderWidth: 2,
 				fill: chartTypes[selectedChart].fill,
-				radius: chartTypes[selectedChart].radius
+				pointRadius: chartTypes[selectedChart].radius
 			}
 		]
 	});
 
 	$effect(() => {
+		$mode;
 		if (chartData.length != 0) {
-			if (myChart) myChart.destroy();
+			const darkMode = isDarkTheme();
+			if (myChart) {
+				myChart.destroy();
+			}
 
 			myChart = new Chart(myCanvas!, {
 				type: 'line',
 				data,
-				options
+				options: getChartOptions(darkMode)
 			});
 		}
+
+		return () => myChart?.destroy();
 	});
 </script>
 
-<div class="relative h-80 w-full rounded bg-slate-800">
-	{#if chartData.length === 0}
-		<h6>No Chart Data...</h6>
-	{:else}
-		<canvas bind:this={myCanvas}></canvas>
-	{/if}
+<div class="border-border/70 bg-muted/35 relative rounded border p-3 sm:p-4 dark:bg-slate-800/80">
+	<div class="mb-3 flex flex-wrap gap-2">
+		<Button
+			variant={selectedChart === 'mpg' ? 'default' : 'outline'}
+			size="sm"
+			onclick={() => (selectedChart = 'mpg')}
+		>
+			Miles / Gallon
+		</Button>
+		<Button
+			variant={selectedChart === 'ppg' ? 'default' : 'outline'}
+			size="sm"
+			onclick={() => (selectedChart = 'ppg')}
+		>
+			Price / Gallon
+		</Button>
+	</div>
+	<div class="relative h-72 w-full sm:h-80">
+		{#if chartData.length === 0}
+			<h6 class="text-muted-foreground pt-8 text-center">No Chart Data...</h6>
+		{:else}
+			<canvas bind:this={myCanvas}></canvas>
+		{/if}
+	</div>
 </div>

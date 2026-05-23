@@ -8,7 +8,9 @@
 
 	const { children } = $props();
 
-	setupConvex(PUBLIC_CONVEX_URL);
+	setupConvex(PUBLIC_CONVEX_URL || 'https://placeholder.convex.cloud', {
+		disabled: !PUBLIC_CONVEX_URL
+	});
 </script>
 
 <Toaster richColors position="top-right" />

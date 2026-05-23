@@ -61,12 +61,18 @@
 					id,
 					...bookData
 				});
-				if (res.success === true) goto('/books?update=true');
+				if (res.success === true) {
+					sessionStorage.setItem('books-toast', 'update');
+					goto('/books');
+				}
 			} else {
 				//Perform an INSERT
 				const id = await client.mutation(api.books.insert, bookData);
 
-				if (id) goto('/books?create=true');
+				if (id) {
+					sessionStorage.setItem('books-toast', 'create');
+					goto('/books');
+				}
 			}
 		}
 	}
