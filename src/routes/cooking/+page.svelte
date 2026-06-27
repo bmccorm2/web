@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { Button } from '$lib/components/ui/button';
 	import { Input } from '$lib/components/ui/input';
+	import { Separator } from '$lib/components/ui/separator';
+	import { Skeleton } from '$lib/components/ui/skeleton';
 	import RecipeCard from './RecipeCard.svelte';
 	import { toast } from 'svelte-sonner';
 	import { useQuery } from 'convex-svelte';
@@ -80,7 +82,7 @@
 			</div>
 			<div class="flex flex-col gap-2 sm:flex-row">
 				<Button href="/cooking/modify" class="w-full sm:w-auto bg-amber-600 hover:bg-amber-700 text-white flex items-center gap-1.5">
-					<Plus class="h-4 w-4" />
+					<Plus data-icon="inline-start" />
 					<span>Add Manually</span>
 				</Button>
 			</div>
@@ -112,7 +114,7 @@
 		class="mt-4 rounded-xl border border-dashed border-amber-300 bg-amber-50/20 p-4 dark:border-slate-800 dark:bg-slate-900/60"
 	>
 		<h2 class="text-sm font-semibold text-slate-800 dark:text-slate-200 mb-1.5 flex items-center gap-1.5">
-			<Wand2 class="h-4 w-4 text-amber-500" />
+			<Wand2 class="size-4 text-amber-500" />
 			<span>Quick Import from Website</span>
 		</h2>
 		<p class="text-xs text-slate-500 dark:text-slate-400 mb-3">
@@ -172,23 +174,18 @@
 		</Button>
 	</div>
 
-	<hr class="my-5 border-slate-200 dark:border-slate-800" />
+	<Separator class="my-5" />
 
 	<!-- Recipes List -->
 	{#if recipes.isLoading}
-		<div class="space-y-4">
-			{#each [1, 2, 3] as skeleton}
-				<div
-					class="animate-pulse rounded-xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900"
-					aria-hidden="true"
-				>
-					<div class="flex flex-col sm:flex-row gap-4">
-						<div class="h-28 w-full sm:w-40 rounded bg-slate-200 dark:bg-slate-700"></div>
-						<div class="flex-1 space-y-3">
-							<div class="h-6 w-3/5 rounded bg-slate-200 dark:bg-slate-700"></div>
-							<div class="h-4 w-2/5 rounded bg-slate-200 dark:bg-slate-700"></div>
-							<div class="h-10 rounded bg-slate-200 dark:bg-slate-700"></div>
-						</div>
+		<div class="flex flex-col gap-4">
+			{#each [1, 2, 3] as _}
+				<div class="flex flex-col gap-4 rounded-xl border border-slate-200 bg-white p-5 shadow-sm sm:flex-row dark:border-slate-700 dark:bg-slate-900">
+					<Skeleton class="h-28 w-full sm:w-40" />
+					<div class="flex flex-1 flex-col gap-3">
+						<Skeleton class="h-6 w-3/5" />
+						<Skeleton class="h-4 w-2/5" />
+						<Skeleton class="h-10" />
 					</div>
 				</div>
 			{/each}
@@ -209,7 +206,7 @@
 			{/if}
 		</div>
 	{:else}
-		<div class="space-y-1">
+		<div class="flex flex-col gap-1">
 			{#each filteredRecipes as recipe (recipe._id)}
 				<RecipeCard {recipe} />
 			{/each}

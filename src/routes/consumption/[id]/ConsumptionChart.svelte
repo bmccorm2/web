@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
-	import type { ConsumptionType } from '$lib/types.ts.bak';
+	import type { ConsumptionType } from '$lib/types';
 	import { Button } from '$lib/components/ui/button';
 	import { mode } from 'mode-watcher';
 	import {

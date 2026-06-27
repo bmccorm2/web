@@ -1,7 +1,7 @@
 <script lang="ts">
-	import type { Summary } from '$lib/types.ts.bak';
+	import type { Summary } from '$lib/types';
 	import { DollarSign, Fuel, Gauge, Milestone } from 'lucide-svelte';
-	import * as Card from '$lib/components/ui/card/index.js';
+	import * as Card from '$lib/components/ui/card';
 
 	const { summary }: { summary: Summary } = $props();
 

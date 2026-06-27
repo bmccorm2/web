@@ -5,7 +5,7 @@
 	import { Textarea } from '$lib/components/ui/textarea';
 	import { Checkbox } from '$lib/components/ui/checkbox';
 	import { Input } from '$lib/components/ui/input';
-	import * as Card from '$lib/components/ui/card/index.js';
+	import * as Card from '$lib/components/ui/card';
 	import type { Id } from '../../../../convex/_generated/dataModel';
 	import { page } from '$app/state';
 	import { Button } from '$lib/components/ui/button';
@@ -81,7 +81,7 @@
 <div class="mt-2 lg:flex lg:gap-2">
 	<div class="lg:w-9/12">
 		<Card.Root class="mt-2">
-			<Card.Header>{id ? 'UPDATE BOOK' : 'CREATE BOOK'}</Card.Header>
+			<Card.Header><Card.Title>{id ? 'UPDATE BOOK' : 'CREATE BOOK'}</Card.Title></Card.Header>
 			<Card.Content>
 				<form>
 					<div class="mx-2">
@@ -117,17 +117,16 @@
 								{:else}
 									{#each genres.data as genre}
 										{@const checked = selectedGenres.some((e) => e === genre._id)}
-										<div class="flex items-center">
-											<Label class="ml-2">
-												<Checkbox
-													{checked}
-													onCheckedChange={(e) => {
-														if (e) selectedGenres.push(genre._id);
-														else selectedGenres = selectedGenres?.filter((e) => genre._id !== e);
-													}}
-												/>
-												{genre.description}
-											</Label>
+										<div class="flex items-center gap-2">
+											<Checkbox
+												id={genre._id}
+												{checked}
+												onCheckedChange={(e) => {
+													if (e) selectedGenres.push(genre._id);
+													else selectedGenres = selectedGenres?.filter((e) => genre._id !== e);
+												}}
+											/>
+											<Label for={genre._id}>{genre.description}</Label>
 										</div>
 									{/each}
 								{/if}
@@ -139,11 +138,10 @@
 								<Rating />
 							</div>
 							<div class="text-center">
-								<Label>
-									<Checkbox bind:checked={isFiction} />
-
-									Is Fiction?</Label
-								>
+								<div class="flex items-center gap-2">
+									<Checkbox id="isFiction" bind:checked={isFiction} />
+									<Label for="isFiction">Is Fiction?</Label>
+								</div>
 							</div>
 						</div>
 						<!-- PAGES -->

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { inputSchema } from '$lib/zodSchemas';
-	import * as Card from '$lib/components/ui/card/index.js';
+	import * as Card from '$lib/components/ui/card';
+	import { cn } from '$lib/utils';
 	import { prettifyError } from 'zod';
 	import InputIcon from './InputIcon.svelte';
 	import Fuel from '@lucide/svelte/icons/fuel';
@@ -74,7 +75,9 @@
 </svelte:head>
 
 <Card.Root class="my-2 md:mb-0">
-	<Card.Header class={`${isSuccess && 'from-emerald-800 to-emerald-700'}`}>INPUT</Card.Header>
+	<Card.Header class={cn(isSuccess && 'from-emerald-800 to-emerald-700')}>
+		<Card.Title>INPUT</Card.Title>
+	</Card.Header>
 	<form onsubmit={handleSubmit}>
 		<Card.Content>
 			{#if errors}
@@ -136,12 +139,12 @@
 				<input
 					type="text"
 					readonly
-					class="w-full rounded-md border-2 border-slate-500 bg-slate-900 px-3 py-1 text-sm"
+					class="bg-muted border-input w-full rounded-md border-2 px-3 py-1 text-sm"
 					placeholder={`MPG: ${mpg}`}
 				/>
 				<input
 					type="text"
-					class="w-full rounded-md border-2 border-slate-500 bg-slate-900 px-3 py-1 text-sm"
+					class="bg-muted border-input w-full rounded-md border-2 px-3 py-1 text-sm"
 					placeholder={`PPG: ${ppg}`}
 				/>
 			</div>
@@ -149,7 +152,7 @@
 		<Card.Footer class="flex justify-center">
 			<Button
 				type="submit"
-				class={`w-1/2 cursor-pointer bg-gradient-to-b from-blue-700 to-blue-600 font-bold text-white uppercase ${isSuccess && 'bg-gradient-to-b from-emerald-800 to-emerald-700'}`}
+				class={cn('w-1/2 cursor-pointer bg-gradient-to-b from-blue-700 to-blue-600 font-bold text-white uppercase', isSuccess && 'from-emerald-800 to-emerald-700')}
 				disabled={isSuccess}>{isSuccess ? 'SENT!' : 'SUBMIT'}</Button
 			>
 		</Card.Footer>

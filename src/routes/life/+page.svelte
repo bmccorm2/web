@@ -1,5 +1,6 @@
 <script lang="ts">
-	import Button from '$lib/components/ui/button/button.svelte';
+	import { Button } from '$lib/components/ui/button';
+	import { Separator } from '$lib/components/ui/separator';
 
 	let GRID_SIZE = 30;
 	let TICK = 500;
@@ -141,32 +142,16 @@
 	<meta name="description" content="Game of life" />
 </svelte:head>
 
-<div class="flex items-center justify-center">
-	<Button class="mr-2 mt-4 border bg-blue-500 text-sm" onclick={randomGenerator}
-		>Random Generator!</Button
-	>
-	<Button class="mr-2 mt-4 border bg-blue-500 text-sm" onclick={toad}>Toad</Button>
-	<Button class="mr-2 mt-4 border bg-blue-500 text-sm" onclick={blinker}>Blinker</Button>
-	<Button class="mr-2 mt-4 border bg-blue-500 text-sm" onclick={pentaDecathlon}
-		>Penta-Decathlon</Button
-	>
+<div class="mt-4 flex flex-wrap items-center justify-center gap-2">
+	<Button onclick={randomGenerator}>Random Generator!</Button>
+	<Button onclick={toad}>Toad</Button>
+	<Button onclick={blinker}>Blinker</Button>
+	<Button onclick={pentaDecathlon}>Penta-Decathlon</Button>
 
 	{#if isRunning}
-		<Button
-			class="mr-2 mt-4 border bg-blue-500 text-sm"
-			onclick={() => {
-				isRunning = !isRunning;
-				reset(false);
-			}}>Pause</Button
-		>
+		<Button onclick={() => { isRunning = !isRunning; reset(false); }}>Pause</Button>
 	{:else}
-		<Button
-			class="mr-2 mt-4 border bg-gray-500 text-sm"
-			onclick={() => {
-				isRunning = !isRunning;
-				runLife();
-			}}>Resume</Button
-		>
+		<Button variant="secondary" onclick={() => { isRunning = !isRunning; runLife(); }}>Resume</Button>
 	{/if}
 </div>
 
@@ -174,7 +159,7 @@
 	Generation: {generation}
 </h2>
 
-<hr class="mt-4" />
+<Separator class="mt-4" />
 
 <div class="mt-4 flex justify-center">
 	<div>

@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { Button } from '$lib/components/ui/button';
 	import { Input } from '$lib/components/ui/input';
+	import { Separator } from '$lib/components/ui/separator';
+	import { Skeleton } from '$lib/components/ui/skeleton';
 	import Book from './Book.svelte';
 	import { toast } from 'svelte-sonner';
 	import { useQuery } from 'convex-svelte';
@@ -134,19 +136,16 @@
 		</Button>
 	</div>
 
-	<hr class="my-4" />
+	<Separator class="my-4" />
 
 	<div class="grid gap-4 md:grid-cols-2">
 		{#if books.isLoading}
-			{#each [1, 2, 3, 4] as skeleton}
-				<div
-					class="animate-pulse rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900"
-					aria-hidden="true"
-				>
-					<div class="mb-3 h-6 w-3/5 rounded bg-slate-200 dark:bg-slate-700"></div>
-					<div class="mb-2 h-3 w-2/5 rounded bg-slate-200 dark:bg-slate-700"></div>
-					<div class="mb-4 h-3 w-4/5 rounded bg-slate-200 dark:bg-slate-700"></div>
-					<div class="h-16 rounded bg-slate-200 dark:bg-slate-700"></div>
+			{#each [1, 2, 3, 4] as _}
+				<div class="flex flex-col gap-3 rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+					<Skeleton class="h-6 w-3/5" />
+					<Skeleton class="h-3 w-2/5" />
+					<Skeleton class="h-3 w-4/5" />
+					<Skeleton class="h-16" />
 				</div>
 			{/each}
 		{:else if books.error}

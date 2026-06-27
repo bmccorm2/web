@@ -14,7 +14,7 @@
 <div
 	bind:this={ref}
 	class={cn(
-		'rounded-lg border-2 border-zinc-500 bg-card text-card-foreground shadow-sm dark:bg-slate-800',
+		'rounded-lg border-2 border-zinc-500 bg-card text-card-foreground shadow-sm',
 		className
 	)}
 	{...restProps}

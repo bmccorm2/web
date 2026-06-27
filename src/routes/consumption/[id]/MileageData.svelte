@@ -1,7 +1,7 @@
 <script lang="ts">
-	import type { ConsumptionType } from '$lib/types.ts.bak';
-	import { Badge } from '$lib/components/ui/badge/index';
-	import * as Card from '$lib/components/ui/card/index.js';
+	import type { ConsumptionType } from '$lib/types';
+	import { Badge } from '$lib/components/ui/badge';
+	import * as Card from '$lib/components/ui/card';
 
 	let {
 		tableRows,
@@ -39,7 +39,7 @@
 					</thead>
 					<tbody>
 						{#each tableRows.slice(0, 5) as row}
-							{@const aboveAverage = row.milesPerGallon >= averageMpg}
+							{@const aboveAverage = (row.milesPerGallon ?? 0) >= averageMpg}
 							<tr
 								class="border-border/70 hover:bg-muted/50 border-b text-left font-normal transition duration-200 ease-in-out"
 							>

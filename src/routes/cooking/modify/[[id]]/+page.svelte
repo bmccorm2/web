@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Input } from '$lib/components/ui/input';
 	import { Textarea } from '$lib/components/ui/textarea';
-	import * as Card from '$lib/components/ui/card/index.js';
+	import * as Card from '$lib/components/ui/card';
 	import type { Id } from '../../../../convex/_generated/dataModel';
 	import { page } from '$app/state';
 	import { Button } from '$lib/components/ui/button';
@@ -181,10 +181,8 @@ function safeTrim(val: any): string {
 	{#if !id}
 		<Card.Root class="mb-6 border-slate-200 dark:border-slate-800">
 			<Card.Header>
-				<h2 class="text-lg font-bold tracking-tight">Import Recipe From Website</h2>
-				<p class="text-xs text-slate-500 dark:text-slate-400">
-					Enter a recipe website URL (e.g. Serious Eats, NYT Cooking, blogs) to extract details instantly.
-				</p>
+				<Card.Title>Import Recipe From Website</Card.Title>
+				<Card.Description>Enter a recipe website URL (e.g. Serious Eats, NYT Cooking, blogs) to extract details instantly.</Card.Description>
 			</Card.Header>
 			<Card.Content>
 				<div class="flex flex-col gap-3 sm:flex-row">
@@ -202,10 +200,10 @@ function safeTrim(val: any): string {
 						class="flex items-center gap-2"
 					>
 						{#if isImporting}
-							<Loader2 class="h-4 w-4 animate-spin" />
+							<Loader2 data-icon="inline-start" class="animate-spin" />
 							<span>Parsing...</span>
 						{:else}
-							<Download class="h-4 w-4" />
+							<Download data-icon="inline-start" />
 							<span>Import</span>
 						{/if}
 					</Button>
@@ -216,13 +214,13 @@ function safeTrim(val: any): string {
 
 	<Card.Root class="border-slate-200 dark:border-slate-800">
 		<Card.Header>
-			<div class="flex items-center gap-2">
-				<ChefHat class="h-5 w-5 text-sky-600" />
-				<h2 class="text-xl font-bold tracking-tight">{id ? 'Edit Recipe' : 'Add New Recipe'}</h2>
-			</div>
+			<Card.Title class="flex items-center gap-2">
+				<ChefHat class="size-5 text-sky-600" />
+				{id ? 'Edit Recipe' : 'Add New Recipe'}
+			</Card.Title>
 		</Card.Header>
 		<Card.Content>
-			<form class="space-y-5">
+			<form class="flex flex-col gap-5">
 				<div>
 					<label for="title" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Recipe Title *</label>
 					<Input
@@ -348,13 +346,13 @@ function safeTrim(val: any): string {
 
 				<div class="flex justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
 					<Button variant="outline" href="/cooking">Cancel</Button>
-					<button
+					<Button
 						type="button"
 						onclick={handleSubmit}
-						class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors bg-amber-600 text-white hover:bg-amber-700 h-10 px-4 py-2"
+						class="bg-amber-600 text-white hover:bg-amber-700"
 					>
 						{id ? 'Save Changes' : 'Create Recipe'}
-					</button>
+					</Button>
 				</div>
 			</form>
 		</Card.Content>

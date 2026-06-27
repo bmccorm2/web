@@ -28,6 +28,13 @@ export type BookTypeFull = Doc<'Books'> & {
 	genres: GenreType[];
 };
 
+export const accountType = v.union(
+	v.literal('Brokerage'),
+	v.literal('Roth'),
+	v.literal('IRA'),
+	v.literal('401k')
+);
+
 export default defineSchema({
 	Cars: defineTable({
 		displayName: v.string(),
@@ -60,5 +67,12 @@ export default defineSchema({
 		instructions: v.array(v.string()),
 		notes: v.optional(v.string()),
 		imageUrl: v.optional(v.string())
-	})
+	}),
+	FinancialAccounts: defineTable({
+		person: v.string(),
+		institution: v.string(),
+		type: accountType,
+		balance: v.number(),
+		updatedAt: v.number()
+	}).index('by_person', ['person'])
 });

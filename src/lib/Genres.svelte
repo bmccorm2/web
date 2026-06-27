@@ -2,7 +2,8 @@
 	import GenreTable from '../routes/books/GenreTable.svelte';
 	import { Input } from './components/ui/input';
 	import { toast } from 'svelte-sonner';
-	import * as Card from '$lib/components/ui/card/index.js';
+	import * as Card from '$lib/components/ui/card';
+	import { Separator } from '$lib/components/ui/separator';
 	import type { GenreType } from '../convex/schema';
 	import { Button } from './components/ui/button';
 	import { useConvexClient } from 'convex-svelte';
@@ -55,7 +56,7 @@
 				>
 			</div>
 		</form>
-		<hr class="mx-2 my-4 border-white" />
+		<Separator class="mx-2 my-4" />
 		<GenreTable {genres} />
 	</Card.Content>
 </Card.Root>

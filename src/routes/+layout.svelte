@@ -16,6 +16,6 @@
 <Toaster richColors position="top-right" />
 <ModeWatcher></ModeWatcher>
 <Navbar />
-<div class="md:container md:mx-auto">
+<div class="md:container md:mx-auto pt-12">
 	{@render children()}
 </div>

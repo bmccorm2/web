@@ -42,6 +42,11 @@
 			searchPattern: '/snake'
 		},
 		{
+			location: '/finances',
+			description: 'Finances',
+			searchPattern: '/finances'
+		},
+		{
 			location: '/life',
 			description: 'Life',
 			searchPattern: '/life'
@@ -55,7 +60,7 @@
 	}
 </script>
 
-<nav class="sticky top-0 space-x-4 bg-gray-300 px-4 py-3 lg:space-x-6 dark:bg-slate-800">
+<nav class="sticky top-0 z-50 bg-gray-300 px-4 py-3 dark:bg-slate-800">
 	<ul class="flex items-center justify-between">
 		<!-- DON'T SHOW OTHER PAGES WHEN ON SWIMMING PAGE BECAUSE IT IS PUBLIC -->
 		<li>
@@ -63,7 +68,7 @@
 				<Terminal />
 			</a>
 		</li>
-		<div class="md:display-block hidden space-x-4 md:flex md:items-center lg:space-x-6">
+		<div class="hidden md:flex md:items-center gap-4 lg:gap-6">
 			{#each routes as { location, description, searchPattern }}
 				{@const isActive = activeUrl.startsWith(searchPattern)}
 				<li>
@@ -77,9 +82,8 @@
 		<li class="pl-6">
 			<Button
 				onclick={toggleMode}
-				variant="outline"
+				variant="ghost"
 				size="icon"
-				class="border-0 bg-gray-300 dark:bg-slate-800 dark:hover:bg-slate-900"
 			>
 				<Sun
 					class="h-[1.2rem] w-[1.2rem] scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90"

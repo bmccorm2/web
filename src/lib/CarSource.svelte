@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import type { CarType } from '$lib/types.ts.bak';
+	import type { CarType } from '$lib/types';
 
 	let { cars }: { cars: CarType[] } = $props();
 </script>

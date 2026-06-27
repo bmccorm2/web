@@ -23,3 +23,10 @@ vite.config.ts.timestamp-*
 # Added by Bryan
 web.sqlite
 web.db
+# Agent tooling (pi)
+.pi/
+.agents/
+skills-lock.json
+
+# Duplicate lockfile (we use bun.lock)
+package-lock.json

@@ -8,6 +8,6 @@
 	let { children } = $props();
 </script>
 
-<span class="flex content-center rounded-l-md border border-white bg-gray-500 px-4 py-1">
+<span class="bg-muted border-border flex content-center rounded-l-md border px-4 py-1">
 	{@render children?.()}
 </span>

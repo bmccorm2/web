@@ -16,6 +16,7 @@ import type {
 import type * as books from "../books.js";
 import type * as cars from "../cars.js";
 import type * as consumption from "../consumption.js";
+import type * as finances from "../finances.js";
 import type * as genres from "../genres.js";
 import type * as recipes from "../recipes.js";
 
@@ -31,6 +32,7 @@ declare const fullApi: ApiFromModules<{
   books: typeof books;
   cars: typeof cars;
   consumption: typeof consumption;
+  finances: typeof finances;
   genres: typeof genres;
   recipes: typeof recipes;
 }>;

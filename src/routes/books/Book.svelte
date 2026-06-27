@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { Badge } from '$lib/components/ui/badge/index';
+	import { Badge } from '$lib/components/ui/badge';
 	import { Star, PencilLine, Trash2 } from 'lucide-svelte';
-	import * as Card from '$lib/components/ui/card/index.js';
+	import * as Card from '$lib/components/ui/card';
 	import { formatToMST } from '$lib/utilities';
 	import type { BookTypeFull } from '../../convex/schema';
 	import { useConvexClient } from 'convex-svelte';
@@ -51,7 +51,7 @@
 					class="text-slate-500 transition-colors hover:text-sky-600"
 					aria-label={`Edit ${bookDetails.title}`}
 				>
-					<PencilLine class="h-4 w-4" />
+					<PencilLine class="size-4" />
 				</a>
 				<button
 					type="button"
@@ -60,30 +60,26 @@
 					aria-label={`Delete ${bookDetails.title}`}
 				>
 					<Trash2
-						class="h-4 w-4 cursor-pointer text-red-500 disabled:cursor-not-allowed disabled:opacity-50"
+						class="size-4 cursor-pointer text-red-500 disabled:cursor-not-allowed disabled:opacity-50"
 					/>
 				</button>
 			</div>
 		</div>
 
 		<div class="mb-2 flex justify-between">
-			<div class="self-center text-xs text-slate-400">By {bookDetails.author}</div>
+			<div class="text-muted-foreground self-center text-xs">By {bookDetails.author}</div>
 			<div class="flex gap-4">
-				<Badge class="bg-sky-600 text-xs text-white dark:bg-sky-600"
-					>{bookDetails.pages} pages</Badge
-				>
-				<Badge class="bg-gray-500 text-xs text-black dark:bg-gray-500"
-					>{bookDetails.isFiction ? 'Fiction' : 'Non-Fiction'}</Badge
-				>
+				<Badge variant="secondary">{bookDetails.pages} pages</Badge>
+				<Badge variant="outline">{bookDetails.isFiction ? 'Fiction' : 'Non-Fiction'}</Badge>
 			</div>
 		</div>
 
 		<div class="mb-2 flex justify-between gap-2">
-			<p class="self-center text-xs text-slate-400">Rating</p>
+			<p class="text-muted-foreground self-center text-xs">Rating</p>
 			<div class="flex" aria-label={`Rated ${bookDetails.rating} out of 5`}>
 				{#each [1, 2, 3, 4, 5] as rate}
 					{@const colored = rate <= bookDetails.rating}
-					<Star class="h-4 w-4" strokeWidth={0} fill={colored ? '#f59e0b' : '#cbd5e1'} />
+					<Star class="size-4" strokeWidth={0} fill={colored ? '#f59e0b' : '#cbd5e1'} />
 				{/each}
 			</div>
 		</div>
@@ -104,9 +100,9 @@
 
 		<div class="flex justify-between">
 			<div class="flex flex-wrap gap-2">
-				<div class="self-center text-xs text-gray-500">Genres</div>
+				<div class="text-muted-foreground self-center text-xs">Genres</div>
 				{#each bookDetails.genres as { description }}
-					<Badge class="bg-indigo-600 text-xs text-white dark:bg-indigo-600">{description}</Badge>
+					<Badge class="bg-indigo-600 text-white hover:bg-indigo-700">{description}</Badge>
 				{/each}
 			</div>
 		</div>
