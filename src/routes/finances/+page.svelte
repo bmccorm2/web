@@ -24,33 +24,48 @@
 	const client = useConvexClient();
 	const accounts = $derived(accountsQuery.data ?? []);
 
-	let retirementAge = $state(45);
-	let growthRatePct = $state(7);
-	let inflationAdjusted = $state(true);
-	let yearlyWithdrawalDollars = $state(100000);
-	let personFilter = $state<'All' | Person>('All');
-	let yearlyConversionDollars = $state(50000);
-
 	const fmt = new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 });
 
-	let withdrawalText = $state(fmt.format(100000));
-	let conversionText = $state(fmt.format(50000));
-	let conversionTaxRatePct = $state(22);
+	// Load persisted inputs from localStorage
+	function loadStored(): Record<string, unknown> {
+		if (typeof localStorage === 'undefined') return {};
+		try { return JSON.parse(localStorage.getItem('finances-inputs') ?? '{}'); } catch { return {}; }
+	}
+	const s = loadStored();
 
-	// Big one-time expenses (house, car, etc.)
-	let expenses = $state<LumpSum[]>([
-		{ label: 'House', amountCents: 50000000, age: 45 }
-	]);
+	let retirementAge = $state<number>((s.retirementAge as number) ?? 45);
+	let brokerageGrowthRatePct = $state<number>((s.brokerageGrowthRatePct as number) ?? 7);
+	let retirementGrowthRatePct = $state<number>((s.retirementGrowthRatePct as number) ?? 10);
+	let inflationAdjusted = $state<boolean>((s.inflationAdjusted as boolean) ?? true);
+	let yearlyWithdrawalDollars = $state<number>((s.yearlyWithdrawalDollars as number) ?? 100000);
+	let personFilter = $state<'All' | Person>((s.personFilter as 'All' | Person) ?? 'All');
+	let yearlyConversionDollars = $state<number>((s.yearlyConversionDollars as number) ?? 50000);
+	let conversionTaxRatePct = $state<number>((s.conversionTaxRatePct as number) ?? 22);
+	let ladderStartAge = $state<number>((s.ladderStartAge as number) ?? 45);
+	let expenses = $state<LumpSum[]>(
+		(s.expenses as LumpSum[]) ?? [{ label: 'House', amountCents: -50000000, age: 45 }]
+	);
+
+	let withdrawalText = $state(fmt.format(yearlyWithdrawalDollars));
+	let conversionText = $state(fmt.format(yearlyConversionDollars));
+
+	// Persist all inputs to localStorage whenever they change
+	$effect(() => {
+		localStorage.setItem('finances-inputs', JSON.stringify({
+			retirementAge, brokerageGrowthRatePct, retirementGrowthRatePct, inflationAdjusted,
+			yearlyWithdrawalDollars, personFilter, yearlyConversionDollars, conversionTaxRatePct,
+			ladderStartAge, expenses
+		}));
+	});
+
 	let newLabel = $state('');
-	let newAmountText = $state('');
 	let newAmountDollars = $state(0);
 	let newAge = $state(45);
 
 	function addExpense() {
-		if (!newLabel.trim() || newAmountDollars <= 0) return;
+		if (!newLabel.trim() || newAmountDollars === 0) return;
 		expenses = [...expenses, { label: newLabel.trim(), amountCents: Math.round(newAmountDollars * 100), age: newAge }];
 		newLabel = '';
-		newAmountText = '';
 		newAmountDollars = 0;
 		newAge = retirementAge;
 	}
@@ -65,13 +80,23 @@
 		const formatted = raw === '' ? '' : fmt.format(num);
 		e.currentTarget.value = formatted;
 	}
-	let ladderStartAge = $state(45); // matches retirementAge default
 	let controlsOpen = $state(true);
 
-	// ponytail: subtract standard 3% inflation when checked
-	const growthRate = $derived(
-		Math.max(0, growthRatePct / 100 - (inflationAdjusted ? INFLATION_RATE : 0))
+	function onkeydown(e: KeyboardEvent) {
+		if (e.key === 'i' && !e.metaKey && !e.ctrlKey && !(e.target instanceof HTMLInputElement) && !(e.target instanceof HTMLTextAreaElement) && !(e.target instanceof HTMLSelectElement)) {
+			controlsOpen = !controlsOpen;
+		}
+	}
+
+	// ponytail: subtract standard 3% inflation when checked, applied per rate
+	const brokerageGrowthRate = $derived(
+		Math.max(0, brokerageGrowthRatePct / 100 - (inflationAdjusted ? INFLATION_RATE : 0))
 	);
+	const retirementGrowthRate = $derived(
+		Math.max(0, retirementGrowthRatePct / 100 - (inflationAdjusted ? INFLATION_RATE : 0))
+	);
+	// blended rate for simple projection charts (weighted by account balance)
+	const growthRate = $derived(brokerageGrowthRate);
 	const yearlyWithdrawalCents = $derived(Math.round(yearlyWithdrawalDollars * 100));
 	const yearlyConversionCents = $derived(Math.round(yearlyConversionDollars * 100));
 	const conversionTaxRate = $derived(conversionTaxRatePct / 100);
@@ -168,12 +193,13 @@
 		buildAccessTimeline(
 			accounts,
 			personFilter === 'All' ? undefined : personFilter,
-			growthRate,
+			brokerageGrowthRate,
 			ladder,
 			retirementAge,
 			yearlyWithdrawalCents,
 			expenses,
-			conversionTaxRate
+			conversionTaxRate,
+			retirementGrowthRate
 		)
 	);
 	const timelineConfig = $derived(
@@ -319,6 +345,7 @@
 </script>
 
 <svelte:head><title>Finances — Retirement Dashboard</title></svelte:head>
+<svelte:window {onkeydown} />
 
 <div class="w-full px-4 pb-8">
 	<div class="mt-4 flex flex-wrap items-baseline justify-between gap-2">
@@ -358,20 +385,25 @@
 			onclick={() => (controlsOpen = !controlsOpen)}
 			class="flex w-full items-center justify-between px-4 py-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground hover:text-slate-700 dark:hover:text-slate-300"
 		>
-			<span>Inputs</span>
+			<span>Inputs <kbd class="ml-1 rounded border border-border px-1 py-0.5 text-[10px] font-mono">i</kbd></span>
 			<span class="text-base leading-none">{controlsOpen ? '▲' : '▼'}</span>
 		</button>
 		{#if controlsOpen}
-		<div class="grid gap-4 border-t border-border p-4 md:grid-cols-3 lg:grid-cols-6">
+		<div class="grid gap-4 border-t border-border p-4 md:grid-cols-3 lg:grid-cols-7">
 		<label class="flex flex-col gap-1">
 			<span class="text-xs font-medium uppercase text-muted-foreground">Retirement age</span>
 			<input type="number" min="45" max="75" bind:value={retirementAge} class="border-input bg-background rounded-md border px-2 py-1 text-sm" />
 			<input type="range" min="45" max="75" bind:value={retirementAge} class="accent-blue-500" />
 		</label>
 		<label class="flex flex-col gap-1">
-			<span class="text-xs font-medium uppercase text-muted-foreground">Growth rate (%)</span>
-			<input type="number" min="0" max="15" step="0.1" bind:value={growthRatePct} class="border-input bg-background rounded-md border px-2 py-1 text-sm" />
-			<input type="range" min="0" max="15" step="0.1" bind:value={growthRatePct} class="accent-blue-500" />
+			<span class="text-xs font-medium uppercase text-muted-foreground">Brokerage return (%)</span>
+			<input type="number" min="0" max="15" step="0.1" bind:value={brokerageGrowthRatePct} class="border-input bg-background rounded-md border px-2 py-1 text-sm" />
+			<input type="range" min="0" max="15" step="0.1" bind:value={brokerageGrowthRatePct} class="accent-green-500" />
+		</label>
+		<label class="flex flex-col gap-1">
+			<span class="text-xs font-medium uppercase text-muted-foreground">Retirement return (%)</span>
+			<input type="number" min="0" max="20" step="0.1" bind:value={retirementGrowthRatePct} class="border-input bg-background rounded-md border px-2 py-1 text-sm" />
+			<input type="range" min="0" max="20" step="0.1" bind:value={retirementGrowthRatePct} class="accent-blue-500" />
 		</label>
 		<label class="flex flex-col gap-1">
 			<span class="text-xs font-medium uppercase text-muted-foreground">Person</span>
@@ -401,14 +433,15 @@
 			<span class="text-xs font-medium uppercase text-muted-foreground">Inflation adjusted</span>
 			<label class="flex cursor-pointer items-center gap-2">
 				<input type="checkbox" bind:checked={inflationAdjusted} class="accent-blue-500 h-4 w-4" />
-				<span class="text-sm">{inflationAdjusted ? `${growthRatePct}% − 3% = ${(growthRatePct - 3).toFixed(1)}% real` : 'Off (nominal)'}</span>
+				<span class="text-sm">{inflationAdjusted ? `−3% inflation applied` : 'Off (nominal)'}</span>
 			</label>
 		</label>
 		</div>
 
-		<!-- Big expenses -->
+		<!-- One-time events -->
 		<div class="grid gap-2 border-t border-border p-4">
-			<h2 class="text-sm font-semibold">Big Expenses</h2>
+			<h2 class="text-sm font-semibold">One-Time Events</h2>
+			<p class="text-xs text-muted-foreground">Negative = outflow (house, car) · Positive = inflow (inheritance, sale)</p>
 			<form class="flex flex-wrap items-end gap-2" onsubmit={(e) => { e.preventDefault(); addExpense(); }}>
 				<label class="flex flex-col gap-1">
 					<span class="text-xs text-muted-foreground">Label</span>
@@ -417,11 +450,9 @@
 				<label class="flex flex-col gap-1">
 					<span class="text-xs text-muted-foreground">Amount ($)</span>
 					<input
-						type="text"
-						value={newAmountText}
-						oninput={(e) => handleMoneyInput(e, (v) => (newAmountDollars = v))}
-						onfocus={(e) => e.currentTarget.select()}
-						placeholder="0"
+						type="number"
+						bind:value={newAmountDollars}
+						placeholder="−500000"
 						class="border-input bg-background w-36 rounded-md border px-2 py-1 text-sm"
 					/>
 				</label>
@@ -433,14 +464,17 @@
 			</form>
 			<div class="flex flex-col gap-1">
 				{#each expenses as expense, i (i)}
+					{@const inflow = expense.amountCents > 0}
 					<div class="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm">
 						<span class="w-32 truncate font-medium">{expense.label}</span>
-						<span class="w-32 text-right text-orange-500 dark:text-orange-400">{formatCurrency(expense.amountCents)}</span>
+						<span class="w-36 text-right {inflow ? 'text-green-600 dark:text-green-400' : 'text-orange-500 dark:text-orange-400'}">
+							{inflow ? '+' : '−'}{formatCurrency(Math.abs(expense.amountCents))}
+						</span>
 						<span class="text-muted-foreground">at age {expense.age}</span>
 						<button onclick={() => removeExpense(i)} class="ml-auto text-xs text-red-400 hover:text-red-600">Remove</button>
 					</div>
 				{:else}
-					<p class="text-xs text-muted-foreground">No expenses added.</p>
+					<p class="text-xs text-muted-foreground">No events added.</p>
 				{/each}
 			</div>
 		</div>
@@ -539,7 +573,7 @@
 							<th class="py-1 pr-4">Age</th>
 							<th class="py-1 pr-4">Year</th>
 							<th class="py-1 pr-4 text-right">Withdrawal</th>
-							<th class="py-1 pr-4 text-right">Big Expenses</th>
+							<th class="py-1 pr-4 text-right">One-Time</th>
 							<th class="py-1 pr-4 text-right">Conversion Tax</th>
 							<th class="py-1 pr-4 text-right">Brokerage</th>
 							<th class="py-1 pr-4 text-right">Roth Ladder</th>
@@ -558,7 +592,9 @@
 								<td class="py-1 pr-4 font-medium">{row.age}</td>
 								<td class="py-1 pr-4 text-muted-foreground">{row.year}</td>
 								<td class="py-1 pr-4 text-right text-red-500 dark:text-red-400">{row.withdrawal > 0 ? `−${formatCurrency(row.withdrawal)}` : '—'}</td>
-							<td class="py-1 pr-4 text-right text-orange-500 dark:text-orange-400">{row.bigExpenses > 0 ? `−${formatCurrency(row.bigExpenses)}` : '—'}</td>
+							<td class="py-1 pr-4 text-right {row.bigExpenses > 0 ? 'text-green-600 dark:text-green-400' : row.bigExpenses < 0 ? 'text-orange-500 dark:text-orange-400' : ''}">
+							{row.bigExpenses > 0 ? `+${formatCurrency(row.bigExpenses)}` : row.bigExpenses < 0 ? `−${formatCurrency(Math.abs(row.bigExpenses))}` : '—'}
+						</td>
 								<td class="py-1 pr-4 text-right text-purple-500 dark:text-purple-400">{row.conversionTax > 0 ? `−${formatCurrency(row.conversionTax)}` : '—'}</td>
 								<td class="py-1 pr-4 text-right text-green-600 dark:text-green-400">{formatCurrency(row.brokerage)}</td>
 								<td class="py-1 pr-4 text-right text-amber-600 dark:text-amber-400">{formatCurrency(row.ladder)}</td>

@@ -121,6 +121,7 @@ export function projectedTotal(
  * Withdrawals start at withdrawalStartAge, inflate by INFLATION_RATE each year,
  * and are applied at end of each year after growth. Balance floors at 0.
  */
+/** Signed cents: positive = inflow (inheritance, sale), negative = outflow (house, car). */
 export interface LumpSum { amountCents: number; age: number; label: string; }
 
 export function projectPortfolio(
@@ -139,7 +140,7 @@ export function projectPortfolio(
 	for (let age = fromAge; age < toAge; age++) {
 		balance = Math.round(balance * (1 + growthRate));
 		for (const ls of lumpSums) {
-			if (ls.age === age) balance = Math.max(0, balance - ls.amountCents);
+			if (ls.age === age) balance = Math.max(0, balance + ls.amountCents);
 		}
 		if (age >= withdrawalStartAge && withdrawal > 0) {
 			balance = Math.max(0, balance - Math.round(withdrawal));
@@ -179,7 +180,8 @@ export function buildAccessTimeline(
 	withdrawalStartAge: number = RETIREMENT_ACCESS_AGE,
 	yearlyWithdrawalCents: number = 0,
 	lumpSums: LumpSum[] = [],
-	conversionTaxRate: number = 0
+	conversionTaxRate: number = 0,
+	retirementGrowthRate: number = growthRate
 ): AccessTimelinePoint[] {
 	const fromAge = currentAge();
 	const pool = person ? accounts.filter((a) => a.person === person) : accounts;
@@ -205,27 +207,26 @@ export function buildAccessTimeline(
 			brokerageBalance = Math.max(0, brokerageBalance - conversionTax);
 		}
 
-		// Growth — all pools compound, including the seasoned Roth pool
+		// Growth — brokerage at brokerageRate, retirement pools at retirementGrowthRate
 		brokerageBalance = Math.round(brokerageBalance * (1 + growthRate));
-		ira401kBalance = Math.round(ira401kBalance * (1 + growthRate));
-		rothBalance = Math.round(rothBalance * (1 + growthRate));
-		seasonedRothBalance = Math.round(seasonedRothBalance * (1 + growthRate));
+		ira401kBalance = Math.round(ira401kBalance * (1 + retirementGrowthRate));
+		rothBalance = Math.round(rothBalance * (1 + retirementGrowthRate));
+		seasonedRothBalance = Math.round(seasonedRothBalance * (1 + retirementGrowthRate));
 
 		// Season this year's conversion: add its grown value (it has compounded for LADDER_SEASONING_YEARS)
 		const newlySeasoned = ladder.find((r) => r.accessibleAge === age);
 		if (newlySeasoned) {
-			const grownAmount = Math.round(newlySeasoned.amount * Math.pow(1 + growthRate, LADDER_SEASONING_YEARS));
+			const grownAmount = Math.round(newlySeasoned.amount * Math.pow(1 + retirementGrowthRate, LADDER_SEASONING_YEARS));
 			seasonedRothBalance += grownAmount;
 		}
 		seasonedRothBalance = Math.min(seasonedRothBalance, rothBalance); // cap at actual Roth balance
 
-		// One-time big expenses (house, car, etc.) taken from brokerage only
+		// One-time events: positive = inflow (inheritance), negative = outflow (house)
 		let bigExpenses = 0;
 		for (const ls of lumpSums) {
 			if (ls.age === age) {
-				const amt = Math.min(brokerageBalance, ls.amountCents);
-				brokerageBalance -= amt;
-				bigExpenses += amt;
+				brokerageBalance = Math.max(0, brokerageBalance + ls.amountCents);
+				bigExpenses += ls.amountCents;
 			}
 		}
 
