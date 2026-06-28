@@ -11,7 +11,6 @@
 		sumByType,
 		totalNetWorth,
 		projectedTotal,
-		projectPortfolio,
 		buildLadder,
 		buildAccessTimeline,
 		type Person,
@@ -25,6 +24,7 @@
 	const accounts = $derived(accountsQuery.data ?? []);
 
 	const fmt = new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 });
+	const formatWhole = (cents: number) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(cents / 100);
 
 	// Load persisted inputs from localStorage
 	function loadStored(): Record<string, unknown> {
@@ -34,10 +34,10 @@
 	const s = loadStored();
 
 	let retirementAge = $state<number>((s.retirementAge as number) ?? 45);
-	let brokerageGrowthRatePct = $state<number>((s.brokerageGrowthRatePct as number) ?? 7);
-	let retirementGrowthRatePct = $state<number>((s.retirementGrowthRatePct as number) ?? 10);
+	let brokerageGrowthRatePct = $state<number>((s.brokerageGrowthRatePct2 as number) ?? 4);
+	let retirementGrowthRatePct = $state<number>((s.retirementGrowthRatePct2 as number) ?? 8);
 	let inflationAdjusted = $state<boolean>((s.inflationAdjusted as boolean) ?? true);
-	let yearlyWithdrawalDollars = $state<number>((s.yearlyWithdrawalDollars as number) ?? 100000);
+	let monthlyWithdrawalDollars = $state<number>((s.monthlyWithdrawalDollars as number) ?? 10000);
 	let personFilter = $state<'All' | Person>((s.personFilter as 'All' | Person) ?? 'All');
 	let yearlyConversionDollars = $state<number>((s.yearlyConversionDollars as number) ?? 50000);
 	let conversionTaxRatePct = $state<number>((s.conversionTaxRatePct as number) ?? 22);
@@ -46,14 +46,14 @@
 		(s.expenses as LumpSum[]) ?? [{ label: 'House', amountCents: -50000000, age: 45 }]
 	);
 
-	let withdrawalText = $state(fmt.format(yearlyWithdrawalDollars));
+	let withdrawalText = $state(fmt.format(monthlyWithdrawalDollars));
 	let conversionText = $state(fmt.format(yearlyConversionDollars));
 
 	// Persist all inputs to localStorage whenever they change
 	$effect(() => {
 		localStorage.setItem('finances-inputs', JSON.stringify({
-			retirementAge, brokerageGrowthRatePct, retirementGrowthRatePct, inflationAdjusted,
-			yearlyWithdrawalDollars, personFilter, yearlyConversionDollars, conversionTaxRatePct,
+			retirementAge, brokerageGrowthRatePct2: brokerageGrowthRatePct, retirementGrowthRatePct2: retirementGrowthRatePct, inflationAdjusted,
+			monthlyWithdrawalDollars, personFilter, yearlyConversionDollars, conversionTaxRatePct,
 			ladderStartAge, expenses
 		}));
 	});
@@ -73,14 +73,15 @@
 		expenses = expenses.filter((_, idx) => idx !== i);
 	}
 
-	function handleMoneyInput(e: Event & { currentTarget: HTMLInputElement }, set: (v: number) => void) {
+	function handleMoneyInput(e: Event & { currentTarget: HTMLInputElement }, set: (v: number) => void, setText: (s: string) => void) {
 		const raw = e.currentTarget.value.replace(/[^0-9]/g, '');
 		const num = Number(raw) || 0;
 		set(num);
 		const formatted = raw === '' ? '' : fmt.format(num);
+		setText(formatted);
 		e.currentTarget.value = formatted;
 	}
-	let controlsOpen = $state(true);
+	let controlsOpen = $state(false);
 
 	function onkeydown(e: KeyboardEvent) {
 		if (e.key === 'i' && !e.metaKey && !e.ctrlKey && !(e.target instanceof HTMLInputElement) && !(e.target instanceof HTMLTextAreaElement) && !(e.target instanceof HTMLSelectElement)) {
@@ -97,7 +98,7 @@
 	);
 	// blended rate for simple projection charts (weighted by account balance)
 	const growthRate = $derived(brokerageGrowthRate);
-	const yearlyWithdrawalCents = $derived(Math.round(yearlyWithdrawalDollars * 100));
+	const yearlyWithdrawalCents = $derived(Math.round(monthlyWithdrawalDollars * 12 * 100));
 	const yearlyConversionCents = $derived(Math.round(yearlyConversionDollars * 100));
 	const conversionTaxRate = $derived(conversionTaxRatePct / 100);
 	const age = $derived(currentAge());
@@ -118,31 +119,59 @@
 
 	// Summary cards
 	const accessibleNow = $derived(totals.Brokerage); // Roth basis not tracked
-	// projected tax-advantaged balance at retirement age (grows until then)
-	const accessibleAtRetirement = $derived(
-		projectPortfolio(filteredAccounts, retirementAge, growthRate, retirementAge, yearlyWithdrawalCents, undefined, expenses)
-	);
 	const accessibleViaLadder = $derived(
 		ladder.reduce((s, r) => s + r.amount, 0)
 	);
 
 	// --- Chart 1: projected net worth over time ---
+	// ponytail: reuse buildAccessTimeline (correct per-type growth rates) instead of projectPortfolio (single rate)
 	const agesAxis = $derived(Array.from({ length: 90 - age + 1 }, (_, i) => age + i));
+	// authoritative single combined simulation — used by ledger, byType chart, and Combined net worth line
+	const timeline = $derived(
+		buildAccessTimeline(
+			accounts,
+			personFilter === 'All' ? undefined : personFilter,
+			brokerageGrowthRate,
+			ladder,
+			retirementAge,
+			yearlyWithdrawalCents,
+			expenses,
+			conversionTaxRate,
+			retirementGrowthRate
+		)
+	);
+	// ponytail: Bryan/Jen are the combined total split by each person's fixed starting
+	// net-worth share — withdrawals are pro-rata, so both deplete together and the lines
+	// always sum exactly to Combined. (Separate per-person sims diverged from Combined.)
+	const rawTotal = (pt: { rawBrokerage: number; rawRoth: number; rawIra401k: number }) =>
+		pt.rawBrokerage + pt.rawRoth + pt.rawIra401k;
 	const projectionConfig = $derived(
 		(() => {
-			const persons: ('All' | Person)[] =
-				personFilter === 'All' ? ['Bryan', 'Jen', 'All'] : [personFilter];
-			const datasets = persons.map((p, i) => ({
-				label: p === 'All' ? 'Combined' : p,
-				data: agesAxis.map((a) => projectPortfolio(accounts, a, growthRate, retirementAge, yearlyWithdrawalCents, p === 'All' ? undefined : p, expenses)),
-				borderColor: ['#3b82f6', '#ec4899', '#22c55e'][i],
-				backgroundColor: ['#3b82f6', '#ec4899', '#22c55e'][i],
-				tension: 0.25,
-				fill: false
-			}));
+			const combined = timeline.map(rawTotal);
+			let datasets;
+			if (personFilter === 'All') {
+				const all = totalNetWorth(accounts) || 1;
+				const bryanShare = totalNetWorth(accounts, 'Bryan') / all;
+				const bryan = combined.map((v) => Math.round(v * bryanShare));
+				const jen = combined.map((v, i) => combined[i] - bryan[i]);
+				// Combined = Bryan + Jen so the lines always sum exactly.
+				datasets = [
+					{ label: 'Bryan', data: bryan,
+						borderColor: '#3b82f6', backgroundColor: '#3b82f6', tension: 0.25, fill: false },
+					{ label: 'Jen', data: jen,
+						borderColor: '#ec4899', backgroundColor: '#ec4899', tension: 0.25, fill: false },
+					{ label: 'Combined', data: bryan.map((v, i) => v + jen[i]),
+						borderColor: '#22c55e', backgroundColor: '#22c55e', tension: 0.25, fill: false }
+				];
+			} else {
+				datasets = [{
+					label: 'Net Worth', data: combined,
+					borderColor: '#22c55e', backgroundColor: '#22c55e', tension: 0.25, fill: false
+				}];
+			}
 			return {
 				type: 'line',
-				data: { labels: agesAxis, datasets },
+				data: { labels: timeline.map((pt) => pt.age), datasets },
 				options: {
 					responsive: true,
 					maintainAspectRatio: false,
@@ -182,25 +211,82 @@
 					legend: { position: 'bottom' },
 					tooltip: {
 						callbacks: { label: (c) => `${c.label}: ${formatCurrency(Number(c.raw))}` }
-					}
+					},
+					// ponytail: inline plugin, no chartjs-plugin-datalabels needed
+					datalabels: false
 				}
-			}
+			},
+			plugins: [{
+				id: 'pieLabels',
+				afterDatasetDraw(chart) {
+					const { ctx } = chart;
+					const meta = chart.getDatasetMeta(0);
+					const total = (chart.data.datasets[0].data as number[]).reduce((s, v) => s + v, 0);
+					meta.data.forEach((arc: any, i: number) => {
+						const pct = total > 0 ? ((chart.data.datasets[0].data[i] as number) / total * 100) : 0;
+						if (pct < 3) return;
+						const { x, y } = arc.tooltipPosition(false);
+						ctx.save();
+						ctx.font = 'bold 12px sans-serif';
+						ctx.fillStyle = '#fff';
+						ctx.textAlign = 'center';
+						ctx.textBaseline = 'middle';
+						ctx.fillText(pct.toFixed(1) + '%', x, y);
+						ctx.restore();
+					});
+				}
+			}]
 		}) as ChartConfiguration
 	);
 
+	// --- Chart 2b: retirement vs brokerage donut ---
+	const retirementVsBrokerageConfig = $derived(({
+		type: 'doughnut',
+		data: {
+			labels: ['Brokerage', 'Retirement (Roth + IRA + 401k)'],
+			datasets: [{
+				data: [totals.Brokerage, totals.Roth + totals.IRA + totals['401k']],
+				backgroundColor: ['#22c55e', '#a855f7']
+			}]
+		},
+		options: {
+			responsive: true,
+			maintainAspectRatio: false,
+			plugins: {
+				legend: { position: 'bottom' },
+				tooltip: { callbacks: { label: (c) => `${c.label}: ${formatCurrency(Number(c.raw))}` } }
+			}
+		},
+		plugins: [{
+			id: 'pieLabels2',
+			afterDatasetDraw(chart: any) {
+				const { ctx } = chart;
+				const meta = chart.getDatasetMeta(0);
+				const total = (chart.data.datasets[0].data as number[]).reduce((s: number, v: number) => s + v, 0);
+				meta.data.forEach((arc: any, i: number) => {
+					const pct = total > 0 ? ((chart.data.datasets[0].data[i] as number) / total * 100) : 0;
+					if (pct < 3) return;
+					const { x, y } = arc.tooltipPosition(false);
+					ctx.save();
+					ctx.font = 'bold 12px sans-serif';
+					ctx.fillStyle = '#fff';
+					ctx.textAlign = 'center';
+					ctx.textBaseline = 'middle';
+					ctx.fillText(pct.toFixed(1) + '%', x, y);
+					ctx.restore();
+				});
+			}
+		}]
+	}) as ChartConfiguration);
+
 	// --- Chart 3: access timeline (stacked area) ---
-	const timeline = $derived(
-		buildAccessTimeline(
-			accounts,
-			personFilter === 'All' ? undefined : personFilter,
-			brokerageGrowthRate,
-			ladder,
-			retirementAge,
-			yearlyWithdrawalCents,
-			expenses,
-			conversionTaxRate,
-			retirementGrowthRate
-		)
+	// projected brokerage at retirement age — pure growth, no expense deductions
+	const accessibleAtRetirement = $derived(
+		Math.round(totals.Brokerage * Math.pow(1 + brokerageGrowthRate, retirementAge - age))
+	);
+	// total portfolio at 60 when tax-advantaged unlocks
+	const availableAt60 = $derived(
+		timeline.find((p) => p.age === 60)?.total ?? 0
 	);
 	const timelineConfig = $derived(
 		({
@@ -253,34 +339,117 @@
 		}) as ChartConfiguration
 	);
 
-	// --- Chart 4: per-person grouped bar ---
+	// --- Chart: withdrawal rate % of portfolio over time ---
+	const withdrawalRateConfig = $derived({
+		type: 'line',
+		data: {
+			labels: timeline.map((p) => p.age),
+			datasets: [
+				{
+					label: 'Withdrawal Rate %',
+					data: timeline.map((p) => {
+						if (p.age < retirementAge || p.total === 0) return null;
+						const yearly = yearlyWithdrawalCents * Math.pow(1 + INFLATION_RATE, p.age - retirementAge);
+						const totalMoney = p.rawBrokerage + p.rawRoth + p.rawIra401k;
+						return totalMoney === 0 ? null : Math.round((yearly / totalMoney) * 10000) / 100;
+					}),
+					borderColor: '#ef4444',
+					backgroundColor: 'rgba(239,68,68,0.1)',
+					fill: true,
+					tension: 0.25,
+					spanGaps: false
+				},
+				{
+					label: '4% Rule',
+					data: timeline.map((p) => p.age >= retirementAge ? 4 : null),
+					borderColor: '#94a3b8',
+					borderDash: [6, 3],
+					pointRadius: 0,
+					fill: false,
+					spanGaps: false
+				}
+			]
+		},
+		options: {
+			responsive: true,
+			maintainAspectRatio: false,
+			plugins: {
+				tooltip: { callbacks: { label: (c) => `${c.dataset.label}: ${c.parsed.y?.toFixed(2)}%` } }
+			},
+			scales: {
+				x: { title: { display: true, text: 'Age' } },
+				y: { ticks: { callback: (v) => `${v}%` }, title: { display: true, text: '% of Portfolio' } }
+			}
+		}
+	} as ChartConfiguration);
+
+	// --- Chart 4: per-person total (horizontal stacked bar) ---
 	const perPersonConfig = $derived(
 		({
 			type: 'bar',
 			data: {
-				labels: ['Brokerage', 'Roth', 'IRA', '401k'],
-				datasets: PERSONS.map((p, i) => ({
-					label: p,
-					data: [
-						sumByType(accounts, p).Brokerage,
-						sumByType(accounts, p).Roth,
-						sumByType(accounts, p).IRA,
-						sumByType(accounts, p)['401k']
-					],
-					backgroundColor: i === 0 ? '#3b82f6' : '#ec4899'
-				}))
+				labels: PERSONS,
+				datasets: [
+					{
+						label: 'Brokerage',
+						data: PERSONS.map((p) => sumByType(accounts, p).Brokerage),
+						backgroundColor: '#22c55e'
+					},
+					{
+						label: 'Roth',
+						data: PERSONS.map((p) => sumByType(accounts, p).Roth),
+						backgroundColor: '#f97316'
+					},
+					{
+						label: 'IRA / 401k',
+						data: PERSONS.map((p) => sumByType(accounts, p).IRA + sumByType(accounts, p)['401k']),
+						backgroundColor: '#a855f7'
+					}
+				]
 			},
 			options: {
+				indexAxis: 'y',
 				responsive: true,
 				maintainAspectRatio: false,
-				scales: { y: { ticks: { callback: (v) => formatCurrency(Number(v)) } } },
+				layout: { padding: { right: 240 } },
+				scales: {
+					x: { stacked: true, ticks: { callback: (v: number) => formatCurrency(Number(v)) } },
+					y: { stacked: true }
+				},
 				plugins: {
+					legend: { position: 'bottom' },
 					tooltip: {
-						callbacks: { label: (c) => `${c.dataset.label}: ${formatCurrency(Number(c.parsed.y))}` }
+						callbacks: { label: (c: { dataset: { label: string }; parsed: { x: number } }) => `${c.dataset.label}: ${formatCurrency(Number(c.parsed.x))}` }
 					}
 				}
-			}
-		}) as ChartConfiguration
+			},
+			plugins: [{
+				id: 'perPersonTotals',
+				afterDatasetsDraw(chart: any) {
+					const { ctx } = chart;
+					const datasets = chart.data.datasets as { data: number[] }[];
+					const labels = chart.data.labels as string[];
+					const grandTotal = labels.reduce((sum: number, _: string, i: number) =>
+						sum + datasets.reduce((s: number, ds: { data: number[] }) => s + (ds.data[i] ?? 0), 0), 0);
+					labels.forEach((_: string, i: number) => {
+						const personTotal = datasets.reduce((s: number, ds: { data: number[] }) => s + (ds.data[i] ?? 0), 0);
+						const pct = grandTotal > 0 ? (personTotal / grandTotal * 100).toFixed(1) : '0.0';
+						const meta = chart.getDatasetMeta(datasets.length - 1);
+						const bar = meta.data[i];
+						if (!bar) return;
+						const x = bar.x + bar.width / 2 + 8;
+						const y = bar.y;
+						ctx.save();
+						ctx.font = 'bold 13px sans-serif';
+						ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--color-foreground').trim() || '#111';
+						ctx.textAlign = 'left';
+						ctx.textBaseline = 'middle';
+						ctx.fillText(`${formatCurrency(personTotal)}  (${pct}%)`, x, y);
+						ctx.restore();
+					});
+				}
+			}]
+		}) as unknown as ChartConfiguration
 	);
 
 	// Ledger: pair each timeline point with its inflation-adjusted withdrawal + any lump sum
@@ -293,7 +462,10 @@
 		})
 	);
 
+	const finalBalance = $derived(ledger[ledger.length - 1]?.total ?? 0);
+
 	// --- Chart 5: projected balance by account type ---
+	// ponytail: use `timeline` (same sim as ledger) so totals match
 	const byTypeConfig = $derived({
 		type: 'line',
 		data: {
@@ -359,22 +531,30 @@
 	</p>
 
 	<!-- Summary cards -->
-	<div class="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+	<div class="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-6">
 		<div class={cardClass}>
 			<p class="text-xs font-medium uppercase text-muted-foreground">Total Net Worth</p>
-			<p class="mt-1 text-2xl font-semibold">{formatCurrency(netWorth)}</p>
+			<p class="mt-1 text-2xl font-semibold">{formatWhole(netWorth)}</p>
 		</div>
 		<div class={cardClass}>
 			<p class="text-xs font-medium uppercase text-muted-foreground">Accessible Now</p>
-			<p class="mt-1 text-2xl font-semibold text-green-600 dark:text-green-400">{formatCurrency(accessibleNow)}</p>
+			<p class="mt-1 text-2xl font-semibold text-green-600 dark:text-green-400">{formatWhole(accessibleNow)}</p>
 		</div>
 		<div class={cardClass}>
-			<p class="text-xs font-medium uppercase text-muted-foreground">Projected at age {retirementAge}</p>
-			<p class="mt-1 text-2xl font-semibold text-blue-600 dark:text-blue-400">{formatCurrency(accessibleAtRetirement)}</p>
+			<p class="text-xs font-medium uppercase text-muted-foreground">At Retirement (age {retirementAge})</p>
+			<p class="mt-1 text-2xl font-semibold text-blue-600 dark:text-blue-400">{formatWhole(accessibleAtRetirement)}</p>
+		</div>
+		<div class={cardClass}>
+			<p class="text-xs font-medium uppercase text-muted-foreground">Available at 60</p>
+			<p class="mt-1 text-2xl font-semibold text-purple-600 dark:text-purple-400">{formatWhole(availableAt60)}</p>
 		</div>
 		<div class={cardClass}>
 			<p class="text-xs font-medium uppercase text-muted-foreground">Accessible via Ladder</p>
-			<p class="mt-1 text-2xl font-semibold text-amber-600 dark:text-amber-400">{formatCurrency(accessibleViaLadder)}</p>
+			<p class="mt-1 text-2xl font-semibold text-amber-600 dark:text-amber-400">{formatWhole(accessibleViaLadder)}</p>
+		</div>
+		<div class="{cardClass} {finalBalance > 0 ? 'border-green-500 bg-green-50 dark:bg-green-950/40' : 'border-red-500 bg-red-50 dark:bg-red-950/40'}">
+			<p class="text-xs font-medium uppercase {finalBalance > 0 ? 'text-green-700 dark:text-green-400' : 'text-red-700 dark:text-red-400'}">End of Simulation</p>
+			<p class="mt-1 text-2xl font-bold {finalBalance > 0 ? 'text-green-700 dark:text-green-300' : 'text-red-700 dark:text-red-300'}">{formatWhole(finalBalance)}</p>
 		</div>
 	</div>
 
@@ -389,53 +569,85 @@
 			<span class="text-base leading-none">{controlsOpen ? '▲' : '▼'}</span>
 		</button>
 		{#if controlsOpen}
-		<div class="grid gap-4 border-t border-border p-4 md:grid-cols-3 lg:grid-cols-7">
-		<label class="flex flex-col gap-1">
-			<span class="text-xs font-medium uppercase text-muted-foreground">Retirement age</span>
-			<input type="number" min="45" max="75" bind:value={retirementAge} class="border-input bg-background rounded-md border px-2 py-1 text-sm" />
-			<input type="range" min="45" max="75" bind:value={retirementAge} class="accent-blue-500" />
-		</label>
-		<label class="flex flex-col gap-1">
-			<span class="text-xs font-medium uppercase text-muted-foreground">Brokerage return (%)</span>
-			<input type="number" min="0" max="15" step="0.1" bind:value={brokerageGrowthRatePct} class="border-input bg-background rounded-md border px-2 py-1 text-sm" />
-			<input type="range" min="0" max="15" step="0.1" bind:value={brokerageGrowthRatePct} class="accent-green-500" />
-		</label>
-		<label class="flex flex-col gap-1">
-			<span class="text-xs font-medium uppercase text-muted-foreground">Retirement return (%)</span>
-			<input type="number" min="0" max="20" step="0.1" bind:value={retirementGrowthRatePct} class="border-input bg-background rounded-md border px-2 py-1 text-sm" />
-			<input type="range" min="0" max="20" step="0.1" bind:value={retirementGrowthRatePct} class="accent-blue-500" />
-		</label>
-		<label class="flex flex-col gap-1">
-			<span class="text-xs font-medium uppercase text-muted-foreground">Person</span>
-			<select bind:value={personFilter} class="border-input bg-background rounded-md border px-2 py-1 text-sm">
-				<option value="All">All</option>
-				<option value="Bryan">Bryan</option>
-				<option value="Jen">Jen</option>
-			</select>
-		</label>
-		<label class="flex flex-col gap-1">
-			<span class="text-xs font-medium uppercase text-muted-foreground">Annual withdrawal ($)</span>
-			<input
-				type="text"
-				value={withdrawalText}
-				oninput={(e) => handleMoneyInput(e, (v) => (yearlyWithdrawalDollars = v))}
-				onfocus={(e) => e.currentTarget.select()}
-				class="border-input bg-background rounded-md border px-2 py-1 text-sm"
-			/>
-			<span class="text-xs text-muted-foreground">after retirement age</span>
-		</label>
-		<label class="flex flex-col gap-1">
-			<span class="text-xs font-medium uppercase text-muted-foreground">Conversion tax rate (%)</span>
-			<input type="number" min="0" max="50" step="1" bind:value={conversionTaxRatePct} class="border-input bg-background rounded-md border px-2 py-1 text-sm" />
-			<input type="range" min="0" max="50" step="1" bind:value={conversionTaxRatePct} class="accent-blue-500" />
-		</label>
-		<label class="flex flex-col gap-2">
-			<span class="text-xs font-medium uppercase text-muted-foreground">Inflation adjusted</span>
-			<label class="flex cursor-pointer items-center gap-2">
-				<input type="checkbox" bind:checked={inflationAdjusted} class="accent-blue-500 h-4 w-4" />
-				<span class="text-sm">{inflationAdjusted ? `−3% inflation applied` : 'Off (nominal)'}</span>
-			</label>
-		</label>
+		<div class="flex flex-wrap gap-8 border-t border-border p-4">
+
+			<!-- Retirement -->
+			<div class="flex min-w-52 flex-1 flex-col gap-3">
+				<p class="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Retirement</p>
+				<label class="flex flex-col gap-1">
+					<span class="text-xs text-muted-foreground">Retirement age</span>
+					<input type="number" min={age} max="70" bind:value={retirementAge} class="border-input bg-background rounded-md border px-2 py-1 text-sm" />
+					<input type="range" min={age} max="70" bind:value={retirementAge} class="accent-blue-500" />
+				</label>
+				<label class="flex flex-col gap-1">
+					<span class="text-xs text-muted-foreground">Monthly withdrawal</span>
+					<input
+						type="text"
+						value={withdrawalText}
+						oninput={(e) => handleMoneyInput(e, (v) => (monthlyWithdrawalDollars = v), (s) => (withdrawalText = s))}
+						onfocus={(e) => e.currentTarget.select()}
+						class="border-input bg-background rounded-md border px-2 py-1 text-sm"
+					/>
+				</label>
+				<label class="flex cursor-pointer items-center gap-2">
+					<input type="checkbox" bind:checked={inflationAdjusted} class="accent-blue-500 h-4 w-4" />
+					<span class="text-xs text-muted-foreground">{inflationAdjusted ? 'Inflation adjusted (−3%)' : 'Nominal (no inflation)'}</span>
+				</label>
+			</div>
+
+			<!-- Returns -->
+			<div class="flex min-w-48 flex-1 flex-col gap-3">
+				<p class="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Returns</p>
+				<label class="flex flex-col gap-1">
+					<span class="text-xs text-muted-foreground">Brokerage</span>
+					<input type="number" min="0" max="15" step="0.1" bind:value={brokerageGrowthRatePct} class="border-input bg-background rounded-md border px-2 py-1 text-sm" />
+					<input type="range" min="0" max="15" step="0.1" bind:value={brokerageGrowthRatePct} class="accent-green-500" />
+				</label>
+				<label class="flex flex-col gap-1">
+					<span class="text-xs text-muted-foreground">Tax-advantaged</span>
+					<input type="number" min="0" max="20" step="0.1" bind:value={retirementGrowthRatePct} class="border-input bg-background rounded-md border px-2 py-1 text-sm" />
+					<input type="range" min="0" max="20" step="0.1" bind:value={retirementGrowthRatePct} class="accent-purple-500" />
+				</label>
+			</div>
+
+			<!-- Roth Conversion -->
+			<div class="flex min-w-48 flex-1 flex-col gap-3">
+				<p class="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Roth Conversion</p>
+				<label class="flex flex-col gap-1">
+					<span class="text-xs text-muted-foreground">Yearly conversion</span>
+					<input
+						type="text"
+						value={conversionText}
+						oninput={(e) => handleMoneyInput(e, (v) => (yearlyConversionDollars = v), (s) => (conversionText = s))}
+						onfocus={(e) => e.currentTarget.select()}
+						class="border-input bg-background rounded-md border px-2 py-1 text-sm"
+					/>
+				</label>
+				<label class="flex flex-col gap-1">
+					<span class="text-xs text-muted-foreground">Tax rate (%)</span>
+					<input type="number" min="0" max="50" step="1" bind:value={conversionTaxRatePct} class="border-input bg-background rounded-md border px-2 py-1 text-sm" />
+					<input type="range" min="0" max="50" step="1" bind:value={conversionTaxRatePct} class="accent-orange-500" />
+				</label>
+				<label class="flex flex-col gap-1">
+					<span class="text-xs text-muted-foreground">Ladder start age</span>
+					<input type="number" min={age} max="75" bind:value={ladderStartAge} class="border-input bg-background rounded-md border px-2 py-1 text-sm" />
+					<input type="range" min={age} max="75" bind:value={ladderStartAge} class="accent-orange-500" />
+				</label>
+			</div>
+
+			<!-- View -->
+			<div class="flex min-w-32 flex-col gap-3">
+				<p class="text-xs font-semibold uppercase tracking-wide text-muted-foreground">View</p>
+				<label class="flex flex-col gap-1">
+					<span class="text-xs text-muted-foreground">Person</span>
+					<select bind:value={personFilter} class="border-input bg-background rounded-md border px-2 py-1 text-sm">
+						<option value="All">All</option>
+						<option value="Bryan">Bryan</option>
+						<option value="Jen">Jen</option>
+					</select>
+				</label>
+			</div>
+
 		</div>
 
 		<!-- One-time events -->
@@ -498,69 +710,25 @@
 				<Chart config={projectionConfig} height={300} />
 			</div>
 			<div class={cardClass}>
+				<h2 class="mb-2 text-sm font-semibold">Access Timeline</h2>
+				<Chart config={timelineConfig} height={300} />
+			</div>
+			<div class={cardClass}>
 				<h2 class="mb-2 text-sm font-semibold">Account Type Breakdown</h2>
 				<Chart config={donutConfig} height={300} />
 			</div>
 			<div class={cardClass}>
-				<h2 class="mb-2 text-sm font-semibold">Access Timeline</h2>
-				<Chart config={timelineConfig} height={300} />
+				<h2 class="mb-2 text-sm font-semibold">Retirement vs Brokerage</h2>
+				<Chart config={retirementVsBrokerageConfig} height={300} />
 			</div>
 			<div class={cardClass}>
 				<h2 class="mb-2 text-sm font-semibold">Per-Person Breakdown</h2>
 				<Chart config={perPersonConfig} height={300} />
 			</div>
-		</div>
-
-		<!-- Roth ladder scenario -->
-		<div class="mt-4 {cardClass}">
-			<h2 class="mb-3 text-sm font-semibold">Roth Conversion Ladder</h2>
-			<div class="grid gap-3 sm:grid-cols-2">
-				<label class="flex flex-col gap-1">
-					<span class="text-xs font-medium uppercase text-muted-foreground">Yearly conversion ($)</span>
-					<input
-					type="text"
-					value={conversionText}
-					oninput={(e) => handleMoneyInput(e, (v) => (yearlyConversionDollars = v))}
-					onfocus={(e) => e.currentTarget.select()}
-					class="border-input bg-background rounded-md border px-2 py-1 text-sm"
-				/>
-				</label>
-				<label class="flex flex-col gap-1">
-					<span class="text-xs font-medium uppercase text-muted-foreground">Start age</span>
-					<input type="number" min={age} max="75" bind:value={ladderStartAge} class="border-input bg-background rounded-md border px-2 py-1 text-sm" />
-				</label>
+			<div class={cardClass}>
+				<h2 class="mb-2 text-sm font-semibold">Withdrawal Rate % of Portfolio</h2>
+				<Chart config={withdrawalRateConfig} height={300} />
 			</div>
-
-			{#if ladder.length > 0}
-				<div class="mt-4 overflow-x-auto">
-					<table class="w-full min-w-[480px] text-sm">
-						<thead class="text-left text-xs uppercase text-muted-foreground">
-							<tr>
-								<th class="py-1 pr-4">Conversion year</th>
-								<th class="py-1 pr-4">Age</th>
-								<th class="py-1 pr-4">Amount</th>
-								<th class="py-1 pr-4">Accessible year</th>
-								<th class="py-1">Accessible age</th>
-							</tr>
-						</thead>
-						<tbody>
-							{#each ladder as row (row.conversionAge)}
-								<tr class="border-t border-border">
-									<td class="py-1 pr-4">{row.conversionYear}</td>
-									<td class="py-1 pr-4">{row.conversionAge}</td>
-									<td class="py-1 pr-4">{formatCurrency(row.amount)}</td>
-									<td class="py-1 pr-4">{row.accessibleYear}</td>
-									<td class="py-1">{row.accessibleAge}</td>
-								</tr>
-							{/each}
-						</tbody>
-					</table>
-				</div>
-			{:else}
-				<p class="mt-4 text-sm text-muted-foreground">
-					No conversions scheduled. IRA/401k total: {formatCurrency(ira401kCents)}.
-				</p>
-			{/if}
 		</div>
 
 		<!-- Annual ledger -->
