@@ -64,10 +64,10 @@
 
 		try {
 			const res = await fetch(`/api/parse-recipe?url=${encodeURIComponent(cleanUrl)}`);
-			if (!res.ok) {
-				throw new Error('Could not contact the import server.');
+			const data = await res.json().catch(() => null);
+			if (!res.ok || !data) {
+				throw new Error(data?.error || 'Could not contact the import server.');
 			}
-			const data = await res.json();
 			if (data.error) {
 				toast.error(`Import failed: ${data.error}`);
 			} else {
