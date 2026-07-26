@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Badge } from '$lib/components/ui/badge';
-	import { PencilLine, Trash2, Clock, Globe, NotebookPen, ChefHat } from 'lucide-svelte';
+	import { PencilLine, Trash2, Clock, Globe, NotebookPen, ChefHat, Star } from 'lucide-svelte';
 	import * as Card from '$lib/components/ui/card';
 	import { formatToMST } from '$lib/utilities';
 	import { useConvexClient } from 'convex-svelte';
@@ -17,6 +17,16 @@
 	const client = useConvexClient();
 	let isDeleting = $state(false);
 	let showDetails = $state(false);
+
+	async function handleRate(star: number) {
+		// Clicking the currently-set star clears the rating
+		const rating = recipe.rating === star ? undefined : star;
+		try {
+			await client.mutation(api.recipes.setRating, { id: recipe._id, rating });
+		} catch {
+			toast.error('Unable to update rating. Try again.');
+		}
+	}
 
 	async function handleDelete() {
 		if (!confirm(`Delete "${recipe.title}"? This cannot be undone.`)) return;
@@ -60,6 +70,19 @@
 					<p class="text-xs text-slate-400 dark:text-slate-500">
 						Added {formatToMST(recipe._creationTime)}
 					</p>
+					<div class="mt-1 flex gap-0.5" role="radiogroup" aria-label="Rating">
+						{#each [1, 2, 3, 4, 5] as star}
+							<button
+								type="button"
+								onclick={() => handleRate(star)}
+								aria-label={`Rate ${star} star${star > 1 ? 's' : ''}`}
+							>
+								<Star
+									class={`size-4 ${(recipe.rating ?? 0) >= star ? 'fill-amber-400 text-amber-400' : 'text-slate-300 dark:text-slate-600'}`}
+								/>
+							</button>
+						{/each}
+					</div>
 				</div>
 				<div class="flex items-center gap-3">
 					<a

@@ -58,6 +58,17 @@ export const update = mutation({
 	}
 });
 
+export const setRating = mutation({
+	args: {
+		id: v.id('Recipes'),
+		rating: v.optional(v.number())
+	},
+	handler: async (ctx, args) => {
+		await ctx.db.patch(args.id, { rating: args.rating });
+		return { success: true };
+	}
+});
+
 export const deleteRecipe = mutation({
 	args: { id: v.id('Recipes') },
 	handler: async (ctx, args) => {

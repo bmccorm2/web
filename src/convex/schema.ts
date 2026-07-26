@@ -66,7 +66,8 @@ export default defineSchema({
 		ingredients: v.array(v.string()),
 		instructions: v.array(v.string()),
 		notes: v.optional(v.string()),
-		imageUrl: v.optional(v.string())
+		imageUrl: v.optional(v.string()),
+		rating: v.optional(v.number())
 	}),
 	FinancialAccounts: defineTable({
 		person: v.string(),
