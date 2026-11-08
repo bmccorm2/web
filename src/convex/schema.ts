@@ -35,6 +35,89 @@ export const accountType = v.union(
 	v.literal('401k')
 );
 
+export const serviceCategory = v.union(
+	v.literal('Oil'),
+	v.literal('Transmission'),
+	v.literal('Brakes'),
+	v.literal('Tires & Wheels'),
+	v.literal('Fluids'),
+	v.literal('Filters'),
+	v.literal('Track'),
+	v.literal('Other')
+);
+
+export const vehicleProfileFields = {
+	carId: v.id('Cars'),
+	year: v.number(),
+	make: v.string(),
+	model: v.string(),
+	chassisCode: v.optional(v.string()),
+	vin: v.optional(v.string()),
+	color: v.optional(v.string()),
+	purchaseDate: v.optional(v.string()),
+	purchaseMileage: v.optional(v.number()),
+	currentMileage: v.number(),
+	notes: v.optional(v.string())
+};
+
+export const serviceRecordFields = {
+	carId: v.id('Cars'),
+	date: v.string(), // YYYY-MM-DD
+	mileage: v.number(),
+	title: v.string(),
+	category: serviceCategory,
+	minderCode: v.optional(v.string()),
+	cost: v.optional(v.number()), // cents
+	items: v.array(
+		v.object({
+			partId: v.optional(v.id('Parts')),
+			name: v.string(),
+			partNumber: v.optional(v.string()),
+			quantity: v.number(),
+			unit: v.string(),
+			notes: v.optional(v.string())
+		})
+	),
+	checklist: v.optional(v.array(v.object({ text: v.string(), done: v.boolean() }))),
+	templateId: v.optional(v.id('ChecklistTemplates')),
+	notes: v.optional(v.string())
+};
+
+export const partFields = {
+	carId: v.id('Cars'),
+	name: v.string(),
+	kind: v.union(v.literal('Part'), v.literal('Fluid')),
+	brand: v.optional(v.string()),
+	partNumber: v.optional(v.string()),
+	spec: v.optional(v.string()),
+	defaultQuantity: v.optional(v.number()),
+	unit: v.optional(v.string()),
+	notes: v.optional(v.string())
+};
+
+export const specFields = {
+	carId: v.id('Cars'),
+	category: v.union(
+		v.literal('Torque'),
+		v.literal('Capacity'),
+		v.literal('Pressure'),
+		v.literal('Procedure'),
+		v.literal('Other')
+	),
+	name: v.string(),
+	value: v.string(),
+	source: v.optional(v.string()),
+	notes: v.optional(v.string())
+};
+
+export const checklistTemplateFields = {
+	carId: v.id('Cars'),
+	title: v.string(),
+	category: serviceCategory,
+	steps: v.array(v.string()),
+	notes: v.optional(v.string())
+};
+
 export default defineSchema({
 	Cars: defineTable({
 		displayName: v.string(),
@@ -75,5 +158,13 @@ export default defineSchema({
 		type: accountType,
 		balance: v.number(),
 		updatedAt: v.number()
-	}).index('by_person', ['person'])
+	}).index('by_person', ['person']),
+	VehicleProfiles: defineTable({ ...vehicleProfileFields, updatedAt: v.number() }).index(
+		'by_carId',
+		['carId']
+	),
+	ServiceRecords: defineTable(serviceRecordFields).index('by_carId_date', ['carId', 'date']),
+	Parts: defineTable(partFields).index('by_carId', ['carId']),
+	Specs: defineTable(specFields).index('by_carId', ['carId']),
+	ChecklistTemplates: defineTable(checklistTemplateFields).index('by_carId', ['carId'])
 });
