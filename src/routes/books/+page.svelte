@@ -49,9 +49,11 @@
 		return sortedBooks;
 	});
 
-	const booksInLastSixMonths = $derived(
-		allBooks.filter((book) => book._creationTime >= sixMonthsAgo.getTime()).length
+	const recentBooks = $derived(
+		allBooks.filter((book) => book._creationTime >= sixMonthsAgo.getTime())
 	);
+	const booksInLastSixMonths = $derived(recentBooks.length);
+	const pagesInLastSixMonths = $derived(recentBooks.reduce((sum, book) => sum + book.pages, 0));
 
 	const totalBooks = $derived(allBooks.length);
 
@@ -81,7 +83,7 @@
 		</div>
 	</div>
 
-	<div class="mt-4 grid gap-3 sm:grid-cols-2">
+	<div class="mt-4 grid gap-3 sm:grid-cols-3">
 		<div
 			class="rounded-lg border border-slate-200 bg-white p-3 shadow-sm dark:border-slate-700 dark:bg-slate-900"
 		>
@@ -89,6 +91,14 @@
 				Books in 6 Months
 			</p>
 			<p class="mt-1 text-2xl font-semibold">{booksInLastSixMonths}</p>
+		</div>
+		<div
+			class="rounded-lg border border-slate-200 bg-white p-3 shadow-sm dark:border-slate-700 dark:bg-slate-900"
+		>
+			<p class="text-xs font-medium tracking-wide text-slate-500 uppercase dark:text-slate-400">
+				Pages in 6 Months
+			</p>
+			<p class="mt-1 text-2xl font-semibold">{pagesInLastSixMonths.toLocaleString()}</p>
 		</div>
 		<div
 			class="rounded-lg border border-slate-200 bg-white p-3 shadow-sm dark:border-slate-700 dark:bg-slate-900"

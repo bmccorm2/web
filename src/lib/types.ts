@@ -111,3 +111,12 @@ export type Summary = {
 	milesPerGallon: number;
 	pricePerGallon: number;
 };
+
+export type VehicleProfileType = Doc<'VehicleProfiles'>;
+export type ServiceRecordType = Doc<'ServiceRecords'>;
+export type ServiceItemType = ServiceRecordType['items'][number];
+export type ChecklistStepType = NonNullable<ServiceRecordType['checklist']>[number];
+export type ServiceCategory = ServiceRecordType['category'];
+export type PartType = Doc<'Parts'>;
+export type SpecType = Doc<'Specs'>;
+export type ChecklistTemplateType = Doc<'ChecklistTemplates'>;

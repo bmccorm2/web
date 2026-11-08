@@ -20,8 +20,8 @@ Add a **Maintenance** tab to the site for logging maintenance on the Type R. It 
 ## Decisions
 - Route base is `/maintenance` with sub-routes (below). Add the nav entry **Maintenance** right after Consumption.
 - All maintenance data is keyed by `carId: v.id('Cars')` so other cars can be added later.
-  - Active car = `?car=<id>` query param if present, otherwise the first `VehicleProfiles` row.
-  - Show a car switcher only when more than one profile exists.
+  - Active car = `?car=<id>` query param if present, otherwise the first owned `Cars` row.
+  - Show a car switcher when more than one owned car exists. An "Add car" button creates an owned `Cars` row (`cars.insert`) and switches to it; its Profile page offers "Create".
 - Out entirely (do not build):
   - receipt uploads and file storage
   - an upcoming/due-maintenance section (the car's Maintenance Minder handles this)
@@ -138,25 +138,25 @@ Tick each box as you finish it.
     - Find the car: use `carId` if given. Otherwise use the first `Cars` row whose `displayName` contains "type r" (case-insensitive). Otherwise insert `{ displayName: 'Type R', isOwned: true }`.
     - If the car has no `VehicleProfiles` row, insert one: `{ year: 2023, make: 'Honda', model: 'Civic Type R', chassisCode: 'FL5', currentMileage: 0 }`.
     - Insert each of the 4 seed templates if no template with that title exists for the car.
-- [ ] 3. **Types and validation**:
+- [x] 3. **Types and validation**:
   - Add `VehicleProfileType`, `ServiceRecordType`, `PartType`, `SpecType`, `ChecklistTemplateType` to `src/lib/types.ts`.
   - Add `zod/mini` schemas to `src/lib/zodSchemas.ts`: `serviceRecordSchema` (mileage integer 0–1,000,000, date matching `^\d{4}-\d{2}-\d{2}$`, title required, quantity > 0, cost ≥ 0 optional), plus `partSchema`, `specSchema`, `templateSchema`, `profileSchema`.
-- [ ] 4. **Nav**: add `{ location: '/maintenance', description: 'Maintenance', searchPattern: '/maintenance' }` after Consumption in `src/lib/Navbar.svelte`.
-- [ ] 5. **Layout** `src/routes/maintenance/+layout.svelte`:
+- [x] 4. **Nav**: add `{ location: '/maintenance', description: 'Maintenance', searchPattern: '/maintenance' }` after Consumption in `src/lib/Navbar.svelte`.
+- [x] 5. **Layout** `src/routes/maintenance/+layout.svelte`:
   - Load `vehicleProfiles.list` and work out the active `carId` (see Decisions).
   - Share it with child pages via `setContext`.
   - Render a sub-nav: Profile `/maintenance`, History `/maintenance/history`, Parts & Fluids `/maintenance/parts`, Specs `/maintenance/specs`, Checklists `/maintenance/checklists`. Underline the active link, matching Navbar style. Keep `?car=` on links when it is present.
   - If no profiles exist, show: "No vehicle yet. Run `bunx convex run maintenanceSeed:seed`."
-- [ ] 6. **Profile** `/maintenance/+page.svelte`:
+- [x] 6. **Profile** `/maintenance/+page.svelte`:
   - Show all profile fields in a Card, with an Edit toggle that saves via `upsert`.
   - Show a summary: current mileage, last service (date, title, mileage), and total spent.
   - Add a quick "Update mileage" input.
-- [ ] 7. **History** `/maintenance/history/+page.svelte`:
+- [x] 7. **History** `/maintenance/history/+page.svelte`:
   - Table: date, mileage, title, category badge, minder code, cost, item count.
   - Filter by category (`<select>`) and text search across title, notes, and item names.
   - Show total spent and per-year totals.
   - Floating pink "+" button links to `/maintenance/history/new`. Clicking a row opens `/maintenance/history/[id]`.
-- [ ] 8. **Record form**: one shared component `src/routes/maintenance/history/RecordForm.svelte`, used by `history/new/+page.svelte` and `history/[id]/+page.svelte`.
+- [x] 8. **Record form**: one shared component `src/routes/maintenance/history/RecordForm.svelte`, used by `history/new/+page.svelte` and `history/[id]/+page.svelte`.
   - Fields: date (default today), mileage, title, category, minder code, cost ($), notes.
   - Items editor with add/remove rows: name, part number, quantity, unit, notes. A "From catalog" `<select>` prefills name, partNumber, defaultQuantity, unit, and partId.
   - "Start from template" `<select>` prefills title, category, and checklist steps (`done: false`).
@@ -164,18 +164,18 @@ Tick each box as you finish it.
   - `new` supports `?from=<recordId>` to duplicate an earlier record: copy title, category, items, and checklist with every `done` reset to false; set date to today and leave mileage blank.
   - `[id]` page: view and edit the record, a **Duplicate** button (goes to `new?from=id`), and **Delete** behind an AlertDialog confirm.
   - Show a toast on save, then go to `/maintenance/history`.
-- [ ] 9. **Parts & Fluids** `/maintenance/parts/+page.svelte`:
+- [x] 9. **Parts & Fluids** `/maintenance/parts/+page.svelte`:
   - Inline-editable table: name, kind, brand, part #, spec, default quantity, unit, notes. Add a row; delete with confirm.
   - Each row shows "Last used": date and mileage of the newest record whose items reference that `partId`.
-- [ ] 10. **Specs** `/maintenance/specs/+page.svelte`:
+- [x] 10. **Specs** `/maintenance/specs/+page.svelte`:
   - Group by category.
   - Inline add, edit, and delete for name, value, source, and notes. `value` uses a textarea when category is Procedure.
   - Empty state: "Add values from the Honda service manual."
-- [ ] 11. **Checklists**:
+- [x] 11. **Checklists**:
   - `/maintenance/checklists/+page.svelte`: list templates. Each has a "Log job" link to `/maintenance/history/new?template=<id>` (the form preselects that template).
   - `/maintenance/checklists/[id]/+page.svelte`: edit title, category, and notes; add, remove, and reorder steps with up/down buttons; delete with confirm. A "New template" action creates one and opens it.
-- [ ] 12. Run the seed: `bunx convex run maintenanceSeed:seed`. Run it a second time and confirm nothing is duplicated.
-- [ ] 13. Run `bun run check` and `bun run lint` and fix all errors in touched files.
+- [x] 12. Run the seed: `bunx convex run maintenanceSeed:seed`. Run it a second time and confirm nothing is duplicated.
+- [x] 13. Run `bun run check` and `bun run lint` and fix all errors in touched files.
 
 ## Acceptance criteria
 - `bun run check` reports 0 errors. `bun run lint` passes for the new and changed files.

@@ -17,6 +17,11 @@
 			searchPattern: '/consumption'
 		},
 		{
+			location: '/maintenance',
+			description: 'Maintenance',
+			searchPattern: '/maintenance'
+		},
+		{
 			location: '/books',
 			description: 'Books',
 			searchPattern: '/books'
@@ -68,7 +73,7 @@
 				<Terminal />
 			</a>
 		</li>
-		<div class="hidden md:flex md:items-center gap-4 lg:gap-6">
+		<div class="hidden gap-4 md:flex md:items-center lg:gap-6">
 			{#each routes as { location, description, searchPattern }}
 				{@const isActive = activeUrl.startsWith(searchPattern)}
 				<li>
@@ -80,11 +85,7 @@
 			{/each}
 		</div>
 		<li class="pl-6">
-			<Button
-				onclick={toggleMode}
-				variant="ghost"
-				size="icon"
-			>
+			<Button onclick={toggleMode} variant="ghost" size="icon">
 				<Sun
 					class="h-[1.2rem] w-[1.2rem] scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90"
 				/>
