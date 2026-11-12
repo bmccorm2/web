@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import { afterNavigate } from '$app/navigation';
 	import { Terminal, Menu } from 'lucide-svelte';
 	import { Sun, Moon } from 'lucide-svelte';
 	import { Button } from './components/ui/button';
@@ -9,6 +10,10 @@
 	let activeUrl = $derived(url === '/' ? '/home' : url);
 
 	let isShowNavbar = $state(false);
+
+	afterNavigate(() => {
+		isShowNavbar = false;
+	});
 
 	const routes = [
 		{
